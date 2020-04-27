@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace BadMelon.API.Controllers
 {
     [Route("api/[controller]")]
-    public class RecipeController : Controller
+    [ApiController]
+    [ApiVersion("1.0")]
+    public class RecipeController : ControllerBase
     {
         private static readonly Recipe[] Recipes = new Recipe[]
             {
