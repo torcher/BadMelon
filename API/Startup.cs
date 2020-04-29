@@ -1,16 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BadMelon.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Design;
+using BadMelon.API.Services;
+using BadMelon.Data.Repos;
 
 namespace BadMelon.API
 {
@@ -25,6 +24,20 @@ namespace BadMelon.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var dbConnectionString = Configuration.GetConnectionString("Default");
+            if (string.IsNullOrEmpty(dbConnectionString))
+            {
+                throw new Exception("Database connection could not be found.");
+            }
+
+            services.AddDbContext<BadMelonDataContext>(options =>
+                    options.UseNpgsql(dbConnectionString));
+
+            services.AddTransient<IRecipeRepo, RecipeRepo>();
+
+            services.AddTransient<IRecipeService, RecipeService>();
+
             services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddApiVersioning(config =>
