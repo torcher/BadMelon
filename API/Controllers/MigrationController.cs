@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BadMelon.Data;
+﻿using BadMelon.Data;
 using BadMelon.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BadMelon.API.Controllers
 {
@@ -13,6 +13,7 @@ namespace BadMelon.API.Controllers
     public class MigrationController : Controller
     {
         private readonly BadMelonDataContext _db;
+
         public MigrationController(BadMelonDataContext db)
         {
             _db = db;
@@ -62,16 +63,35 @@ namespace BadMelon.API.Controllers
                 new Recipe{ ID = Guid.NewGuid(), Name = "Cold water"}
             };
 
+            var waterIngredientType = new IngredientType { ID = Guid.NewGuid(), Name = "Water" };
+            var waterIngredients = new Ingredient[]
+            {
+                new Ingredient { ID = Guid.NewGuid(), Weight = 100d, IngredientTypeID = waterIngredientType.ID },
+                new Ingredient { ID = Guid.NewGuid(), Weight = 100d, IngredientTypeID = waterIngredientType.ID },
+            };
+
+            var heatWater = new Step { ID = Guid.NewGuid(), Order = 1, Text = "Heat water", PrepTime = new TimeSpan(0, 0, 30) };
+            var coolWater = new Step { ID = Guid.NewGuid(), Order = 1, Text = "Cool water", PrepTime = new TimeSpan(0, 0, 30) };
+
+            seedRecipes[0].Ingredients = new List<Ingredient>();
+            seedRecipes[0].Steps = new List<Step>();
+            seedRecipes[0].Ingredients.Add(waterIngredients[0]);
+            seedRecipes[0].Steps.Add(heatWater);
+
+            seedRecipes[1].Ingredients = new List<Ingredient>();
+            seedRecipes[1].Steps = new List<Step>();
+            seedRecipes[1].Ingredients.Add(waterIngredients[1]);
+            seedRecipes[1].Steps.Add(coolWater);
+
             try
             {
+                await _db.IngredientTypes.AddAsync(waterIngredientType);
                 await _db.Recipes.AddRangeAsync(seedRecipes);
                 await _db.SaveChangesAsync();
             }
             catch (Exception) { return "Cannot write to database. Contact an administrator."; }
 
             return "Data seeded successfuly.";
-
         }
-
     }
 }

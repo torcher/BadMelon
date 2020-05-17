@@ -1,8 +1,6 @@
-﻿using BadMelon.API.Models;
-using System;
+﻿using BadMelon.RecipeMath;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BadMelon.API.Services
 {
@@ -15,11 +13,12 @@ namespace BadMelon.API.Services
 
         public static Recipe ConvertToDomain(this Data.Entities.Recipe recipe)
         {
-            return new Recipe
-            {
-                ID = recipe.ID,
-                Name = recipe.Name
-            };
+            List<Ingredient> ingredients = recipe.Ingredients
+                                                .Select(i => new Ingredient(i.Weight, new IngredientType(i.IngredientType.Name)))
+                                               .ToList();
+            List<Step> steps = recipe.Steps.Select(s => new Step() { Text = s.Text, Order = s.Order, CookTimeSpan = s.CookTime, PrepTimeSpan = s.PrepTime }).ToList();
+
+            return new Recipe(recipe.ID, recipe.Name, ingredients, steps);
         }
     }
 }

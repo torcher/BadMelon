@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BadMelon.API.Models;
-using BadMelon.API.Services;
+﻿using BadMelon.API.Services;
+using BadMelon.RecipeMath;
 using Microsoft.AspNetCore.Mvc;
-
+using System;
+using System.Threading.Tasks;
 
 namespace BadMelon.API.Controllers
 {
@@ -15,6 +12,7 @@ namespace BadMelon.API.Controllers
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _recipes;
+
         public RecipeController(IRecipeService recipes)
         {
             _recipes = recipes;
@@ -26,7 +24,6 @@ namespace BadMelon.API.Controllers
             return await _recipes.GetRecipes();
         }
 
-        // GET api/<controller>/5
         [HttpGet("{id}")]
         public async Task<Recipe> Get(Guid id)
         {
