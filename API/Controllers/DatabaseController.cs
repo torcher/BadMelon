@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace BadMelon.API.Controllers
 {
-    [Route("api/database/migrate")]
-    public class MigrationController : Controller
+    [Route("api/[controller]")]
+    public class DatabaseController : Controller
     {
         private readonly BadMelonDataContext _db;
 
-        public MigrationController(BadMelonDataContext db)
+        public DatabaseController(BadMelonDataContext db)
         {
             _db = db;
         }
 
         // GET: api/database/migrate
-        [HttpGet]
+        [HttpGet("migrate")]
         public async Task<string> Get()
         {
             try
@@ -43,7 +43,7 @@ namespace BadMelon.API.Controllers
             }
         }
 
-        [Route("seed")]
+        [Route("migrate/seed")]
         [HttpGet]
         public async Task<string> Seed()
         {
@@ -92,6 +92,14 @@ namespace BadMelon.API.Controllers
             catch (Exception) { return "Cannot write to database. Contact an administrator."; }
 
             return "Data seeded successfuly.";
+        }
+
+        [HttpDelete]
+        public async Task<string> Delete()
+        {
+            await _db.Database.EnsureDeletedAsync();
+            await _db.Database.MigrateAsync();
+            return await Seed();
         }
     }
 }
