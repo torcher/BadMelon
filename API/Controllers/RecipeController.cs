@@ -1,5 +1,7 @@
-﻿using BadMelon.API.Services;
-using BadMelon.RecipeMath;
+﻿using BadMelon.API.DTOs;
+using BadMelon.API.Extensions;
+using BadMelon.API.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -27,7 +29,21 @@ namespace BadMelon.API.Controllers
         [HttpGet("{id}")]
         public async Task<Recipe> Get(Guid id)
         {
-            return await _recipes.GetRecipeByID(id);
+            var recipe = await _recipes.GetRecipeByID(id);
+            if (recipe == null)
+                HttpContext.SetResponseNotFound();
+            return recipe;
+        }
+
+        [HttpPost]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> Post(Recipe recipe)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.ConvertToDTO());
+
+            var newRecipe = await _recipes.AddRecipe(recipe);
+            return Ok(newRecipe);
         }
     }
 }

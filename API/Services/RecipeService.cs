@@ -1,14 +1,15 @@
-﻿using System;
+﻿using BadMelon.API.DTOs;
+using BadMelon.Data.Repos;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BadMelon.Data.Repos;
-using BadMelon.RecipeMath;
 
 namespace BadMelon.API.Services
 {
     public class RecipeService : IRecipeService
     {
         private readonly IRecipeRepo _recipeRepo;
+
         public RecipeService(IRecipeRepo recipeRepo)
         {
             _recipeRepo = recipeRepo;
@@ -16,13 +17,19 @@ namespace BadMelon.API.Services
 
         public async Task<Recipe[]> GetRecipes()
         {
-            return (await _recipeRepo.GetAll())
-                .ConvertToDomain()
+            return (await _recipeRepo.Get())
+                .ConvertToDTOs()
                 .ToArray();
         }
+
         public async Task<Recipe> GetRecipeByID(Guid ID)
         {
-            return (await _recipeRepo.GetOne(ID))?.ConvertToDomain();
+            return (await _recipeRepo.Get(ID))?.ConvertToDTO();
+        }
+
+        public async Task<Recipe> AddRecipe(Recipe recipe)
+        {
+            return (await _recipeRepo.AddRecipe(recipe.ConvertFromDTO())).ConvertToDTO();
         }
     }
 }

@@ -5,10 +5,12 @@ namespace BadMelon.RecipeMath
 {
     public class IngredientType : IEquatable<IngredientType>
     {
+        public Guid ID { get; set; }
         public string Name { get; private set; }
 
-        public IngredientType()
+        public IngredientType(Guid id, string name) : this(name)
         {
+            ID = id;
         }
 
         public IngredientType(string name)
