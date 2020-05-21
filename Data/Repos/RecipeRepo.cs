@@ -1,28 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using BadMelon.Data.Entities;
+﻿using BadMelon.Data.Entities;
+using BadMelon.Data.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace BadMelon.Data.Repos
 {
     public class RecipeRepo : IRecipeRepo
     {
         private readonly BadMelonDataContext _db;
+
         public RecipeRepo(BadMelonDataContext db)
         {
             _db = db;
         }
 
-        public async Task<Recipe> GetOne(Guid ID)
+        public async Task<Recipe> Get(Guid ID)
         {
-            return await _db.Recipes.SingleOrDefaultAsync(recipe => recipe.ID == ID);
+            return await _db.Recipes
+                .Include(i => i.Ingredients)
+                .ThenInclude(t => t.IngredientType)
+                .Include(s => s.Steps)
+                .SingleOrDefaultAsync(recipe => recipe.ID == ID);
         }
 
-        public async Task<Recipe[]> GetAll()
+        public async Task<Recipe[]> Get()
         {
-            return await _db.Recipes.ToArrayAsync();
+            return await _db.Recipes
+                .Include(I => I.Ingredients)
+                .ThenInclude(IT => IT.IngredientType)
+                .ToArrayAsync();
+        }
+
+        public async Task<Recipe> AddRecipe(Recipe recipe)
+        {
+            recipe.ID = Guid.NewGuid();
+            foreach (var i in recipe.Ingredients) i.ID = Guid.NewGuid();
+            foreach (var s in recipe.Steps) s.ID = Guid.NewGuid();
+
+            try
+            {
+                await _db.Recipes.AddAsync(recipe);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new RepoException(e.Message, e.InnerException);
+            }
+
+            return await Get(recipe.ID);
         }
     }
 }

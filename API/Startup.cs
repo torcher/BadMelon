@@ -35,8 +35,10 @@ namespace BadMelon.API
                     .UseNpgsql(dbConnectionString));
 
             services.AddTransient<IRecipeRepo, RecipeRepo>();
+            services.AddTransient<IIngredientTypeRepo, IngredientTypeRepo>();
 
             services.AddTransient<IRecipeService, RecipeService>();
+            services.AddTransient<IIngredientTypeService, IngredientTypeService>();
 
             services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
