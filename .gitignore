@@ -5,8 +5,7 @@ node_modules
 **/bin/Debug/
 **/bin/Release
 obj/
-*/.vs
-/.vs
+.vs/
 
 /BadMelon.API/bin/*
 /BadMelon.API/obj/*
