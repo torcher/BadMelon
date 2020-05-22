@@ -1,6 +1,7 @@
 ﻿using BadMelon.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BadMelon.Tests.Data
 {
@@ -58,6 +59,26 @@ namespace BadMelon.Tests.Data
             });
 
             _Recipes = new List<Recipe> { hotWater, coldWater };
+        }
+
+        public Recipe NewRecipe
+        {
+            get
+            {
+                var ingredientType = IngredientTypes.First();
+                return new Recipe
+                {
+                    Name = "New Recipe",
+                    Ingredients = new List<Ingredient>
+                    {
+                        new Ingredient{ IngredientTypeID = ingredientType.ID, Weight = 1d}
+                    },
+                    Steps = new List<Step>
+                    {
+                        new Step { Order = 1, Text = "New Step", CookTime = new TimeSpan(0, 1, 0), PrepTime = new TimeSpan(0, 1, 0) }
+                    }
+                };
+            }
         }
     }
 }

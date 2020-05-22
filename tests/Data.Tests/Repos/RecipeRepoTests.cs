@@ -48,8 +48,19 @@ namespace BadMelon.Tests.Data.Repos
             Assert.True(recipe == null, "Recipe with random GUID should not be found");
         }
 
+        [Fact]
+        public async Task Post_WhenRecipeIDIsSet_ExpectIDReset()
+        {
+            var newRecipe = dataSamples.NewRecipe;
+            var newGuid = Guid.NewGuid();
+            newRecipe.ID = newGuid;
+            var createdRecipe = await recipeRepo.AddRecipe(newRecipe);
+            Assert.True(createdRecipe != null, "Created Recipe should not be null");
+            Assert.True(createdRecipe.ID != newGuid, "Created Recipe should have new ID");
+            ValidateRecipe(createdRecipe);
+        }
+
         //TODO: Fill out these tests
-        //Add - ID is set - ID is reset
         //Add - Name is too long - Error thrown
         //Add - No ingredients - Error thrown
         //Add - Invalid ingredient - Error thrown
