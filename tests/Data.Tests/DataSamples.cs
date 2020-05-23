@@ -80,5 +80,16 @@ namespace BadMelon.Tests.Data
                 };
             }
         }
+
+        public IngredientType NewIngredientType
+        {
+            get
+            {
+                return new IngredientType
+                {
+                    Name = "Strawberry"
+                };
+            }
+        }
     }
 }

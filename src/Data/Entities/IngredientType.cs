@@ -4,7 +4,8 @@ namespace BadMelon.Data.Entities
 {
     public class IngredientType : Entity
     {
-        [StringLength(250, MinimumLength = 1, ErrorMessage = "Name must be 1 to 250 characters long")]
+        [Required]
+        [StringLength(250)]
         public string Name { get; set; }
     }
 }

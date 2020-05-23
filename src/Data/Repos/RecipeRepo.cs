@@ -34,6 +34,11 @@ namespace BadMelon.Data.Repos
 
         public async Task<Recipe> AddRecipe(Recipe recipe)
         {
+            if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
+                throw new RepoException("Cannot add recipe without an Ingredient");
+            if (recipe.Steps == null || recipe.Steps.Count == 0)
+                throw new RepoException("Cannot add recipe without a Step");
+
             recipe.ID = Guid.NewGuid();
             foreach (var i in recipe.Ingredients) i.ID = Guid.NewGuid();
             foreach (var s in recipe.Steps) s.ID = Guid.NewGuid();
