@@ -15,4 +15,4 @@ BadMelon consists of 4 main projects built with .Net Core, Vue and Postgres.
 - RecipeMath: Contains the models and logic for comparing and manipulating recipes and other ingredient containers
 
 ### Tests
-Unit test projects are available. The intension is to have over 90% code coverage with these tests.
+Unit test projects are built on xUnit. The intension is to have over 90% code coverage with these tests.
