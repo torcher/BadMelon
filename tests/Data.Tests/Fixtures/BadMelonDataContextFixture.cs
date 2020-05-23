@@ -27,5 +27,11 @@ namespace BadMelon.Tests.Data.Fixtures
             BadMelonDataContext.Recipes.AddRange(recipes);
             BadMelonDataContext.SaveChanges();
         }
+
+        public void WithIngredientTypes(IEnumerable<IngredientType> ingredientTypes)
+        {
+            BadMelonDataContext.IngredientTypes.AddRange(ingredientTypes);
+            BadMelonDataContext.SaveChanges();
+        }
     }
 }

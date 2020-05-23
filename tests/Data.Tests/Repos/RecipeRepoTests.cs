@@ -1,4 +1,5 @@
 ﻿using BadMelon.Data.Entities;
+using BadMelon.Data.Exceptions;
 using BadMelon.Data.Repos;
 using BadMelon.Tests.Data.Fixtures;
 using System;
@@ -60,12 +61,21 @@ namespace BadMelon.Tests.Data.Repos
             ValidateRecipe(createdRecipe);
         }
 
-        //TODO: Fill out these tests
-        //Add - Name is too long - Error thrown
-        //Add - No ingredients - Error thrown
-        //Add - Invalid ingredient - Error thrown
-        //Add - No steps - Error thrown
-        //Add - Invalid steps - Error thrown
+        [Fact]
+        public async Task Post_WhenRecipeMissingIngredients_ExpectExcecption()
+        {
+            var newRecipe = dataSamples.NewRecipe;
+            newRecipe.Ingredients = null;
+            await Assert.ThrowsAsync<RepoException>(() => recipeRepo.AddRecipe(newRecipe));
+        }
+
+        [Fact]
+        public async Task Post_WhenRecipeMissingSteps_ExpectExcecption()
+        {
+            var newRecipe = dataSamples.NewRecipe;
+            newRecipe.Steps = null;
+            await Assert.ThrowsAsync<RepoException>(() => recipeRepo.AddRecipe(newRecipe));
+        }
 
         private void ValidateRecipe(Recipe recipe)
         {

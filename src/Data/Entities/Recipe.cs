@@ -5,6 +5,7 @@ namespace BadMelon.Data.Entities
 {
     public class Recipe : Entity
     {
+        [Required]
         [StringLength(100)]
         public string Name { get; set; }
 
