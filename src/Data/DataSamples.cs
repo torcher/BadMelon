@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BadMelon.Tests.Data
+namespace BadMelon.Data
 {
     public class DataSamples
     {

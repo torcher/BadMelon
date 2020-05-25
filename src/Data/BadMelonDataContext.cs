@@ -1,5 +1,6 @@
 ﻿using BadMelon.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace BadMelon.Data
 {
@@ -17,5 +18,14 @@ namespace BadMelon.Data
         public virtual DbSet<IngredientType> IngredientTypes { get; set; }
         public virtual DbSet<Ingredient> Ingredients { get; set; }
         public virtual DbSet<Step> Steps { get; set; }
+
+        public async Task Seed()
+        {
+            await Database.EnsureCreatedAsync();
+            var data = new DataSamples();
+            await IngredientTypes.AddRangeAsync(data.IngredientTypes);
+            await Recipes.AddRangeAsync(data.Recipes);
+            await SaveChangesAsync();
+        }
     }
 }

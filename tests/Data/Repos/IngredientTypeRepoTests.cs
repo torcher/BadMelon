@@ -1,4 +1,5 @@
-﻿using BadMelon.Data.Entities;
+﻿using BadMelon.Data;
+using BadMelon.Data.Entities;
 using BadMelon.Data.Repos;
 using BadMelon.Tests.Data.Fixtures;
 using System;
@@ -16,7 +17,7 @@ namespace BadMelon.Tests.Data.Repos
         public IngredientTypeRepoTests()
         {
             dataSamples = new DataSamples();
-            WithIngredientTypes(dataSamples.IngredientTypes);
+            WithSeedData();
             ingredientTypeRepo = new IngredientTypeRepo(BadMelonDataContext);
         }
 

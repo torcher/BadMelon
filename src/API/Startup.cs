@@ -10,30 +10,46 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
+using System.IO;
 
 namespace BadMelon.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        private IHostingEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbConnectionString = Configuration.GetConnectionString("Default");
-            if (string.IsNullOrEmpty(dbConnectionString))
+            if (Environment.IsEnvironment("Testing"))
             {
-                throw new Exception("Database connection could not be found.");
-            }
-
-            services.AddDbContext<BadMelonDataContext>(options =>
+                File.Delete("Tests.db");
+                services.AddDbContext<BadMelonDataContext>(options =>
+                {
                     options
                     .UseLazyLoadingProxies()
-                    .UseNpgsql(dbConnectionString));
+                    .UseSqlite(@"Data Source=Tests.db;");
+                });
+            }
+            else
+            {
+                var dbConnectionString = Configuration.GetConnectionString("Default");
+                if (string.IsNullOrEmpty(dbConnectionString))
+                {
+                    throw new Exception("Database connection could not be found.");
+                }
+
+                services.AddDbContext<BadMelonDataContext>(options =>
+                        options
+                        .UseLazyLoadingProxies()
+                        .UseNpgsql(dbConnectionString));
+            }
 
             services.AddTransient<IRecipeRepo, RecipeRepo>();
             services.AddTransient<IIngredientTypeRepo, IngredientTypeRepo>();

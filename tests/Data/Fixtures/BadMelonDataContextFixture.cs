@@ -1,8 +1,6 @@
 ﻿using BadMelon.Data;
-using BadMelon.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 
 namespace BadMelon.Tests.Data.Fixtures
 {
@@ -22,16 +20,9 @@ namespace BadMelon.Tests.Data.Fixtures
             BadMelonDataContext.Dispose();
         }
 
-        public void WithRecipes(IEnumerable<Recipe> recipes)
+        public void WithSeedData()
         {
-            BadMelonDataContext.Recipes.AddRange(recipes);
-            BadMelonDataContext.SaveChanges();
-        }
-
-        public void WithIngredientTypes(IEnumerable<IngredientType> ingredientTypes)
-        {
-            BadMelonDataContext.IngredientTypes.AddRange(ingredientTypes);
-            BadMelonDataContext.SaveChanges();
+            BadMelonDataContext.Seed().Wait();
         }
     }
 }

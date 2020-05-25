@@ -1,4 +1,5 @@
-﻿using BadMelon.Data.Entities;
+﻿using BadMelon.Data;
+using BadMelon.Data.Entities;
 using BadMelon.Data.Exceptions;
 using BadMelon.Data.Repos;
 using BadMelon.Tests.Data.Fixtures;
@@ -17,7 +18,7 @@ namespace BadMelon.Tests.Data.Repos
         public RecipeRepoTests()
         {
             dataSamples = new DataSamples();
-            WithRecipes(dataSamples.Recipes);
+            WithSeedData();
             recipeRepo = new RecipeRepo(BadMelonDataContext);
         }
 
