@@ -71,7 +71,7 @@ namespace BadMelon.Data
                     Name = "New Recipe",
                     Ingredients = new List<Ingredient>
                     {
-                        new Ingredient{ IngredientTypeID = ingredientType.ID, Weight = 1d}
+                        new Ingredient{ IngredientType = ingredientType, IngredientTypeID = ingredientType.ID, Weight = 1d}
                     },
                     Steps = new List<Step>
                     {
@@ -79,6 +79,11 @@ namespace BadMelon.Data
                     }
                 };
             }
+        }
+
+        public void AddNewRecipeToStorage()
+        {
+            _Recipes.Add(NewRecipe);
         }
 
         public IngredientType NewIngredientType
@@ -90,6 +95,11 @@ namespace BadMelon.Data
                     Name = "Strawberry"
                 };
             }
+        }
+
+        public void AddNewIngredientTypeToStorage()
+        {
+            _IngredientTypes.Add(NewIngredientType);
         }
     }
 }

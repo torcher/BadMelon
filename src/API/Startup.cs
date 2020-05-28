@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
-using System.IO;
 
 namespace BadMelon.API
 {
@@ -25,19 +24,9 @@ namespace BadMelon.API
         public IConfiguration Configuration { get; }
         private IHostingEnvironment Environment { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
-            if (Environment.IsEnvironment("Testing"))
-            {
-                File.Delete("Tests.db");
-                services.AddDbContext<BadMelonDataContext>(options =>
-                {
-                    options
-                    .UseLazyLoadingProxies()
-                    .UseSqlite(@"Data Source=Tests.db;");
-                });
-            }
-            else
+            if (!Environment.IsEnvironment("Testing"))
             {
                 var dbConnectionString = Configuration.GetConnectionString("Default");
                 if (string.IsNullOrEmpty(dbConnectionString))
@@ -49,6 +38,8 @@ namespace BadMelon.API
                         options
                         .UseLazyLoadingProxies()
                         .UseNpgsql(dbConnectionString));
+
+                services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             }
 
             services.AddTransient<IRecipeRepo, RecipeRepo>();
@@ -56,8 +47,6 @@ namespace BadMelon.API
 
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<IIngredientTypeService, IngredientTypeService>();
-
-            services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddApiVersioning(config =>
             {
@@ -75,9 +64,9 @@ namespace BadMelon.API
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
+            app.UseExceptionHandler("/api/error");
 
             app.UseHttpsRedirection();
 

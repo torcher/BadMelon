@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BadMelon.API.DTOs
 {
@@ -6,6 +7,8 @@ namespace BadMelon.API.DTOs
     {
         public Guid ID { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Must include an Ingredient Type Name")]
+        [StringLength(250, ErrorMessage = "Ingredient Type Name cannot be longer than 250 characters")]
         public string Name { get; set; }
     }
 }
