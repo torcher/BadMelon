@@ -1,4 +1,7 @@
-﻿namespace BadMelon.RecipeMath
+﻿using BadMelon.Exceptions;
+using System;
+
+namespace BadMelon.Data.Domain
 {
     public class Ingredient
     {
@@ -35,12 +38,13 @@
         public static Ingredient operator -(Ingredient a, Ingredient b)
         {
             CheckType(a, b);
-            return new Ingredient(a.Weight - b.Weight, a.Type);
+            double newWeight = a.Weight - b.Weight;
+            return new Ingredient(newWeight < 0d ? 0d : newWeight, a.Type);
         }
 
         public static bool operator ==(Ingredient a, Ingredient b)
         {
-            if (!SafeCheckType(a, b)) return false;
+            if (!CheckTypeSafe(a, b)) return false;
             return a.Weight == b.Weight;
         }
 
@@ -48,13 +52,13 @@
 
         public static bool operator >(Ingredient a, Ingredient b)
         {
-            if (!SafeCheckType(a, b)) return false;
+            if (!CheckTypeSafe(a, b)) return false;
             return a.Weight > b.Weight;
         }
 
         public static bool operator <(Ingredient a, Ingredient b)
         {
-            if (!SafeCheckType(a, b)) return false;
+            if (!CheckTypeSafe(a, b)) return false;
             return a.Weight < b.Weight;
         }
 
@@ -64,12 +68,18 @@
 
         private static void CheckType(Ingredient a, Ingredient b)
         {
-            if (a.Type != b.Type) throw new IngredientMismatchException($"Cannot convert {a.Type.Name} to {b.Type.Name}");
+            if (a is null || b is null)
+                throw new ArgumentNullException("One of the arguments of CheckType is null");
+            if (a is null || b is null || a.Type != b.Type) throw new IngredientMismatchException($"Cannot convert {a?.Type?.Name} to {b?.Type?.Name}");
         }
 
-        private static bool SafeCheckType(Ingredient a, Ingredient b)
+        private static bool CheckTypeSafe(Ingredient a, Ingredient b)
         {
-            try { CheckType(a, b); }
+            try
+            {
+                CheckType(a, b);
+            }
+            catch (ArgumentNullException) { return false; }
             catch (IngredientMismatchException) { return false; }
             return true;
         }

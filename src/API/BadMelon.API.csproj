@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\BadMelon.Data.csproj" />
-    <ProjectReference Include="..\RecipeMath\BadMelon.RecipeMath.csproj" />
   </ItemGroup>
 
 

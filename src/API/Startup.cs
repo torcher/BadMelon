@@ -1,6 +1,6 @@
-using BadMelon.API.Services;
 using BadMelon.Data;
 using BadMelon.Data.Repos;
+using BadMelon.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

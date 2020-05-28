@@ -1,8 +1,8 @@
-﻿using BadMelon.API.DTOs;
+﻿using BadMelon.Data.DTOs;
 using System;
 using System.Threading.Tasks;
 
-namespace BadMelon.API.Services
+namespace BadMelon.Data.Services
 {
     public interface IIngredientTypeService
     {

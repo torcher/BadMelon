@@ -1,4 +1,4 @@
-﻿namespace BadMelon.RecipeMath
+﻿namespace BadMelon.Data.Domain
 {
     public interface IIngredientContainer
     {

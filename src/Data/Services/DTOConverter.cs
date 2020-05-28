@@ -1,9 +1,9 @@
-﻿using BadMelon.API.DTOs;
+﻿using BadMelon.Data.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BadMelon.API.Services
+namespace BadMelon.Data.Services
 {
     public static class DTOConverter
     {

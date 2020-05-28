@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BadMelon.RecipeMath.Extensions
+namespace BadMelon.Data.Extensions
 {
     public static class TimeSpanExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BadMelon.RecipeMath
+namespace BadMelon.Data.Domain
 {
     public abstract class IngredientContainer : IIngredientContainer
     {

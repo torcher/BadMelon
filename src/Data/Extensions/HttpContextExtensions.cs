@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace BadMelon.API.Extensions
+namespace BadMelon.Data.Extensions
 {
     public static class HttpContextExtensions
     {

@@ -1,5 +1,5 @@
-﻿using BadMelon.API.DTOs;
-using BadMelon.API.Services;
+﻿using BadMelon.Data.DTOs;
+using BadMelon.Data.Services;
 using BadMelon.Tests.API.Data;
 using BadMelon.Tests.API.Fixtures;
 using Newtonsoft.Json;

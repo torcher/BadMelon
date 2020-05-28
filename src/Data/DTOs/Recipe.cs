@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BadMelon.API.DTOs
+namespace BadMelon.Data.DTOs
 {
     public class Recipe
     {

@@ -1,10 +1,10 @@
-﻿using BadMelon.API.DTOs;
+﻿using BadMelon.Data.DTOs;
 using BadMelon.Data.Repos;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BadMelon.API.Services
+namespace BadMelon.Data.Services
 {
     public class RecipeService : IRecipeService
     {

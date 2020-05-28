@@ -1,4 +1,4 @@
-﻿using BadMelon.API.DTOs;
+﻿using BadMelon.Data.DTOs;
 using System;
 using System.Collections;
 using System.Collections.Generic;

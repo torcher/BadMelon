@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BadMelon.RecipeMath
+namespace BadMelon.Exceptions
 {
     public class IngredientMismatchException : Exception
     {
@@ -12,5 +12,4 @@ namespace BadMelon.RecipeMath
         {
         }
     }
-
 }

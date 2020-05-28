@@ -1,8 +1,8 @@
-﻿using BadMelon.RecipeMath.Extensions;
+﻿using BadMelon.Data.Extensions;
 using System;
 using System.Text.Json.Serialization;
 
-namespace BadMelon.RecipeMath
+namespace BadMelon.Data.Domain
 {
     public class Step
     {
