@@ -18,7 +18,7 @@ namespace BadMelon.Tests.API
 
         public TestStartup(IConfiguration configuration, IHostingEnvironment environment) : base(configuration, environment)
         {
-            _dbName = DateTime.Now.Ticks.ToString() + ".db";
+            _dbName = "Test.db";
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,6 +1,4 @@
 ﻿using BadMelon.Data;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using System.Net.Http;
 
@@ -14,12 +12,12 @@ namespace BadMelon.Tests.API.Fixtures
 
         public ControllerTestsFixture()
         {
-            testServer = new TestServer(WebHost.CreateDefaultBuilder().UseStartup<TestStartup>().UseEnvironment("Testing"));
+            testServer = TestServerFactory.TestServer;
             _http = testServer.CreateClient();
 
             dataSamples = new DataSamples();
 
-            _http.GetAsync("api/database/seed").Wait();
+            _http.DeleteAsync("api/database").Wait();
         }
     }
 }
