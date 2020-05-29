@@ -23,7 +23,7 @@ namespace BadMelon.Tests.Data.Repos
         }
 
         [Fact]
-        public async Task Get_WhenGetAll_ExpectAllPropertiesAndJoins()
+        public async Task Get_WhenNoParams_ExpectAllRecipes()
         {
             var recipes = await recipeRepo.Get();
 
@@ -44,14 +44,13 @@ namespace BadMelon.Tests.Data.Repos
         }
 
         [Fact]
-        public async Task Get_WhenRecipeDoestExist_ExpectNull()
+        public async Task Get_WhenRecipeDoestExist_ExpectException()
         {
-            var recipe = await recipeRepo.Get(Guid.NewGuid());
-            Assert.True(recipe == null, "Recipe with random GUID should not be found");
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.Get(Guid.NewGuid()));
         }
 
         [Fact]
-        public async Task Post_WhenRecipeIDIsSet_ExpectIDReset()
+        public async Task Add_WhenRecipeIDIsSet_ExpectIDReset()
         {
             var newRecipe = dataSamples.NewRecipe;
             var newGuid = Guid.NewGuid();
@@ -63,7 +62,7 @@ namespace BadMelon.Tests.Data.Repos
         }
 
         [Fact]
-        public async Task Post_WhenRecipeMissingIngredients_ExpectExcecption()
+        public async Task Add_WhenRecipeMissingIngredients_ExpectExcecption()
         {
             var newRecipe = dataSamples.NewRecipe;
             newRecipe.Ingredients = null;
@@ -71,11 +70,45 @@ namespace BadMelon.Tests.Data.Repos
         }
 
         [Fact]
-        public async Task Post_WhenRecipeMissingSteps_ExpectExcecption()
+        public async Task Add_WhenRecipeMissingSteps_ExpectExcecption()
         {
             var newRecipe = dataSamples.NewRecipe;
             newRecipe.Steps = null;
             await Assert.ThrowsAsync<RepoException>(() => recipeRepo.AddRecipe(newRecipe));
+        }
+
+        [Fact]
+        public async Task AddIngredient_WhenValid_ExpectSuccess()
+        {
+            var recipes = await recipeRepo.Get();
+            var startIngredientCount = recipes.First().Ingredients.Count;
+            var newIngredient = dataSamples.NewIngredient;
+            var updatedRecipe = await recipeRepo.AddIngredientToRecipe(recipes.First().ID, newIngredient);
+            Assert.NotNull(updatedRecipe);
+            Assert.True(updatedRecipe.Ingredients.Count == startIngredientCount + 1, "There should be one new ingredient");
+        }
+
+        [Fact]
+        public async Task AddIngredient_WhenRecipeMissing_ExpectExeption()
+        {
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), dataSamples.NewIngredient));
+        }
+
+        [Fact]
+        public async Task AddIngredient_WhenIngredientTypeMissing_ExpectExeption()
+        {
+            var newIngredient = dataSamples.NewIngredient;
+            newIngredient.IngredientType = null;
+            newIngredient.IngredientTypeID = Guid.Empty;
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), dataSamples.NewIngredient));
+        }
+
+        [Fact]
+        public async Task AddIngredient_WhenIngredientInvalid_ExpectException()
+        {
+            var newIngredient = dataSamples.NewIngredient;
+            newIngredient.Weight = -1d;
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), dataSamples.NewIngredient));
         }
 
         private void ValidateRecipe(Recipe recipe)
