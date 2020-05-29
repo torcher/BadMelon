@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using BadMelon.Data.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
@@ -16,7 +17,7 @@ namespace BadMelon.API.Controllers
             var error = HttpContext
                       .Features
                       .Get<IExceptionHandlerFeature>();
-
+            int statusCode = 500;
             if (error != null)
             {
                 var exception = error.Error;
@@ -30,9 +31,12 @@ namespace BadMelon.API.Controllers
                     sw.WriteLine("Stack: " + exception.StackTrace);
                     sw.WriteLine("*******************************************************");
                 }
+
+                if (exception is EntityNotFoundException)
+                    statusCode = 404;
             }
 
-            return StatusCode(500);
+            return StatusCode(statusCode);
         }
     }
 }
