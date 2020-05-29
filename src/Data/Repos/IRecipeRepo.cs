@@ -11,5 +11,17 @@ namespace BadMelon.Data.Repos
         Task<Recipe> Get(Guid ID);
 
         Task<Recipe> AddRecipe(Recipe recipe);
+
+        Task<Recipe> UpdateRecipe(Recipe recipe);
+
+        Task DeleteRecipe(Guid recipeId);
+
+        Task DeleteRecipe(Recipe recipe);
+
+        Task<Recipe> AddIngredientToRecipe(Guid recipeId, Ingredient ingredient);
+
+        Task<Recipe> RemoveIngredientFromRecipe(Guid recipeId, Guid ingredientId);
+
+        Task<Recipe> UpdateIngredientInRecipe(Guid recipeId, Ingredient ingredient);
     }
 }
