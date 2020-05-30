@@ -1,3 +1,4 @@
+using BadMelon.API.Helpers;
 using BadMelon.Data;
 using BadMelon.Data.Repos;
 using BadMelon.Data.Services;
@@ -66,7 +67,7 @@ namespace BadMelon.API
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseExceptionHandler("/api/error");
+            app.UseBadMelonErrorHandler();
 
             app.UseHttpsRedirection();
 
