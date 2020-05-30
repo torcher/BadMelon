@@ -92,8 +92,14 @@ namespace BadMelon.Data.Repos
 
         public async Task<Recipe> AddIngredientToRecipe(Guid recipeId, Ingredient ingredient)
         {
+            if (recipeId == Guid.Empty) throw new ArgumentNullException("recipeId");
+            if (ingredient == null) throw new ArgumentNullException("ingredient");
+
             var recipe = await _db.Recipes.SingleOrDefaultAsync(r => r.ID == recipeId);
             if (recipe == null) throw new EntityNotFoundException("Could not find recipe of id " + recipeId);
+
+            var ingredientType = await _db.IngredientTypes.SingleOrDefaultAsync(it => it.ID == ingredient.IngredientTypeID);
+            if (ingredientType == null) throw new EntityNotFoundException("Could not find ingredient type of id " + ingredient.IngredientTypeID);
 
             try
             {

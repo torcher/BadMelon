@@ -45,5 +45,35 @@ namespace BadMelon.API.Controllers
             var newRecipe = await _recipes.AddRecipe(recipe);
             return Ok(newRecipe);
         }
+
+        [HttpPost("{id}/ingredients")]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> PostIngredient(Guid id, Ingredient ingredient)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.ConvertToDTO());
+            var updatedRecipe = await _recipes.AddIngredientToRecipe(id, ingredient);
+            return Ok(updatedRecipe);
+        }
+
+        [HttpPut("{id}/ingredients")]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> PutIngredient(Guid id, Ingredient ingredient)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.ConvertToDTO());
+            var updatedRecipe = await _recipes.UpdateIngredientInRecipe(id, ingredient);
+            return Ok(updatedRecipe);
+        }
+
+        [HttpDelete("{id}/ingredients/{ingredientId}")]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> DeleteIngredient(Guid id, Guid ingredientId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.ConvertToDTO());
+            await _recipes.DeleteIngredientInRecipe(id, ingredientId);
+            return NoContent();
+        }
     }
 }

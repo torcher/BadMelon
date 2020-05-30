@@ -93,6 +93,72 @@ namespace BadMelon.Tests.API.Controllers
             Assert.True((int)response.StatusCode == statusCodeExpected, "Status code should be " + statusCodeExpected + " but was " + (int)response.StatusCode);
         }
 
+        [Fact]
+        public async Task Post_RecipeIngredient_ExpectRecipe()
+        {
+            var getAllRecipesResponse = await _http.GetAsync("api/recipe");
+            getAllRecipesResponse.EnsureSuccessStatusCode();
+            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var oldRecipe = allRecipes.First();
+            var oldIngredient = oldRecipe.Ingredients.First();
+
+            var newIngredient = new Ingredient { Weight = 2d, TypeID = oldIngredient.TypeID };
+            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
+            updatedRecipeResponse.EnsureSuccessStatusCode();
+            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+
+            Assert.NotNull(updatedRecipe);
+            Assert.True(oldRecipe.Ingredients.Count + 1 == updatedRecipe.Ingredients.Count, "Ingredient count should be increased by 1");
+            Assert.True(oldIngredient.TypeID == updatedRecipe.Ingredients.First().TypeID, "Type should be the same");
+        }
+
+        [Fact]
+        public async Task Post_RecipeIngredient_WhenRecipeMissing_ExpectNotFound()
+        {
+            var getAllRecipesResponse = await _http.GetAsync("api/recipe");
+            getAllRecipesResponse.EnsureSuccessStatusCode();
+            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var oldRecipe = allRecipes.First();
+            var oldIngredient = oldRecipe.Ingredients.First();
+
+            var newIngredient = new Ingredient { Weight = 2d, TypeID = oldIngredient.TypeID };
+            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{Guid.NewGuid()}/ingredients", body);
+            Assert.True(updatedRecipeResponse.StatusCode == System.Net.HttpStatusCode.NotFound, "Should be not found");
+        }
+
+        [Fact]
+        public async Task Post_RecipeIngredient_WhenIngredientTypeMissing_ExpectNotFound()
+        {
+            var getAllRecipesResponse = await _http.GetAsync("api/recipe");
+            getAllRecipesResponse.EnsureSuccessStatusCode();
+            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var oldRecipe = allRecipes.First();
+            var oldIngredient = oldRecipe.Ingredients.First();
+
+            var newIngredient = new Ingredient { Weight = 2d, TypeID = Guid.NewGuid() };
+            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
+            var c = await updatedRecipeResponse.Content.ReadAsStringAsync();
+            Assert.True(updatedRecipeResponse.StatusCode == System.Net.HttpStatusCode.NotFound, "Should be not found");
+        }
+
+        [Fact]
+        public async Task Post_RecipeIngredient_BadWhenIngredient_ExpectBadRequest()
+        {
+            var getAllRecipesResponse = await _http.GetAsync("api/recipe");
+            getAllRecipesResponse.EnsureSuccessStatusCode();
+            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var oldRecipe = allRecipes.First();
+            var oldIngredient = oldRecipe.Ingredients.First();
+
+            var newIngredient = new Ingredient { Weight = -2d, TypeID = oldIngredient.TypeID };
+            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
+            Assert.True(updatedRecipeResponse.StatusCode == System.Net.HttpStatusCode.BadRequest, "Should be bad request");
+        }
+
         private void ValidateRecipe(Recipe recipe)
         {
             Assert.False(recipe.ID == Guid.Empty, "Recipe ID cannot be empty");

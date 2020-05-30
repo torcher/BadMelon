@@ -7,12 +7,12 @@ namespace BadMelon.Data.Services
 {
     public static class DTOConverter
     {
-        public static Recipe[] ConvertToDTOs(this Data.Entities.Recipe[] recipes)
+        public static Recipe[] ConvertToDTOs(this Entities.Recipe[] recipes)
         {
             return recipes.Select(recipe => recipe.ConvertToDTO()).ToArray();
         }
 
-        public static Recipe ConvertToDTO(this Data.Entities.Recipe recipe)
+        public static Recipe ConvertToDTO(this Entities.Recipe recipe)
         {
             List<Ingredient> ingredients = recipe.Ingredients
                                                 .Select(i => new Ingredient
@@ -36,9 +36,9 @@ namespace BadMelon.Data.Services
             return new Recipe { ID = recipe.ID, Name = recipe.Name, Ingredients = ingredients, Steps = steps };
         }
 
-        public static Data.Entities.Recipe ConvertFromDTO(this Recipe recipe)
+        public static Entities.Recipe ConvertFromDTO(this Recipe recipe)
         {
-            return new Data.Entities.Recipe
+            return new Entities.Recipe
             {
                 ID = recipe.ID,
                 Name = recipe.Name,
@@ -60,7 +60,28 @@ namespace BadMelon.Data.Services
 
         public static Data.Entities.IngredientType ConvertFromDTO(this IngredientType ingredientType)
         {
-            return new Data.Entities.IngredientType { ID = ingredientType.ID, Name = ingredientType.Name };
+            return new Entities.IngredientType { ID = ingredientType.ID, Name = ingredientType.Name };
+        }
+
+        public static Ingredient ConvertToDTO(this Entities.Ingredient ingredient)
+        {
+            return new Ingredient
+            {
+                ID = ingredient.ID,
+                Weight = ingredient.Weight,
+                TypeID = ingredient.IngredientType.ID,
+                Type = ingredient.IngredientType.Name
+            };
+        }
+
+        public static Entities.Ingredient ConvertFromDTO(this Ingredient ingredient)
+        {
+            return new Entities.Ingredient
+            {
+                ID = ingredient.ID,
+                IngredientTypeID = ingredient.TypeID,
+                Weight = ingredient.Weight
+            };
         }
 
         public static ModelState ConvertToDTO(this Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary state)
