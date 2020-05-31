@@ -17,7 +17,9 @@ namespace BadMelon.Data.Repos
 
         public async Task<IngredientType> Get(Guid id)
         {
-            return await _db.IngredientTypes.SingleOrDefaultAsync(it => it.ID == id);
+            var ingredientType = await _db.IngredientTypes.SingleOrDefaultAsync(it => it.ID == id);
+            if (ingredientType == null) throw new EntityNotFoundException("Could not find ingredient type");
+            return ingredientType;
         }
 
         public async Task<IngredientType[]> Get()

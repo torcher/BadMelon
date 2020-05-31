@@ -52,7 +52,7 @@ namespace BadMelon.Tests.API.Controllers
             var getOneResponse = await _http.GetAsync("api/ingredienttype/" + Guid.NewGuid());
             Assert.True(getOneResponse.StatusCode == System.Net.HttpStatusCode.NotFound, "Should not be able to find random Ingredient Type");
             var content = await getOneResponse.Content.ReadAsStringAsync();
-            Assert.True(string.IsNullOrEmpty(content), "Response should be empty");
+            Assert.True(content == "{\"Message\":\"Could not find ingredient type\"}", "Response should be 'Could not find ingredient type'");
         }
 
         [Fact]
@@ -62,12 +62,13 @@ namespace BadMelon.Tests.API.Controllers
             getallResponse.EnsureSuccessStatusCode();
             var ingredientTypes = JsonConvert.DeserializeObject<IngredientType[]>(await getallResponse.Content.ReadAsStringAsync());
 
-            var newIngredientType = dataSamples.NewIngredientType.ConvertToDTO();
+            var newIngredientType = new IngredientTypeFixture("uranium").Build();
             var newRecipeJson = JsonConvert.SerializeObject(newIngredientType);
             var requestBody = new StringContent(newRecipeJson, Encoding.UTF8, "application/json");
             var response = await _http.PostAsync("api/ingredientType", requestBody);
             response.EnsureSuccessStatusCode();
-            dataSamples.AddNewIngredientTypeToStorage();
+            var newIngredientReturned = JsonConvert.DeserializeObject<IngredientType>(await response.Content.ReadAsStringAsync());
+            dataSamples.AddIngredientTypeToStorage(newIngredientReturned.ConvertFromDTO());
 
             var updatedIngredientTypesResponse = await _http.GetAsync("api/ingredientType");
             updatedIngredientTypesResponse.EnsureSuccessStatusCode();
