@@ -52,9 +52,14 @@ namespace BadMelon.Tests.Data.Repos
         [Fact]
         public async Task Add_WhenRecipeIDIsSet_ExpectIDReset()
         {
-            var newRecipe = dataSamples.NewRecipe;
+            var recipes = await recipeRepo.Get();
             var newGuid = Guid.NewGuid();
-            newRecipe.ID = newGuid;
+            var newRecipe = new RecipeFixture("new recipe")
+                .WithIngredient(new Ingredient { Weight = 1d, IngredientTypeID = recipes.First().Ingredients.First().IngredientTypeID })
+                .WithStep(new Step { Text = "Make me" })
+                .WithID(newGuid)
+                .Build();
+
             var createdRecipe = await recipeRepo.AddRecipe(newRecipe);
             Assert.True(createdRecipe != null, "Created Recipe should not be null");
             Assert.True(createdRecipe.ID != newGuid, "Created Recipe should have new ID");
@@ -64,7 +69,7 @@ namespace BadMelon.Tests.Data.Repos
         [Fact]
         public async Task Add_WhenRecipeMissingIngredients_ExpectExcecption()
         {
-            var newRecipe = dataSamples.NewRecipe;
+            var newRecipe = new RecipeFixture("new recipe").WithStep(new Step { Text = "Make me" }).Build();
             newRecipe.Ingredients = null;
             await Assert.ThrowsAsync<RepoException>(() => recipeRepo.AddRecipe(newRecipe));
         }
@@ -72,7 +77,7 @@ namespace BadMelon.Tests.Data.Repos
         [Fact]
         public async Task Add_WhenRecipeMissingSteps_ExpectExcecption()
         {
-            var newRecipe = dataSamples.NewRecipe;
+            var newRecipe = new RecipeFixture("new recipe").WithIngredient(new Ingredient()).Build();
             newRecipe.Steps = null;
             await Assert.ThrowsAsync<RepoException>(() => recipeRepo.AddRecipe(newRecipe));
         }

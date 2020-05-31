@@ -61,29 +61,9 @@ namespace BadMelon.Data
             _Recipes = new List<Recipe> { hotWater, coldWater };
         }
 
-        public Recipe NewRecipe
+        public void AddRecipeToStorage(Recipe recipe)
         {
-            get
-            {
-                var ingredientType = IngredientTypes.First();
-                return new Recipe
-                {
-                    Name = "New Recipe",
-                    Ingredients = new List<Ingredient>
-                    {
-                        new Ingredient{ IngredientType = ingredientType, IngredientTypeID = ingredientType.ID, Weight = 1d}
-                    },
-                    Steps = new List<Step>
-                    {
-                        new Step { Order = 1, Text = "New Step", CookTime = new TimeSpan(0, 1, 0), PrepTime = new TimeSpan(0, 1, 0) }
-                    }
-                };
-            }
-        }
-
-        public void AddNewRecipeToStorage()
-        {
-            _Recipes.Add(NewRecipe);
+            _Recipes.Add(recipe);
         }
 
         public void AddIngredientTypeToStorage(IngredientType ingredientType)

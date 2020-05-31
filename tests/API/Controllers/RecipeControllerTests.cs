@@ -65,18 +65,22 @@ namespace BadMelon.Tests.API.Controllers
             var c = await getallResponse.Content.ReadAsStringAsync();
             var recipes = JsonConvert.DeserializeObject<Recipe[]>(c);
 
-            var newRecipe = dataSamples.NewRecipe.ConvertToDTO();
+            var newRecipe = new RecipeFixture("new recipe")
+                .WithIngredient(new Ingredient { Weight = 1d, TypeID = recipes.First().Ingredients.First().TypeID })
+                .WithStep(new Step { Text = "Cook me", CookTime = "00:10:00", PrepTime = "00:20:00" }).Build();
+
             newRecipe.Ingredients.First().TypeID = recipes.First().Ingredients.First().TypeID;
             var newRecipeJson = JsonConvert.SerializeObject(newRecipe);
             var requestBody = new StringContent(newRecipeJson, System.Text.Encoding.UTF8, "application/json");
             var response = await _http.PostAsync("api/recipe", requestBody);
+            var cc = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
-            dataSamples.AddNewRecipeToStorage();
+            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await response.Content.ReadAsStringAsync());
+            dataSamples.AddRecipeToStorage(updatedRecipe.ConvertFromDTO());
 
             var updatedRecipesResponse = await _http.GetAsync("api/recipe");
             updatedRecipesResponse.EnsureSuccessStatusCode();
 
-            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await response.Content.ReadAsStringAsync());
             var updatedRecipes = JsonConvert.DeserializeObject<Recipe[]>(await updatedRecipesResponse.Content.ReadAsStringAsync());
             Assert.False(updatedRecipe == null, "Recipe should not be null");
             Assert.True(updatedRecipe.Name == newRecipe.Name, "Names should be the same");
