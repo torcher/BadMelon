@@ -86,38 +86,14 @@ namespace BadMelon.Data
             _Recipes.Add(NewRecipe);
         }
 
-        public IngredientType NewIngredientType
+        public void AddIngredientTypeToStorage(IngredientType ingredientType)
         {
-            get
-            {
-                return new IngredientType
-                {
-                    Name = "Strawberry"
-                };
-            }
+            _IngredientTypes.Add(ingredientType);
         }
 
-        public void AddNewIngredientTypeToStorage()
+        public void AddIngredientToFirstRecipeInStorage(Ingredient ingredient)
         {
-            _IngredientTypes.Add(NewIngredientType);
-        }
-
-        public Ingredient NewIngredient
-        {
-            get
-            {
-                return new Ingredient
-                {
-                    IngredientType = IngredientTypes.First(),
-                    IngredientTypeID = IngredientTypes.First().ID,
-                    Weight = 1d
-                };
-            }
-        }
-
-        public void AddNewIngredientToFirstRecipeInStorage()
-        {
-            _Recipes.First().Ingredients.Add(NewIngredient);
+            _Recipes.First().Ingredients.Add(ingredient);
         }
     }
 }

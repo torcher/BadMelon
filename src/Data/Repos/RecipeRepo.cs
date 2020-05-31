@@ -23,7 +23,7 @@ namespace BadMelon.Data.Repos
                 .ThenInclude(t => t.IngredientType)
                 .Include(s => s.Steps)
                 .SingleOrDefaultAsync(recipe => recipe.ID == ID);
-            if (recipe == null) throw new EntityNotFoundException("Cannot find recipe of id " + ID);
+            if (recipe == null) throw new EntityNotFoundException("Cannot find recipe");
             return recipe;
         }
 
@@ -96,10 +96,10 @@ namespace BadMelon.Data.Repos
             if (ingredient == null) throw new ArgumentNullException("ingredient");
 
             var recipe = await _db.Recipes.SingleOrDefaultAsync(r => r.ID == recipeId);
-            if (recipe == null) throw new EntityNotFoundException("Could not find recipe of id " + recipeId);
+            if (recipe == null) throw new EntityNotFoundException("Could not find recipe");
 
             var ingredientType = await _db.IngredientTypes.SingleOrDefaultAsync(it => it.ID == ingredient.IngredientTypeID);
-            if (ingredientType == null) throw new EntityNotFoundException("Could not find ingredient type of id " + ingredient.IngredientTypeID);
+            if (ingredientType == null) throw new EntityNotFoundException("Could not find ingredient type");
 
             try
             {
@@ -119,7 +119,7 @@ namespace BadMelon.Data.Repos
             var recipe = await Get(recipeId);
 
             var ingredient = recipe.Ingredients.SingleOrDefault(i => i.ID == ingredientId);
-            if (ingredient == null) throw new EntityNotFoundException("Cannot find ingredient of id " + ingredientId);
+            if (ingredient == null) throw new EntityNotFoundException("Cannot find ingredient");
 
             try
             {

@@ -54,7 +54,6 @@ namespace BadMelon.Tests.API.Controllers
         public async Task Get_RecipeByID_DoesntExist_ExpectError()
         {
             var response = await _http.GetAsync("api/recipe/" + Guid.NewGuid());
-            var content = await response.Content.ReadAsStringAsync();
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound, "HTTP Code should be Not Found");
         }
 

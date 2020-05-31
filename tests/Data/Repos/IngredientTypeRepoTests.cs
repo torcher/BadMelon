@@ -1,5 +1,6 @@
 ﻿using BadMelon.Data;
 using BadMelon.Data.Entities;
+using BadMelon.Data.Exceptions;
 using BadMelon.Data.Repos;
 using BadMelon.Tests.Data.Fixtures;
 using System;
@@ -45,16 +46,14 @@ namespace BadMelon.Tests.Data.Repos
         [Fact]
         public async Task Get_WhenIngredientTypeDoestExist_ExpectNull()
         {
-            var ingredientType = await ingredientTypeRepo.Get(Guid.NewGuid());
-            Assert.True(ingredientType == null, "Ingredient Type with random GUID should not be found");
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => ingredientTypeRepo.Get(Guid.NewGuid()));
         }
 
         [Fact]
         public async Task Post_WhenRecipeIDIsSet_ExpectIDReset()
         {
-            var newIngredientType = dataSamples.NewIngredientType;
             var newGuid = Guid.NewGuid();
-            newIngredientType.ID = newGuid;
+            var newIngredientType = new IngredientTypeFixture("New Ingredient Type").WithID(newGuid).Build();
             var createdIngredientType = await ingredientTypeRepo.Add(newIngredientType);
             Assert.True(createdIngredientType != null, "Created Ingredient Type should not be null");
             Assert.True(createdIngredientType.ID != newGuid, "Created Ingredient Type should have new ID");

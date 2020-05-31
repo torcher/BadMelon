@@ -82,7 +82,7 @@ namespace BadMelon.Tests.Data.Repos
         {
             var recipes = await recipeRepo.Get();
             var startIngredientCount = recipes.First().Ingredients.Count;
-            var newIngredient = dataSamples.NewIngredient;
+            var newIngredient = new IngredientFixture(recipes.First().Ingredients.First().IngredientTypeID).Build();
             var updatedRecipe = await recipeRepo.AddIngredientToRecipe(recipes.First().ID, newIngredient);
             Assert.NotNull(updatedRecipe);
             Assert.True(updatedRecipe.Ingredients.Count == startIngredientCount + 1, "There should be one new ingredient");
@@ -91,24 +91,22 @@ namespace BadMelon.Tests.Data.Repos
         [Fact]
         public async Task AddIngredient_WhenRecipeMissing_ExpectExeption()
         {
-            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), dataSamples.NewIngredient));
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), new IngredientFixture(Guid.NewGuid()).Build()));
         }
 
         [Fact]
         public async Task AddIngredient_WhenIngredientTypeMissing_ExpectExeption()
         {
-            var newIngredient = dataSamples.NewIngredient;
-            newIngredient.IngredientType = null;
-            newIngredient.IngredientTypeID = Guid.Empty;
-            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), dataSamples.NewIngredient));
+            var newIngredient = new IngredientFixture(Guid.Empty).WithWeight(1d).Build();
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), newIngredient));
         }
 
         [Fact]
         public async Task AddIngredient_WhenIngredientInvalid_ExpectException()
         {
-            var newIngredient = dataSamples.NewIngredient;
-            newIngredient.Weight = -1d;
-            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), dataSamples.NewIngredient));
+            var recipes = await recipeRepo.Get();
+            var newIngredient = new IngredientFixture(recipes.First().Ingredients.First().IngredientTypeID).WithWeight(-1d).Build();
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), newIngredient));
         }
 
         private void ValidateRecipe(Recipe recipe)
