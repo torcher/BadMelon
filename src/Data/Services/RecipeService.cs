@@ -34,7 +34,33 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> AddIngredientToRecipe(Guid recipeId, Ingredient ingredient)
         {
-            return (await _recipeRepo.AddIngredientToRecipe(recipeId, ingredient.ConvertFromDTO())).ConvertToDTO();
+            var recipe = await _recipeRepo.Get(recipeId);
+            var currentIngredient = recipe.Ingredients.SingleOrDefault(i => i.IngredientTypeID == ingredient.TypeID);
+            if (currentIngredient == null)
+            {
+                recipe = await _recipeRepo.AddIngredientToRecipe(recipeId, ingredient.ConvertFromDTO());
+            }
+            else
+            {
+                currentIngredient.Weight += ingredient.Weight;
+                recipe = await _recipeRepo.UpdateIngredientInRecipe(recipeId, currentIngredient);
+            }
+
+            return recipe.ConvertToDTO();
+        }
+
+        public async Task<Recipe> AddIngredientToRecipe(Recipe recipe, Ingredient ingredient)
+        {
+            var currentIngredient = recipe.Ingredients.SingleOrDefault(i => i.TypeID == ingredient.TypeID);
+            if (currentIngredient == null)
+            {
+                return (await _recipeRepo.AddIngredientToRecipe(recipe.ID, ingredient.ConvertFromDTO())).ConvertToDTO();
+            }
+            else
+            {
+                currentIngredient.Weight += ingredient.Weight;
+                return (await _recipeRepo.UpdateIngredientInRecipe(recipe.ID, currentIngredient.ConvertFromDTO())).ConvertToDTO();
+            }
         }
 
         public async Task<Recipe> UpdateIngredientInRecipe(Guid recipeId, Ingredient ingredient)

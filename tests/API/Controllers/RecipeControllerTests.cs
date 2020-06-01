@@ -97,15 +97,22 @@ namespace BadMelon.Tests.API.Controllers
         }
 
         [Fact]
-        public async Task Post_RecipeIngredient_ExpectRecipe()
+        public async Task Post_RecipeIngredient_DifferentType_ExpectRecipe()
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
             var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
             var oldRecipe = allRecipes.First();
-            var oldIngredient = oldRecipe.Ingredients.First();
+            var newIngredientType = new IngredientType { Name = "Twinkleberries" };
+            var newIngredientTypeResponse = await _http.PostAsync("api/ingredienttype", new StringContent(
+                    JsonConvert.SerializeObject(newIngredientType),
+                    Encoding.UTF8,
+                    "application/json"
+                ));
+            newIngredientTypeResponse.EnsureSuccessStatusCode();
+            var newIngredientTypeWithID = JsonConvert.DeserializeObject<IngredientType>(await newIngredientTypeResponse.Content.ReadAsStringAsync());
 
-            var newIngredient = new Ingredient { Weight = 2d, TypeID = oldIngredient.TypeID };
+            var newIngredient = new Ingredient { Weight = 2d, TypeID = newIngredientTypeWithID.ID };
             var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
             var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
             updatedRecipeResponse.EnsureSuccessStatusCode();
@@ -113,7 +120,29 @@ namespace BadMelon.Tests.API.Controllers
 
             Assert.NotNull(updatedRecipe);
             Assert.True(oldRecipe.Ingredients.Count + 1 == updatedRecipe.Ingredients.Count, "Ingredient count should be increased by 1");
-            Assert.True(oldIngredient.TypeID == updatedRecipe.Ingredients.First().TypeID, "Type should be the same");
+            var includesIngredientType = updatedRecipe.Ingredients.SingleOrDefault(i => i.TypeID == newIngredientTypeWithID.ID);
+            Assert.False(includesIngredientType == null, "New ingredient should have been added.");
+        }
+
+        [Fact]
+        public async Task Post_RecipeIngredient_SameType_ExpectRecipe()
+        {
+            var getAllRecipesResponse = await _http.GetAsync("api/recipe");
+            getAllRecipesResponse.EnsureSuccessStatusCode();
+            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var oldRecipe = allRecipes.First();
+            var oldIngredientType = oldRecipe.Ingredients.First().TypeID;
+
+            var newIngredient = new Ingredient { Weight = 2d, TypeID = oldIngredientType };
+            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
+            updatedRecipeResponse.EnsureSuccessStatusCode();
+            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+
+            Assert.NotNull(updatedRecipe);
+            Assert.True(oldRecipe.Ingredients.Count == updatedRecipe.Ingredients.Count, "Ingredient count should be the same");
+            var includesIngredientType = updatedRecipe.Ingredients.SingleOrDefault(i => i.TypeID == oldIngredientType);
+            Assert.False(includesIngredientType == null, "New ingredient should have been added.");
         }
 
         [Fact]
