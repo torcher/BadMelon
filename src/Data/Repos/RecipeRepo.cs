@@ -142,7 +142,6 @@ namespace BadMelon.Data.Repos
 
             try
             {
-                ingredientFound.IngredientType = null;
                 ingredientFound.IngredientTypeID = ingredient.IngredientTypeID;
                 ingredientFound.Weight = ingredient.Weight;
                 await _db.SaveChangesAsync();
@@ -151,7 +150,8 @@ namespace BadMelon.Data.Repos
             {
                 throw new RepoException("Error updating Ingredient on Recipe", e);
             }
-            return recipe;
+
+            return await Get(recipeId);
         }
     }
 }
