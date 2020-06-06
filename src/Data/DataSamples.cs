@@ -20,6 +20,19 @@ namespace BadMelon.Data
             var corn = new IngredientType { ID = Guid.NewGuid(), Name = "Corn" };
             _IngredientTypes.AddRange(new IngredientType[] { water, corn });
 
+            var cornSoup = new Recipe
+            {
+                ID = Guid.NewGuid(),
+                Name = "Cold Corn Soup",
+                Ingredients = new List<Ingredient>(),
+                Steps = new List<Step>()
+            };
+
+            cornSoup.Ingredients.Add(new Ingredient { ID = Guid.NewGuid(), IngredientType = corn, IngredientTypeID = corn.ID, Weight = 1d });
+            cornSoup.Ingredients.Add(new Ingredient { ID = Guid.NewGuid(), IngredientType = water, IngredientTypeID = water.ID, Weight = 2d });
+            cornSoup.Steps.Add(new Step { ID = Guid.NewGuid(), Order = 1, Recipe = cornSoup, RecipeId = cornSoup.ID, Text = "Mix Corn and Water" });
+            cornSoup.Steps.Add(new Step { ID = Guid.NewGuid(), Order = 2, Recipe = cornSoup, RecipeId = cornSoup.ID, Text = "Serve" });
+
             var hotWater = new Recipe
             {
                 ID = Guid.NewGuid(),
@@ -42,7 +55,7 @@ namespace BadMelon.Data
             var coldWater = new Recipe
             {
                 ID = Guid.NewGuid(),
-                Name = "Hot Water",
+                Name = "Cold Water",
                 Ingredients = new List<Ingredient>(),
                 Steps = new List<Step>()
             };
@@ -51,14 +64,14 @@ namespace BadMelon.Data
             {
                 ID = Guid.NewGuid(),
                 Order = 1,
-                Text = "Heat water",
+                Text = "Cool water",
                 CookTime = new TimeSpan(0, 1, 0),
                 PrepTime = new TimeSpan(0, 1, 0),
                 Recipe = coldWater,
                 RecipeId = coldWater.ID
             });
 
-            _Recipes = new List<Recipe> { hotWater, coldWater };
+            _Recipes = new List<Recipe> { cornSoup, hotWater, coldWater };
         }
 
         public void AddRecipeToStorage(Recipe recipe)
