@@ -3,7 +3,7 @@ using BadMelon.Exceptions;
 using System;
 using Xunit;
 
-namespace BadMelon.Tests.Data.Domain
+namespace BadMelon.Tests.Domain
 {
     public class IngredientTests
     {

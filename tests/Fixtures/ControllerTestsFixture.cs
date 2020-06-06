@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.TestHost;
 using System.Net.Http;
 
-namespace BadMelon.Tests.API.Fixtures
+namespace BadMelon.Tests.Fixtures
 {
     public class ControllerTestsFixture
     {

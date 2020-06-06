@@ -1,19 +1,19 @@
-﻿using BadMelon.Data.DTOs;
+﻿using BadMelon.Data.Entities;
 using System;
 
-namespace BadMelon.Tests.API.Fixtures
+namespace BadMelon.Tests.Fixtures.Entities
 {
     public class IngredientTypeFixture
     {
-        private Guid _id = Guid.Empty;
         private string _name;
+        private Guid _id = Guid.Empty;
 
         public IngredientTypeFixture(string name)
         {
             _name = name;
         }
 
-        public IngredientTypeFixture WithId(Guid id)
+        public IngredientTypeFixture WithID(Guid id)
         {
             _id = id;
             return this;
@@ -21,11 +21,7 @@ namespace BadMelon.Tests.API.Fixtures
 
         public IngredientType Build()
         {
-            return new IngredientType
-            {
-                ID = _id,
-                Name = _name
-            };
+            return new IngredientType { Name = _name };
         }
     }
 }

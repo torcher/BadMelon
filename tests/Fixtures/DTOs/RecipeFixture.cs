@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BadMelon.Tests.API.Fixtures
+namespace BadMelon.Tests.Fixtures.DTOs
 {
     public class RecipeFixture
     {

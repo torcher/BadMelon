@@ -2,7 +2,8 @@
 using BadMelon.Data.Entities;
 using BadMelon.Data.Exceptions;
 using BadMelon.Data.Repos;
-using BadMelon.Tests.Data.Fixtures;
+using BadMelon.Tests.Fixtures;
+using BadMelon.Tests.Fixtures.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
