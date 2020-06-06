@@ -9,6 +9,8 @@ obj/
 
 /BadMelon.API/bin/*
 /BadMelon.API/obj/*
+/tests/TestResults/*
+/tools/*
 
 # local env files
 .env.local
