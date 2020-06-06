@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BadMelon.Tests.Data.Fixtures
+namespace BadMelon.Tests.Fixtures.Entities
 {
     public class RecipeFixture
     {

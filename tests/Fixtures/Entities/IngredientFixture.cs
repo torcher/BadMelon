@@ -1,7 +1,7 @@
 ﻿using BadMelon.Data.Entities;
 using System;
 
-namespace BadMelon.Tests.Data.Fixtures
+namespace BadMelon.Tests.Fixtures.Entities
 {
     public class IngredientFixture
     {

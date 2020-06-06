@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace BadMelon.Tests.API.Data
+namespace BadMelon.Tests
 {
     internal class BadRecipesTestData : IEnumerable<object[]>
     {

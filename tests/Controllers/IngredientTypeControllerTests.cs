@@ -1,7 +1,7 @@
 ﻿using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
-using BadMelon.Tests.API.Data;
-using BadMelon.Tests.API.Fixtures;
+using BadMelon.Tests.Fixtures;
+using BadMelon.Tests.Fixtures.DTOs;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BadMelon.Tests.API.Controllers
+namespace BadMelon.Tests.Controllers
 {
     [Collection("SynchronousTests")]
     public class IngredientTypeControllerTests : ControllerTestsFixture

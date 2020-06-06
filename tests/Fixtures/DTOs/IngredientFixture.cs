@@ -1,7 +1,7 @@
 ﻿using BadMelon.Data.DTOs;
 using System;
 
-namespace BadMelon.Tests.API.Fixtures
+namespace BadMelon.Tests.Fixtures.DTOs
 {
     public class IngredientFixture
     {

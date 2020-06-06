@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\API\BadMelon.API.csproj" />
-    <ProjectReference Include="..\..\src\Data\BadMelon.Data.csproj" />
+    <ProjectReference Include="..\src\API\BadMelon.API.csproj" />
+    <ProjectReference Include="..\src\Data\BadMelon.Data.csproj" />
   </ItemGroup>
 
 </Project>

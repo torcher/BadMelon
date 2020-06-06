@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 
-namespace BadMelon.Tests.API
+namespace BadMelon.Tests
 {
     internal class TestServerFactory
     {

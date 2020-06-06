@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace BadMelon.Tests.Data.Fixtures
+namespace BadMelon.Tests.Fixtures
 {
     public class BadMelonDataContextFixture : IDisposable
     {

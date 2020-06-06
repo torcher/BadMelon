@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 
-namespace BadMelon.Tests.API
+namespace BadMelon.Tests
 {
     public class TestStartup : Startup
     {
