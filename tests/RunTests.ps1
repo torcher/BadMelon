@@ -12,6 +12,7 @@ if(Test-Path $testResultsPath){
 }
 
 $excludeList = "**/Data/Migrations/*%2c**/API/Program.cs"
-dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=$excludeList | Out-File .\test-results.txt
+$testResult = dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=$excludeList
+$testResult | Out-File .\test-results.txt -Encoding utf8
 ..\tools\reportgenerator.exe -reports:.\TestResults\coverage.info -targetdir:.\TestResults\
 start .\TestResults\index.htm
