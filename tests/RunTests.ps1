@@ -11,9 +11,7 @@ if(Test-Path $testResultsPath){
     Remove-Item $testResultsPath -R -Force
 }
 
-$testResults = dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
-$t = $testResults.IndexOf("+--")
-$testResults | Out-File .\test-results.txt
-
+$excludeList = "**/Data/Migrations/*%2c**/API/Program.cs"
+dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=$excludeList | Out-File .\test-results.txt
 ..\tools\reportgenerator.exe -reports:.\TestResults\coverage.info -targetdir:.\TestResults\
 start .\TestResults\index.htm
