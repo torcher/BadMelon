@@ -12,11 +12,11 @@ namespace BadMelon.Data.Domain
         [JsonIgnore]
         public TimeSpan CookTimeSpan { get; set; }
 
-        public string CookTime { get => CookTimeSpan.ToFormattedString(); }
+        public string CookTime { get => CookTimeSpan.ToRecipeFormat(); }
 
         [JsonIgnore]
         public TimeSpan PrepTimeSpan { get; set; }
 
-        public string PrepTime { get => PrepTimeSpan.ToFormattedString(); }
+        public string PrepTime { get => PrepTimeSpan.ToRecipeFormat(); }
     }
 }

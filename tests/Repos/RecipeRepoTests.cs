@@ -176,8 +176,8 @@ namespace BadMelon.Tests.Data.Repos
             var recipes = await recipeRepo.Get();
             var updatingRecipe = recipes.First();
             var startStepCount = updatingRecipe.Steps.Count;
-            var newStep = new StepFixture("New step", updatingRecipe.ID).Build();
-            _ = await recipeRepo.AddStepToRecipe(newStep.RecipeId, newStep);
+            var newStep = new StepFixture("New step").Build();
+            _ = await recipeRepo.AddStepToRecipe(updatingRecipe.ID, newStep);
             var updatedRecipe = await recipeRepo.Get(updatingRecipe.ID);
             Assert.NotNull(updatedRecipe);
             Assert.True(startStepCount + 1 == updatedRecipe.Steps.Count, "There should be one new recipe");

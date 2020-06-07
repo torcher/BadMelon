@@ -12,7 +12,11 @@ namespace BadMelon.Data.DTOs
         public string Text { get; set; }
 
         public int Order { get; set; }
-        public string CookTime { get; set; }
-        public string PrepTime { get; set; }
+
+        [RegularExpression("(^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$)+")]
+        public string CookTime { get; set; } = "00:00:00";
+
+        [RegularExpression("(^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$)+")]
+        public string PrepTime { get; set; } = "00:00:00";
     }
 }

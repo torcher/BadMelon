@@ -5,17 +5,16 @@ namespace BadMelon.Tests.Fixtures.Entities
 {
     public class StepFixture
     {
-        private string Text;
+        private readonly string Text;
         private int Order = 1;
         private TimeSpan PrepTime = new TimeSpan(0, 1, 0);
         private TimeSpan CookTime = new TimeSpan(0, 1, 0);
         private Guid Id = Guid.Empty;
         private Guid RecipeId;
 
-        public StepFixture(string Text, Guid recipeId)
+        public StepFixture(string Text)
         {
             this.Text = Text;
-            this.RecipeId = recipeId;
         }
 
         public StepFixture WithOrder(int order)

@@ -155,10 +155,10 @@ namespace BadMelon.Data.Repos
 
         public async Task<Recipe> AddStepToRecipe(Guid recipeId, Step step)
         {
-            if (recipeId == Guid.Empty) throw new ArgumentNullException("recipeId");
             if (step == null) throw new ArgumentNullException("step");
-
             var recipe = await Get(recipeId);
+            step.Recipe = recipe;
+            step.RecipeId = recipe.ID;
 
             try
             {

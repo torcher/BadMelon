@@ -19,5 +19,13 @@ namespace BadMelon.Data.Services
         Task<Recipe> DeleteIngredientInRecipe(Guid recipeId, Ingredient ingredient);
 
         Task<Recipe> DeleteIngredientInRecipe(Guid recipeId, Guid ingredientId);
+
+        Task<Recipe> AddStepToRecipe(Guid recipeId, Step step);
+
+        Task<Recipe> UpdateStepInRecipe(Guid recipeId, Step step);
+
+        Task<Recipe> DeleteStepInRecipe(Guid recipeId, Step step);
+
+        Task<Recipe> DeleteStepInRecipe(Guid recipeId, Guid stepId);
     }
 }

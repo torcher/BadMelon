@@ -64,5 +64,29 @@ namespace BadMelon.API.Controllers
             await _recipes.DeleteIngredientInRecipe(id, ingredientId);
             return NoContent();
         }
+
+        [HttpPost("{id}/steps")]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> PostStep(Guid id, Step step)
+        {
+            var updatedRecipe = await _recipes.AddStepToRecipe(id, step);
+            return Ok(updatedRecipe);
+        }
+
+        [HttpPut("{id}/steps")]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> PutStep(Guid id, Step step)
+        {
+            var updatedRecipe = await _recipes.UpdateStepInRecipe(id, step);
+            return Ok(updatedRecipe);
+        }
+
+        [HttpDelete("{id}/steps/{stepId}")]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> DeleteStep(Guid id, Guid stepId)
+        {
+            await _recipes.DeleteStepInRecipe(id, stepId);
+            return NoContent();
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿TestStartup.cs(19,58): warning CS0618: 'IHostingEnvironment' is obsolete: 'This type is obsolete and will be removed in a future version. The recommended alternative is Microsoft.AspNetCore.Hosting.IWebHostEnvironment.' [C:\Users\Flash\Documents\BadMelon\tests\BadMelon.Tests.csproj]
-Test run for C:\Users\Flash\Documents\BadMelon\tests\bin\Debug\netcoreapp3.1\BadMelon.Tests.dll(.NETCoreApp,Version=v3.1)
+﻿Test run for C:\Users\Flash\Documents\BadMelon\tests\bin\Debug\netcoreapp3.1\BadMelon.Tests.dll(.NETCoreApp,Version=v3.1)
 Microsoft (R) Test Execution Command Line Tool Version 16.5.0
 Copyright (c) Microsoft Corporation.  All rights reserved.
 
@@ -10,9 +9,9 @@ warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
       Failed to determine the https port for redirect.
 
 Test Run Successful.
-Total tests: 55
-     Passed: 55
- Total time: 6.0622 Seconds
+Total tests: 71
+     Passed: 71
+ Total time: 10.2538 Seconds
 
 Calculating coverage result...
   Generating report 'TestResults\coverage.info'
@@ -20,16 +19,16 @@ Calculating coverage result...
 +---------------+--------+--------+--------+
 | Module        | Line   | Branch | Method |
 +---------------+--------+--------+--------+
-| BadMelon.API  | 73.05% | 41.66% | 83.33% |
+| BadMelon.API  | 74.86% | 41.66% | 85.18% |
 +---------------+--------+--------+--------+
-| BadMelon.Data | 59.13% | 49.16% | 56.79% |
+| BadMelon.Data | 61.75% | 50%    | 58.95% |
 +---------------+--------+--------+--------+
 
 +---------+--------+--------+--------+
 |         | Line   | Branch | Method |
 +---------+--------+--------+--------+
-| Total   | 62.15% | 48.48% | 60.21% |
+| Total   | 64.62% | 49.27% | 62.5%  |
 +---------+--------+--------+--------+
-| Average | 66.09% | 45.41% | 70.06% |
+| Average | 68.3%  | 45.83% | 72.06% |
 +---------+--------+--------+--------+
 
