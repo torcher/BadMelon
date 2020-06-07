@@ -31,17 +31,17 @@ namespace BadMelon.Data.Domain
         [JsonIgnore]
         public TimeSpan PrepTimespan { get => new TimeSpan(Steps.Select(ts => ts.PrepTimeSpan.Ticks).Sum()); }
 
-        public string PrepTime { get => PrepTimespan.ToFormattedString(); }
+        public string PrepTime { get => PrepTimespan.ToRecipeFormat(); }
 
         [JsonIgnore]
         public TimeSpan CookTimespan { get => new TimeSpan(Steps.Select(ts => ts.CookTimeSpan.Ticks).Sum()); }
 
-        public string CookTime { get => PrepTimespan.ToFormattedString(); }
+        public string CookTime { get => PrepTimespan.ToRecipeFormat(); }
 
         [JsonIgnore]
         public TimeSpan TotalTimespan { get => PrepTimespan + CookTimespan; }
 
-        public string TotalTime { get => PrepTimespan.ToFormattedString(); }
+        public string TotalTime { get => PrepTimespan.ToRecipeFormat(); }
 
         public void AddStep(Step step)
         {

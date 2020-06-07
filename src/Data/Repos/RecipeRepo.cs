@@ -95,8 +95,7 @@ namespace BadMelon.Data.Repos
             if (recipeId == Guid.Empty) throw new ArgumentNullException("recipeId");
             if (ingredient == null) throw new ArgumentNullException("ingredient");
 
-            var recipe = await _db.Recipes.SingleOrDefaultAsync(r => r.ID == recipeId);
-            if (recipe == null) throw new EntityNotFoundException("Could not find recipe");
+            var recipe = await Get(recipeId);
 
             var ingredientType = await _db.IngredientTypes.SingleOrDefaultAsync(it => it.ID == ingredient.IngredientTypeID);
             if (ingredientType == null) throw new EntityNotFoundException("Could not find ingredient type");
@@ -138,7 +137,7 @@ namespace BadMelon.Data.Repos
             var recipe = await Get(recipeId);
 
             var ingredientFound = recipe.Ingredients.SingleOrDefault(i => i.ID == ingredient.ID);
-            if (ingredientFound == null) return null;
+            if (ingredientFound == null) throw new EntityNotFoundException("Could not find Ingredient to update");
 
             try
             {
@@ -152,6 +151,68 @@ namespace BadMelon.Data.Repos
             }
 
             return await Get(recipeId);
+        }
+
+        public async Task<Recipe> AddStepToRecipe(Guid recipeId, Step step)
+        {
+            if (step == null) throw new ArgumentNullException("step");
+            var recipe = await Get(recipeId);
+            step.Recipe = recipe;
+            step.RecipeId = recipe.ID;
+
+            try
+            {
+                await _db.Steps.AddAsync(step);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new RepoException("Error adding step to recipe", e);
+            }
+
+            return recipe;
+        }
+
+        public async Task<Recipe> RemoveStepFromRecipe(Guid recipeId, Guid stepId)
+        {
+            var recipe = await Get(recipeId);
+
+            var step = recipe.Steps.SingleOrDefault(s => s.ID == stepId);
+            if (step == null) throw new EntityNotFoundException("Cannot find step");
+
+            try
+            {
+                recipe.Steps.Remove(step);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new RepoException("Error removing Step from Recipe", e);
+            }
+            return recipe;
+        }
+
+        public async Task<Recipe> UpdateStepInRecipe(Guid recipeId, Step step)
+        {
+            var recipe = await Get(recipeId);
+
+            var stepFound = recipe.Steps.SingleOrDefault(s => s.ID == step.ID);
+            if (stepFound == null) throw new EntityNotFoundException("Cannot find step to update");
+
+            try
+            {
+                stepFound.Text = step.Text;
+                stepFound.Order = step.Order;
+                stepFound.CookTime = step.CookTime;
+                stepFound.PrepTime = step.PrepTime;
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new RepoException("Error updating Step in Recipe", e);
+            }
+
+            return recipe;
         }
     }
 }

@@ -60,5 +60,25 @@ namespace BadMelon.Data.Services
         {
             return (await _recipeRepo.RemoveIngredientFromRecipe(recipeId, ingredientId)).ConvertToDTO();
         }
+
+        public async Task<Recipe> AddStepToRecipe(Guid recipeId, Step step)
+        {
+            return (await _recipeRepo.AddStepToRecipe(recipeId, step.ConvertFromDTO())).ConvertToDTO();
+        }
+
+        public async Task<Recipe> UpdateStepInRecipe(Guid recipeId, Step step)
+        {
+            return (await _recipeRepo.UpdateStepInRecipe(recipeId, step.ConvertFromDTO())).ConvertToDTO();
+        }
+
+        public async Task<Recipe> DeleteStepInRecipe(Guid recipeId, Step step)
+        {
+            return (await _recipeRepo.RemoveStepFromRecipe(recipeId, step.ID)).ConvertToDTO();
+        }
+
+        public async Task<Recipe> DeleteStepInRecipe(Guid recipeId, Guid stepId)
+        {
+            return (await _recipeRepo.RemoveStepFromRecipe(recipeId, stepId)).ConvertToDTO();
+        }
     }
 }

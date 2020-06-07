@@ -115,6 +115,141 @@ namespace BadMelon.Tests.Data.Repos
             await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddIngredientToRecipe(Guid.NewGuid(), newIngredient));
         }
 
+        [Fact]
+        public async Task RemoveIngredient_WhenIngredientExists_ExpectRemoved()
+        {
+            var recipes = await recipeRepo.Get();
+            var testRecipe = recipes.First();
+            var removingIngredient = testRecipe.Ingredients.First();
+            var ingredientCount = testRecipe.Ingredients.Count;
+            Assert.True(ingredientCount > 1, "There needs to be 2 ingredients for this test");
+
+            var updatedRecipe = await recipeRepo.RemoveIngredientFromRecipe(testRecipe.ID, removingIngredient.ID);
+            Assert.NotNull(updatedRecipe);
+            Assert.True(ingredientCount - 1 == updatedRecipe.Ingredients.Count, "Ingredients should have 1 less");
+            Assert.True(updatedRecipe.Ingredients.SingleOrDefault(i => i.ID == removingIngredient.ID) == null, "Ingredient shouldn't exist");
+        }
+
+        [Fact]
+        public async Task RemoveIngredient_WhenRecipeDoesExist_ExpectException()
+        {
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.RemoveIngredientFromRecipe(Guid.NewGuid(), Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task RemoveIngredient_WhenIngredientDoesExist_ExpectException()
+        {
+            var recipes = await recipeRepo.Get();
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.RemoveIngredientFromRecipe(recipes.First().ID, Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task UpdateIngredient_WhenWeightUpdate_ExpectUpdatedWeight()
+        {
+            var recipes = await recipeRepo.Get();
+            var updatingRecipe = recipes.First();
+            var updatingIngredient = updatingRecipe.Ingredients.First();
+            var newWeight = updatingIngredient.Weight + 1d;
+
+            updatingIngredient.Weight = newWeight;
+            var updatedRecipe = await recipeRepo.UpdateIngredientInRecipe(updatingRecipe.ID, updatingIngredient);
+            Assert.NotNull(updatedRecipe);
+            Assert.True(updatedRecipe.Ingredients.First().Weight == newWeight, "Weight should be updated");
+        }
+
+        [Fact]
+        public async Task UpdateIngredient_WhenRecipeMissing_ExpectException()
+        {
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.UpdateIngredientInRecipe(Guid.NewGuid(), new Ingredient()));
+        }
+
+        [Fact]
+        public async Task UpdateIngredient_WhenIngredientMissing_ExpectException()
+        {
+            var recipes = await recipeRepo.Get();
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.UpdateIngredientInRecipe(recipes.First().ID, new Ingredient()));
+        }
+
+        [Fact]
+        public async Task AddStep_WhenValid_ExpectSuccess()
+        {
+            var recipes = await recipeRepo.Get();
+            var updatingRecipe = recipes.First();
+            var startStepCount = updatingRecipe.Steps.Count;
+            var newStep = new StepFixture("New step").Build();
+            _ = await recipeRepo.AddStepToRecipe(updatingRecipe.ID, newStep);
+            var updatedRecipe = await recipeRepo.Get(updatingRecipe.ID);
+            Assert.NotNull(updatedRecipe);
+            Assert.True(startStepCount + 1 == updatedRecipe.Steps.Count, "There should be one new recipe");
+        }
+
+        [Fact]
+        public async Task AddStep_WhenRecipeMissing_ExpectException()
+        {
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.AddStepToRecipe(Guid.NewGuid(), new Step()));
+        }
+
+        [Fact]
+        public async Task RemoveStep_WhenStepExists_ExpectRemoved()
+        {
+            var recipes = await recipeRepo.Get();
+            var updatingRecipe = recipes.First();
+            Assert.True(updatingRecipe.Steps.Count > 1, "Need more than 1 step for this step");
+            var stepCountStart = updatingRecipe.Steps.Count;
+
+            var removeRecipe = await recipeRepo.RemoveStepFromRecipe(updatingRecipe.ID, updatingRecipe.Steps.First().ID);
+            var updatedRecipe = await recipeRepo.Get(updatingRecipe.ID);
+            Assert.NotNull(updatedRecipe);
+            Assert.True(stepCountStart - 1 == updatedRecipe.Steps.Count, "Steps should have 1 less step");
+        }
+
+        [Fact]
+        public async Task RemoveStep_WhenRecipeDoesntExist_ExpectException()
+        {
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.RemoveStepFromRecipe(Guid.NewGuid(), Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task RemoveStep_WhenStepDoesntExist_ExpectException()
+        {
+            var recipes = await recipeRepo.Get();
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.RemoveStepFromRecipe(recipes.First().ID, Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task UpdateStep_WhenStepValid_ExpectUpdatedValues()
+        {
+            var recipes = await recipeRepo.Get();
+            var updatingRecicpe = recipes.First();
+            var updatingStep = updatingRecicpe.Steps.First();
+            var newStep = new Step
+            {
+                ID = updatingStep.ID,
+                Order = updatingStep.Order + 1,
+                Text = "New Text - UpdateStepTest",
+                CookTime = 2 * updatingStep.CookTime,
+                PrepTime = updatingStep.PrepTime + new TimeSpan(0, 1, 0),
+                RecipeId = Guid.NewGuid()
+            };
+
+            _ = await recipeRepo.UpdateStepInRecipe(updatingRecicpe.ID, newStep);
+            var updatedRecipe = await recipeRepo.Get(updatingRecicpe.ID);
+            Assert.NotNull(updatingRecicpe);
+            var updatedStep = updatingRecicpe.Steps.SingleOrDefault(s => s.ID == newStep.ID);
+            Assert.NotNull(updatedStep);
+            Assert.Equal(updatedStep.Text, newStep.Text);
+            Assert.Equal(updatedStep.Order, newStep.Order);
+            Assert.Equal(updatedStep.CookTime, newStep.CookTime);
+            Assert.Equal(updatedStep.PrepTime, newStep.PrepTime);
+            Assert.Equal(updatedStep.RecipeId, updatingRecicpe.ID);
+        }
+
+        [Fact]
+        public async Task UpdateStep_WhenRecipeMissing_ExpectException()
+        {
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => recipeRepo.UpdateStepInRecipe(Guid.NewGuid(), new Step()));
+        }
+
         private void ValidateRecipe(Recipe recipe)
         {
             Assert.True(recipe.ID != Guid.Empty, "Recipe ID cannot be empty");

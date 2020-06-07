@@ -1,5 +1,6 @@
 ﻿using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
+using BadMelon.Tests.Data;
 using BadMelon.Tests.Fixtures;
 using BadMelon.Tests.Fixtures.DTOs;
 using Newtonsoft.Json;
@@ -177,7 +178,7 @@ namespace BadMelon.Tests.Controllers
         }
 
         [Fact]
-        public async Task Post_RecipeIngredient_BadWhenIngredient_ExpectBadRequest()
+        public async Task Post_RecipeIngredient_WhenIngredientBad_ExpectBadRequest()
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
@@ -189,6 +190,137 @@ namespace BadMelon.Tests.Controllers
             var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
             var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
             Assert.True(updatedRecipeResponse.StatusCode == System.Net.HttpStatusCode.BadRequest, "Should be bad request");
+        }
+
+        [Fact]
+        public async Task Post_RecipeStep_WhenStepValid_ExpectSuccess()
+        {
+            var getAllRecipesResponse = await _http.GetAsync("api/recipe");
+            getAllRecipesResponse.EnsureSuccessStatusCode();
+            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var oldRecipe = allRecipes.First();
+
+            var newStep = new Step { Text = "New step", Order = 1 };
+            var newStepResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/steps", new StringContent(JsonConvert.SerializeObject(newStep), Encoding.UTF8, "application/json"));
+            newStepResponse.EnsureSuccessStatusCode();
+            var newRecipe = JsonConvert.DeserializeObject<Recipe>(await newStepResponse.Content.ReadAsStringAsync());
+            Assert.True(newRecipe.Steps.Count == oldRecipe.Ingredients.Count + 1);
+            Assert.NotNull(newRecipe.Steps.SingleOrDefault(x => x.Text == newStep.Text));
+        }
+
+        [Fact]
+        public async Task Post_RecipeStep_WhenRecipeMissing_ExpectNotFound()
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(new Step { Text = "Test" }), Encoding.UTF8, "application/json");
+            var response = await _http.PostAsync($"api/recipe/{Guid.NewGuid()}/steps", content);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Theory]
+        [ClassData(typeof(BadStepTestData))]
+        public async Task Post_RecipeStep_WhenInvalid_ExpectFailureResponse(Step step, int responseCode)
+        {
+            var recipesResposne = await _http.GetAsync("api/recipe");
+            recipesResposne.EnsureSuccessStatusCode();
+            var recipes = JsonConvert.DeserializeObject<Recipe[]>(await recipesResposne.Content.ReadAsStringAsync());
+
+            var content = new StringContent(JsonConvert.SerializeObject(step), Encoding.UTF8, "application/json");
+            var response = await _http.PostAsync($"api/recipe/{recipes[0].ID}/steps", content);
+            Assert.True((int)response.StatusCode == responseCode, $"Response code was {(int)response.StatusCode} but should have been {responseCode}");
+        }
+
+        [Fact]
+        public async Task Put_RecipeStep_WhenValid_ExpectUpdated()
+        {
+            var allRecipes = await GetAllRecipes();
+            var updatingRecipe = allRecipes[0];
+            var updatingStep = updatingRecipe.Steps.First();
+            updatingStep.Text = "Put_RecipeStep test";
+            updatingStep.PrepTime = "96:0:0";
+            updatingStep.CookTime = "97:0:0";
+            updatingStep.Order = 98;
+
+            var content = new StringContent(JsonConvert.SerializeObject(updatingStep), Encoding.UTF8, "application/json");
+            var updateResponse = await _http.PutAsync($"api/recipe/{updatingRecipe.ID}/steps", content);
+            updateResponse.EnsureSuccessStatusCode();
+
+            var updatedRecipeResponse = await _http.GetAsync($"api/recipe/{updatingRecipe.ID}");
+            updatedRecipeResponse.EnsureSuccessStatusCode();
+            var recipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+
+            var updatedStep = recipe.Steps.SingleOrDefault(s => s.ID == updatingStep.ID);
+            Assert.NotNull(updatingStep);
+            Assert.Equal(updatingStep.Text, updatedStep.Text);
+            Assert.Equal(updatingStep.Order, updatedStep.Order);
+            Assert.Equal(updatingStep.PrepTime, updatedStep.PrepTime);
+            Assert.Equal(updatingStep.CookTime, updatedStep.CookTime);
+        }
+
+        [Fact]
+        public async Task Put_RecipeStep_WhenRecipeMissing_ExpectNotFound()
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(new Step { Text = "a" }), Encoding.UTF8, "application/json");
+            var response = await _http.PutAsync($"api/recipe/{Guid.NewGuid()}/steps", content);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task Put_RecipeStep_WhenStepMissing_ExpectNotFound()
+        {
+            var allRecipes = await GetAllRecipes();
+            var content = new StringContent(JsonConvert.SerializeObject(new Step { Text = "a" }), Encoding.UTF8, "application/json");
+            var response = await _http.PutAsync($"api/recipe/{allRecipes[0].ID}/steps", content);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Theory]
+        [ClassData(typeof(BadStepTestData))]
+        public async Task Put_RecipeStep_WhenBadStep_ExpectBadRequest(Step step, int statusCode)
+        {
+            var allRecipes = await GetAllRecipes();
+            var content = new StringContent(JsonConvert.SerializeObject(step), Encoding.UTF8, "application/json");
+            var response = await _http.PutAsync($"api/recipe/{allRecipes[0].ID}/steps", content);
+            Assert.True((int)response.StatusCode == statusCode);
+        }
+
+        [Fact]
+        public async Task Delete_RecipeStep_WhenValid_ExpectOneLessStep()
+        {
+            var allRecipes = await GetAllRecipes();
+            var updatingRecipe = allRecipes[0];
+            var deletingStep = updatingRecipe.Steps.First();
+
+            var deletingResponse = await _http.DeleteAsync($"api/recipe/{updatingRecipe.ID}/steps/{deletingStep.ID}");
+            deletingResponse.EnsureSuccessStatusCode();
+
+            var updatedRecipeResponse = await _http.GetAsync($"api/recipe/{updatingRecipe.ID}");
+            updatedRecipeResponse.EnsureSuccessStatusCode();
+            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+
+            Assert.True(updatedRecipe.Steps.Count == updatedRecipe.Steps.Count);
+            Assert.Null(updatedRecipe.Steps.SingleOrDefault(s => s.ID == deletingStep.ID));
+        }
+
+        [Fact]
+        public async Task Delete_RecipeStep_WhenRecipeMissing_ExpectNotFound()
+        {
+            var response = await _http.DeleteAsync($"api/recipe/{Guid.NewGuid()}/steps/{Guid.NewGuid()}");
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task Delete_RecipeStep_WhenStepMissing_ExpectNotFound()
+        {
+            var allRecipes = await GetAllRecipes();
+            var response = await _http.DeleteAsync($"api/recipe/{allRecipes[0].ID}/steps/{Guid.NewGuid()}");
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+        private async Task<Recipe[]> GetAllRecipes()
+        {
+            var allRecipesResponse = await _http.GetAsync("api/recipe");
+            allRecipesResponse.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<Recipe[]>(await allRecipesResponse.Content.ReadAsStringAsync());
         }
 
         private void ValidateRecipe(Recipe recipe)
