@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System;
 
 namespace BadMelon.API
@@ -67,6 +68,8 @@ namespace BadMelon.API
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSerilogRequestLogging();
+
             app.UseBadMelonErrorHandler();
 
             app.UseHttpsRedirection();
