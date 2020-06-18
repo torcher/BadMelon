@@ -1,10 +1,11 @@
 ﻿using BadMelon.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace BadMelon.Data
 {
-    public class BadMelonDataContext : DbContext
+    public class BadMelonDataContext : IdentityDbContext<User>
     {
         public BadMelonDataContext()
         {
@@ -23,6 +24,7 @@ namespace BadMelon.Data
         {
             await Database.EnsureCreatedAsync();
             var data = new DataSamples();
+            await Users.AddAsync(data.RootUser);
             await IngredientTypes.AddRangeAsync(data.IngredientTypes);
             await Recipes.AddRangeAsync(data.Recipes);
             await SaveChangesAsync();
