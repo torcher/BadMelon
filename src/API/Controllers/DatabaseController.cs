@@ -1,4 +1,6 @@
 ﻿using BadMelon.Data;
+using BadMelon.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,16 +10,18 @@ using System.Threading.Tasks;
 namespace BadMelon.API.Controllers
 {
     [Route("api/[controller]")]
+    //[Authorize]
     public class DatabaseController : Controller
     {
         private readonly BadMelonDataContext _db;
+        private readonly UserManager<User> _userManager;
 
-        public DatabaseController(BadMelonDataContext db)
+        public DatabaseController(BadMelonDataContext db, UserManager<User> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
 
-        // GET: api/database/migrate
         [HttpGet("migrate")]
         public async Task<string> Get()
         {
@@ -25,7 +29,7 @@ namespace BadMelon.API.Controllers
             {
                 await _db.Database.MigrateAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "Database migration failed. Contact an administrator.";
             }
@@ -58,6 +62,7 @@ namespace BadMelon.API.Controllers
             try
             {
                 await _db.Seed();
+                await _userManager.AddPasswordAsync(await _db.Users.FirstOrDefaultAsync(), "rootpwd");
             }
             catch (Exception) { return "Cannot write to database. Contact an administrator."; }
 
@@ -68,7 +73,6 @@ namespace BadMelon.API.Controllers
         public async Task<string> Delete()
         {
             await _db.Database.EnsureDeletedAsync();
-            await _db.Database.EnsureCreatedAsync();
             return await Seed();
         }
     }
