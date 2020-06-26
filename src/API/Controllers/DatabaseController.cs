@@ -1,5 +1,7 @@
 ﻿using BadMelon.Data;
 using BadMelon.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +12,21 @@ using System.Threading.Tasks;
 namespace BadMelon.API.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize]
     public class DatabaseController : Controller
     {
         private readonly BadMelonDataContext _db;
         private readonly UserManager<User> _userManager;
+        private readonly IHostingEnvironment _host;
 
-        public DatabaseController(BadMelonDataContext db, UserManager<User> userManager)
+        public DatabaseController(BadMelonDataContext db, UserManager<User> userManager, IHostingEnvironment host)
         {
             _db = db;
             _userManager = userManager;
+            _host = host;
         }
 
         [HttpGet("migrate")]
+        [Authorize]
         public async Task<string> Get()
         {
             try
@@ -46,6 +50,7 @@ namespace BadMelon.API.Controllers
         }
 
         [HttpGet("seed")]
+        [Authorize]
         public async Task<string> Seed()
         {
             await _db.Database.EnsureCreatedAsync();
@@ -72,8 +77,14 @@ namespace BadMelon.API.Controllers
         [HttpDelete]
         public async Task<string> Delete()
         {
-            await _db.Database.EnsureDeletedAsync();
-            return await Seed();
+            if (_host.IsDevelopment() || _host.IsEnvironment("Testing"))
+            {
+                await _db.Database.EnsureDeletedAsync();
+                return await Seed();
+            }
+
+            HttpContext.Response.StatusCode = 404;
+            return string.Empty;
         }
     }
 }
