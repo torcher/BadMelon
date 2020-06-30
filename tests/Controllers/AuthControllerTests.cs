@@ -18,8 +18,7 @@ namespace BadMelon.Tests.Controllers
         {
             await Logout();
             var login = dataSamples.RootUserLogin;
-            var temp = StringContentGenerator.GetJSON(login);
-            var loginResponse = await _http.PostAsync("api/auth/login", temp);
+            var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
             loginResponse.EnsureSuccessStatusCode();
 
             _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "");
@@ -31,7 +30,7 @@ namespace BadMelon.Tests.Controllers
         public async Task PostLogin_WhenBadLogin_ExpectNotFound()
         {
             var login = new Login { Username = "root", Password = "pwdroot" };
-            var loginResponse = await _http.PostAsync("api/auth/login", StringContentGenerator.GetJSON(login));
+            var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
             Assert.True(loginResponse.StatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
@@ -39,7 +38,7 @@ namespace BadMelon.Tests.Controllers
         public async Task PostLogin_WhenInvalidLogin_ExpectBadRequest()
         {
             var login = new Login { Username = "root" };
-            var loginResponse = await _http.PostAsync("api/auth/login", StringContentGenerator.GetJSON(login));
+            var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
             Assert.True(loginResponse.StatusCode == System.Net.HttpStatusCode.BadRequest);
         }
 

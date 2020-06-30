@@ -27,7 +27,7 @@ namespace BadMelon.Tests.Fixtures
 
         protected async Task Login()
         {
-            var response = await _http.PostAsync("api/auth/login", StringContentGenerator.GetJSON(dataSamples.RootUserLogin));
+            var response = await _http.PostAsync("api/auth/login", dataSamples.RootUserLogin.GetStringContent());
             Console.WriteLine(response.StatusCode.ToString());
         }
 
