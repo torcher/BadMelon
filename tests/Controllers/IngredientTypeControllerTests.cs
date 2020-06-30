@@ -2,11 +2,9 @@
 using BadMelon.Data.Services;
 using BadMelon.Tests.Fixtures;
 using BadMelon.Tests.Fixtures.DTOs;
-using Newtonsoft.Json;
+using BadMelon.Tests.Helpers;
 using System;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,8 +19,7 @@ namespace BadMelon.Tests.Controllers
             var response = await _http.GetAsync("api/ingredienttype");
             response.EnsureSuccessStatusCode();
 
-            var ingredientTypeJson = await response.Content.ReadAsStringAsync();
-            var ingredientTypes = JsonConvert.DeserializeObject<IngredientType[]>(ingredientTypeJson);
+            var ingredientTypes = await response.GetObject<IngredientType[]>();
             Assert.False(ingredientTypes == null || ingredientTypes.Length == 0, "Should have returned at least one ingredient type");
             foreach (var it in ingredientTypes)
                 ValidateIngredientType(it);
@@ -34,14 +31,12 @@ namespace BadMelon.Tests.Controllers
             var getAllResponse = await _http.GetAsync("api/ingredienttype");
             getAllResponse.EnsureSuccessStatusCode();
 
-            var ingredientTypesJson = await getAllResponse.Content.ReadAsStringAsync();
-            var ingredientTypes = JsonConvert.DeserializeObject<IngredientType[]>(ingredientTypesJson);
+            var ingredientTypes = await getAllResponse.GetObject<IngredientType[]>();
 
             var getOneResponse = await _http.GetAsync("api/ingredienttype/" + ingredientTypes.First().ID);
             getOneResponse.EnsureSuccessStatusCode();
 
-            var ingredientTypeJson = await getOneResponse.Content.ReadAsStringAsync();
-            var ingredientType = JsonConvert.DeserializeObject<IngredientType>(ingredientTypeJson);
+            var ingredientType = await getOneResponse.GetObject<IngredientType>();
             Assert.True(ingredientType.ID == ingredientTypes.First().ID, "IngredientType IDs should be the same");
             ValidateIngredientType(ingredientType);
         }
@@ -60,21 +55,19 @@ namespace BadMelon.Tests.Controllers
         {
             var getallResponse = await _http.GetAsync("api/ingredientType");
             getallResponse.EnsureSuccessStatusCode();
-            var ingredientTypes = JsonConvert.DeserializeObject<IngredientType[]>(await getallResponse.Content.ReadAsStringAsync());
+            var ingredientTypes = await getallResponse.GetObject<IngredientType[]>();
 
             var newIngredientType = new IngredientTypeFixture("uranium").Build();
-            var newRecipeJson = JsonConvert.SerializeObject(newIngredientType);
-            var requestBody = new StringContent(newRecipeJson, Encoding.UTF8, "application/json");
-            var response = await _http.PostAsync("api/ingredientType", requestBody);
+            var response = await _http.PostAsync("api/ingredientType", newIngredientType.GetStringContent());
             response.EnsureSuccessStatusCode();
-            var newIngredientReturned = JsonConvert.DeserializeObject<IngredientType>(await response.Content.ReadAsStringAsync());
+            var newIngredientReturned = await response.GetObject<IngredientType>();
             dataSamples.AddIngredientTypeToStorage(newIngredientReturned.ConvertFromDTO());
 
             var updatedIngredientTypesResponse = await _http.GetAsync("api/ingredientType");
             updatedIngredientTypesResponse.EnsureSuccessStatusCode();
 
-            var updatedIngredientType = JsonConvert.DeserializeObject<Recipe>(await response.Content.ReadAsStringAsync());
-            var updatedIngredientTypes = JsonConvert.DeserializeObject<Recipe[]>(await updatedIngredientTypesResponse.Content.ReadAsStringAsync());
+            var updatedIngredientType = await response.GetObject<Recipe>();
+            var updatedIngredientTypes = await updatedIngredientTypesResponse.GetObject<Recipe[]>();
             Assert.False(updatedIngredientType == null, "Ingredient Type should not be null");
             Assert.True(updatedIngredientType.Name == newIngredientType.Name, "Names should be the same");
             Assert.True(ingredientTypes.Length + 1 == updatedIngredientTypes.Length, "There should be one new Ingredient Type");
@@ -84,8 +77,7 @@ namespace BadMelon.Tests.Controllers
         [ClassData(typeof(BadIngredientTypesTestData))]
         public async Task Post_BadRecipe_ExpectError(IngredientType newIngredientType, int statusCodeExpected)
         {
-            var body = new StringContent(JsonConvert.SerializeObject(newIngredientType), Encoding.UTF8, "application/json");
-            var response = await _http.PostAsync("api/ingredientType", body);
+            var response = await _http.PostAsync("api/ingredientType", newIngredientType.GetStringContent());
             Assert.True((int)response.StatusCode == statusCodeExpected, "Status code should be " + statusCodeExpected + " but was " + (int)response.StatusCode);
         }
 

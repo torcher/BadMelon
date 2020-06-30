@@ -1,4 +1,5 @@
 using BadMelon.API.Helpers;
+using BadMelon.API.Security;
 using BadMelon.Data;
 using BadMelon.Data.Repos;
 using BadMelon.Data.Services;
@@ -28,6 +29,8 @@ namespace BadMelon.API
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthServices(Configuration);
+
             if (!Environment.IsEnvironment("Testing"))
             {
                 var dbConnectionString = Configuration.GetConnectionString("Default");
@@ -44,9 +47,12 @@ namespace BadMelon.API
                 services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             }
 
+            services.AddHttpContextAccessor();
+
             services.AddTransient<IRecipeRepo, RecipeRepo>();
             services.AddTransient<IIngredientTypeRepo, IngredientTypeRepo>();
 
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<IIngredientTypeService, IngredientTypeService>();
 
@@ -84,7 +90,9 @@ namespace BadMelon.API
 
             app.UseRouting();
 
-            //app.UseAuthorization();
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

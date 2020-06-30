@@ -1,4 +1,8 @@
 ﻿using BadMelon.Data;
+using BadMelon.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,21 +15,25 @@ namespace BadMelon.API.Controllers
     public class DatabaseController : Controller
     {
         private readonly BadMelonDataContext _db;
+        private readonly UserManager<User> _userManager;
+        private readonly IHostingEnvironment _host;
 
-        public DatabaseController(BadMelonDataContext db)
+        public DatabaseController(BadMelonDataContext db, UserManager<User> userManager, IHostingEnvironment host)
         {
             _db = db;
+            _userManager = userManager;
+            _host = host;
         }
 
-        // GET: api/database/migrate
         [HttpGet("migrate")]
+        [Authorize]
         public async Task<string> Get()
         {
             try
             {
                 await _db.Database.MigrateAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "Database migration failed. Contact an administrator.";
             }
@@ -42,6 +50,7 @@ namespace BadMelon.API.Controllers
         }
 
         [HttpGet("seed")]
+        [Authorize]
         public async Task<string> Seed()
         {
             await _db.Database.EnsureCreatedAsync();
@@ -58,6 +67,7 @@ namespace BadMelon.API.Controllers
             try
             {
                 await _db.Seed();
+                await _userManager.AddPasswordAsync(await _db.Users.FirstOrDefaultAsync(), "rootpwd");
             }
             catch (Exception) { return "Cannot write to database. Contact an administrator."; }
 
@@ -67,9 +77,14 @@ namespace BadMelon.API.Controllers
         [HttpDelete]
         public async Task<string> Delete()
         {
-            await _db.Database.EnsureDeletedAsync();
-            await _db.Database.EnsureCreatedAsync();
-            return await Seed();
+            if (_host.IsDevelopment() || _host.IsEnvironment("Testing"))
+            {
+                await _db.Database.EnsureDeletedAsync();
+                return await Seed();
+            }
+
+            HttpContext.Response.StatusCode = 404;
+            return string.Empty;
         }
     }
 }

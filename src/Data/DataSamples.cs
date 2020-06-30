@@ -7,6 +7,12 @@ namespace BadMelon.Data
 {
     public class DataSamples
     {
+        public User RootUser { get => _RootUser; }
+        public User _RootUser;
+
+        public DTOs.Login RootUserLogin { get => _RootUserLogin; }
+        public DTOs.Login _RootUserLogin;
+
         public Recipe[] Recipes { get => _Recipes.ToArray(); }
         private List<Recipe> _Recipes;
 
@@ -15,6 +21,9 @@ namespace BadMelon.Data
 
         public DataSamples()
         {
+            _RootUser = new User { UserName = "root", Email = "root@badmelon.fake", EmailConfirmed = true };
+            _RootUserLogin = new DTOs.Login { Username = _RootUser.UserName, Password = "rootpwd" };
+
             _IngredientTypes = new List<IngredientType>();
             var water = new IngredientType { ID = Guid.NewGuid(), Name = "Water" };
             var corn = new IngredientType { ID = Guid.NewGuid(), Name = "Corn" };

@@ -3,6 +3,7 @@ using BadMelon.Data.Services;
 using BadMelon.Tests.Data;
 using BadMelon.Tests.Fixtures;
 using BadMelon.Tests.Fixtures.DTOs;
+using BadMelon.Tests.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -23,8 +24,7 @@ namespace BadMelon.Tests.Controllers
             var response = await _http.GetAsync("api/recipe");
             response.EnsureSuccessStatusCode();
 
-            var recipesJson = await response.Content.ReadAsStringAsync();
-            var recipes = JsonConvert.DeserializeObject<Recipe[]>(recipesJson);
+            var recipes = await response.GetObject<Recipe[]>();
             Assert.True(expectedRecipes.Length == recipes.Length, "Recipes returned should be the same");
             for (int i = 0; i < expectedRecipes.Length; i++)
             {
@@ -39,14 +39,12 @@ namespace BadMelon.Tests.Controllers
             var recipesResponse = await _http.GetAsync("api/recipe");
             recipesResponse.EnsureSuccessStatusCode();
 
-            var recipesJson = await recipesResponse.Content.ReadAsStringAsync();
-            var recipes = JsonConvert.DeserializeObject<Recipe[]>(recipesJson);
+            var recipes = await recipesResponse.GetObject<Recipe[]>();
 
             var response = await _http.GetAsync("api/recipe/" + recipes.First().ID);
             response.EnsureSuccessStatusCode();
 
-            var recipeJson = await response.Content.ReadAsStringAsync();
-            var recipe = JsonConvert.DeserializeObject<Recipe>(recipeJson);
+            var recipe = await response.GetObject<Recipe>();
             Assert.True(recipe.ID == recipes.First().ID, "ID shouldn't change");
             ValidateRecipe(recipe);
         }
@@ -63,26 +61,22 @@ namespace BadMelon.Tests.Controllers
         {
             var getallResponse = await _http.GetAsync("api/recipe");
             getallResponse.EnsureSuccessStatusCode();
-            var c = await getallResponse.Content.ReadAsStringAsync();
-            var recipes = JsonConvert.DeserializeObject<Recipe[]>(c);
+            var recipes = await getallResponse.GetObject<Recipe[]>();
 
             var newRecipe = new RecipeFixture("new recipe")
                 .WithIngredient(new Ingredient { Weight = 1d, TypeID = recipes.First().Ingredients.First().TypeID })
                 .WithStep(new Step { Text = "Cook me", CookTime = "00:10:00", PrepTime = "00:20:00" }).Build();
 
             newRecipe.Ingredients.First().TypeID = recipes.First().Ingredients.First().TypeID;
-            var newRecipeJson = JsonConvert.SerializeObject(newRecipe);
-            var requestBody = new StringContent(newRecipeJson, System.Text.Encoding.UTF8, "application/json");
-            var response = await _http.PostAsync("api/recipe", requestBody);
-            var cc = await response.Content.ReadAsStringAsync();
+            var response = await _http.PostAsync("api/recipe", newRecipe.GetStringContent());
             response.EnsureSuccessStatusCode();
-            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await response.Content.ReadAsStringAsync());
+            var updatedRecipe = await response.GetObject<Recipe>();
             dataSamples.AddRecipeToStorage(updatedRecipe.ConvertFromDTO());
 
             var updatedRecipesResponse = await _http.GetAsync("api/recipe");
             updatedRecipesResponse.EnsureSuccessStatusCode();
 
-            var updatedRecipes = JsonConvert.DeserializeObject<Recipe[]>(await updatedRecipesResponse.Content.ReadAsStringAsync());
+            var updatedRecipes = await updatedRecipesResponse.GetObject<Recipe[]>();
             Assert.False(updatedRecipe == null, "Recipe should not be null");
             Assert.True(updatedRecipe.Name == newRecipe.Name, "Names should be the same");
             Assert.True(recipes.Length + 1 == updatedRecipes.Length, "There should be one new recipe");
@@ -92,8 +86,7 @@ namespace BadMelon.Tests.Controllers
         [ClassData(typeof(BadRecipesTestData))]
         public async Task Post_BadRecipe_ExpectError(Recipe newRecipe, int statusCodeExpected)
         {
-            var body = new StringContent(JsonConvert.SerializeObject(newRecipe), Encoding.UTF8, "application/json");
-            var response = await _http.PostAsync("api/recipe", body);
+            var response = await _http.PostAsync("api/recipe", newRecipe.GetStringContent());
             Assert.True((int)response.StatusCode == statusCodeExpected, "Status code should be " + statusCodeExpected + " but was " + (int)response.StatusCode);
         }
 
@@ -105,19 +98,14 @@ namespace BadMelon.Tests.Controllers
             var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
             var oldRecipe = allRecipes.First();
             var newIngredientType = new IngredientType { Name = "Twinkleberries" };
-            var newIngredientTypeResponse = await _http.PostAsync("api/ingredienttype", new StringContent(
-                    JsonConvert.SerializeObject(newIngredientType),
-                    Encoding.UTF8,
-                    "application/json"
-                ));
+            var newIngredientTypeResponse = await _http.PostAsync("api/ingredienttype", newIngredientType.GetStringContent());
             newIngredientTypeResponse.EnsureSuccessStatusCode();
-            var newIngredientTypeWithID = JsonConvert.DeserializeObject<IngredientType>(await newIngredientTypeResponse.Content.ReadAsStringAsync());
+            var newIngredientTypeWithID = await newIngredientTypeResponse.GetObject<IngredientType>();
 
             var newIngredient = new Ingredient { Weight = 2d, TypeID = newIngredientTypeWithID.ID };
-            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
-            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", newIngredient.GetStringContent());
             updatedRecipeResponse.EnsureSuccessStatusCode();
-            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+            var updatedRecipe = await updatedRecipeResponse.GetObject<Recipe>();
 
             Assert.NotNull(updatedRecipe);
             Assert.True(oldRecipe.Ingredients.Count + 1 == updatedRecipe.Ingredients.Count, "Ingredient count should be increased by 1");
@@ -130,15 +118,14 @@ namespace BadMelon.Tests.Controllers
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
-            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var allRecipes = await getAllRecipesResponse.GetObject<Recipe[]>();
             var oldRecipe = allRecipes.First();
             var oldIngredientType = oldRecipe.Ingredients.First().TypeID;
 
             var newIngredient = new Ingredient { Weight = 2d, TypeID = oldIngredientType };
-            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
-            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", newIngredient.GetStringContent());
             updatedRecipeResponse.EnsureSuccessStatusCode();
-            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+            var updatedRecipe = await updatedRecipeResponse.GetObject<Recipe>();
 
             Assert.NotNull(updatedRecipe);
             Assert.True(oldRecipe.Ingredients.Count == updatedRecipe.Ingredients.Count, "Ingredient count should be the same");
@@ -151,13 +138,12 @@ namespace BadMelon.Tests.Controllers
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
-            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var allRecipes = await getAllRecipesResponse.GetObject<Recipe[]>();
             var oldRecipe = allRecipes.First();
             var oldIngredient = oldRecipe.Ingredients.First();
 
             var newIngredient = new Ingredient { Weight = 2d, TypeID = oldIngredient.TypeID };
-            var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
-            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{Guid.NewGuid()}/ingredients", body);
+            var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{Guid.NewGuid()}/ingredients", newIngredient.GetStringContent());
             Assert.True(updatedRecipeResponse.StatusCode == System.Net.HttpStatusCode.NotFound, "Should be not found");
         }
 
@@ -166,14 +152,12 @@ namespace BadMelon.Tests.Controllers
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
-            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var allRecipes = await getAllRecipesResponse.GetObject<Recipe[]>();
             var oldRecipe = allRecipes.First();
-            var oldIngredient = oldRecipe.Ingredients.First();
 
             var newIngredient = new Ingredient { Weight = 2d, TypeID = Guid.NewGuid() };
             var body = new StringContent(JsonConvert.SerializeObject(newIngredient), Encoding.UTF8, "application/json");
             var updatedRecipeResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/ingredients", body);
-            var c = await updatedRecipeResponse.Content.ReadAsStringAsync();
             Assert.True(updatedRecipeResponse.StatusCode == System.Net.HttpStatusCode.NotFound, "Should be not found");
         }
 
@@ -182,7 +166,7 @@ namespace BadMelon.Tests.Controllers
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
-            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var allRecipes = await getAllRecipesResponse.GetObject<Recipe[]>();
             var oldRecipe = allRecipes.First();
             var oldIngredient = oldRecipe.Ingredients.First();
 
@@ -197,13 +181,13 @@ namespace BadMelon.Tests.Controllers
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
             getAllRecipesResponse.EnsureSuccessStatusCode();
-            var allRecipes = JsonConvert.DeserializeObject<Recipe[]>(await getAllRecipesResponse.Content.ReadAsStringAsync());
+            var allRecipes = await getAllRecipesResponse.GetObject<Recipe[]>();
             var oldRecipe = allRecipes.First();
 
             var newStep = new Step { Text = "New step", Order = 1 };
-            var newStepResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/steps", new StringContent(JsonConvert.SerializeObject(newStep), Encoding.UTF8, "application/json"));
+            var newStepResponse = await _http.PostAsync($"api/recipe/{oldRecipe.ID}/steps", newStep.GetStringContent());
             newStepResponse.EnsureSuccessStatusCode();
-            var newRecipe = JsonConvert.DeserializeObject<Recipe>(await newStepResponse.Content.ReadAsStringAsync());
+            var newRecipe = await newStepResponse.GetObject<Recipe>();
             Assert.True(newRecipe.Steps.Count == oldRecipe.Ingredients.Count + 1);
             Assert.NotNull(newRecipe.Steps.SingleOrDefault(x => x.Text == newStep.Text));
         }
@@ -212,7 +196,7 @@ namespace BadMelon.Tests.Controllers
         public async Task Post_RecipeStep_WhenRecipeMissing_ExpectNotFound()
         {
             var content = new StringContent(JsonConvert.SerializeObject(new Step { Text = "Test" }), Encoding.UTF8, "application/json");
-            var response = await _http.PostAsync($"api/recipe/{Guid.NewGuid()}/steps", content);
+            var response = await _http.PostAsync($"api/recipe/{Guid.NewGuid()}/steps", new Step { Text = "Test" }.GetStringContent());
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
@@ -222,10 +206,9 @@ namespace BadMelon.Tests.Controllers
         {
             var recipesResposne = await _http.GetAsync("api/recipe");
             recipesResposne.EnsureSuccessStatusCode();
-            var recipes = JsonConvert.DeserializeObject<Recipe[]>(await recipesResposne.Content.ReadAsStringAsync());
+            var recipes = await recipesResposne.GetObject<Recipe[]>();
 
-            var content = new StringContent(JsonConvert.SerializeObject(step), Encoding.UTF8, "application/json");
-            var response = await _http.PostAsync($"api/recipe/{recipes[0].ID}/steps", content);
+            var response = await _http.PostAsync($"api/recipe/{recipes[0].ID}/steps", step.GetStringContent());
             Assert.True((int)response.StatusCode == responseCode, $"Response code was {(int)response.StatusCode} but should have been {responseCode}");
         }
 
@@ -240,13 +223,12 @@ namespace BadMelon.Tests.Controllers
             updatingStep.CookTime = "97:0:0";
             updatingStep.Order = 98;
 
-            var content = new StringContent(JsonConvert.SerializeObject(updatingStep), Encoding.UTF8, "application/json");
-            var updateResponse = await _http.PutAsync($"api/recipe/{updatingRecipe.ID}/steps", content);
+            var updateResponse = await _http.PutAsync($"api/recipe/{updatingRecipe.ID}/steps", updatingStep.GetStringContent());
             updateResponse.EnsureSuccessStatusCode();
 
             var updatedRecipeResponse = await _http.GetAsync($"api/recipe/{updatingRecipe.ID}");
             updatedRecipeResponse.EnsureSuccessStatusCode();
-            var recipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+            var recipe = await updatedRecipeResponse.GetObject<Recipe>();
 
             var updatedStep = recipe.Steps.SingleOrDefault(s => s.ID == updatingStep.ID);
             Assert.NotNull(updatingStep);
@@ -259,8 +241,7 @@ namespace BadMelon.Tests.Controllers
         [Fact]
         public async Task Put_RecipeStep_WhenRecipeMissing_ExpectNotFound()
         {
-            var content = new StringContent(JsonConvert.SerializeObject(new Step { Text = "a" }), Encoding.UTF8, "application/json");
-            var response = await _http.PutAsync($"api/recipe/{Guid.NewGuid()}/steps", content);
+            var response = await _http.PutAsync($"api/recipe/{Guid.NewGuid()}/steps", new Step { Text = "a" }.GetStringContent());
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
@@ -268,8 +249,7 @@ namespace BadMelon.Tests.Controllers
         public async Task Put_RecipeStep_WhenStepMissing_ExpectNotFound()
         {
             var allRecipes = await GetAllRecipes();
-            var content = new StringContent(JsonConvert.SerializeObject(new Step { Text = "a" }), Encoding.UTF8, "application/json");
-            var response = await _http.PutAsync($"api/recipe/{allRecipes[0].ID}/steps", content);
+            var response = await _http.PutAsync($"api/recipe/{allRecipes[0].ID}/steps", new Step { Text = "a" }.GetStringContent());
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
@@ -278,8 +258,7 @@ namespace BadMelon.Tests.Controllers
         public async Task Put_RecipeStep_WhenBadStep_ExpectBadRequest(Step step, int statusCode)
         {
             var allRecipes = await GetAllRecipes();
-            var content = new StringContent(JsonConvert.SerializeObject(step), Encoding.UTF8, "application/json");
-            var response = await _http.PutAsync($"api/recipe/{allRecipes[0].ID}/steps", content);
+            var response = await _http.PutAsync($"api/recipe/{allRecipes[0].ID}/steps", step.GetStringContent());
             Assert.True((int)response.StatusCode == statusCode);
         }
 
@@ -295,7 +274,7 @@ namespace BadMelon.Tests.Controllers
 
             var updatedRecipeResponse = await _http.GetAsync($"api/recipe/{updatingRecipe.ID}");
             updatedRecipeResponse.EnsureSuccessStatusCode();
-            var updatedRecipe = JsonConvert.DeserializeObject<Recipe>(await updatedRecipeResponse.Content.ReadAsStringAsync());
+            var updatedRecipe = await updatedRecipeResponse.GetObject<Recipe>();
 
             Assert.True(updatedRecipe.Steps.Count == updatedRecipe.Steps.Count);
             Assert.Null(updatedRecipe.Steps.SingleOrDefault(s => s.ID == deletingStep.ID));
@@ -320,7 +299,7 @@ namespace BadMelon.Tests.Controllers
         {
             var allRecipesResponse = await _http.GetAsync("api/recipe");
             allRecipesResponse.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<Recipe[]>(await allRecipesResponse.Content.ReadAsStringAsync());
+            return await allRecipesResponse.GetObject<Recipe[]>();
         }
 
         private void ValidateRecipe(Recipe recipe)

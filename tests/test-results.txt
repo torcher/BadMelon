@@ -5,13 +5,11 @@ Copyright (c) Microsoft Corporation.  All rights reserved.
 Starting test execution, please wait...
 
 A total of 1 test files matched the specified pattern.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
 
 Test Run Successful.
-Total tests: 71
-     Passed: 71
- Total time: 10.2538 Seconds
+Total tests: 75
+     Passed: 75
+ Total time: 10.8617 Seconds
 
 Calculating coverage result...
   Generating report 'TestResults\coverage.info'
@@ -19,16 +17,16 @@ Calculating coverage result...
 +---------------+--------+--------+--------+
 | Module        | Line   | Branch | Method |
 +---------------+--------+--------+--------+
-| BadMelon.API  | 74.86% | 41.66% | 85.18% |
+| BadMelon.API  | 78.21% | 50%    | 90.32% |
 +---------------+--------+--------+--------+
-| BadMelon.Data | 61.75% | 50%    | 58.95% |
+| BadMelon.Data | 62.59% | 50%    | 60.22% |
 +---------------+--------+--------+--------+
 
 +---------+--------+--------+--------+
 |         | Line   | Branch | Method |
 +---------+--------+--------+--------+
-| Total   | 64.62% | 49.27% | 62.5%  |
+| Total   | 66.95% | 50%    | 64.62% |
 +---------+--------+--------+--------+
-| Average | 68.3%  | 45.83% | 72.06% |
+| Average | 70.4%  | 50%    | 75.27% |
 +---------+--------+--------+--------+
 
