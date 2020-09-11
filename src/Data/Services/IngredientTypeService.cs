@@ -28,7 +28,7 @@ namespace BadMelon.Data.Services
 
         public async Task<IngredientType> AddIngredientType(IngredientType ingredientType)
         {
-            var ingredientTypeEntity = ingredientType.ConvertFromDTO();
+            var ingredientTypeEntity = ingredientType.ConvertToEntity();
             var newIngredientType = _db.IngredientTypes.CreateProxy();
             EntityCopier.Copy(ingredientTypeEntity, newIngredientType);
             await _db.IngredientTypes.AddAsync(newIngredientType);

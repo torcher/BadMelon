@@ -28,7 +28,7 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> AddRecipe(Recipe recipe)
         {
-            var recipeEntity = recipe.ConvertFromDTO();
+            var recipeEntity = recipe.ConvertToEntity();
             var newRecipe = _db.Recipes.CreateProxy();
             EntityCopier.Copy(recipeEntity, newRecipe);
             await _db.Recipes.AddAsync(newRecipe);
@@ -44,7 +44,7 @@ namespace BadMelon.Data.Services
             {
                 var ingredientType = await GetIngredientType(ingredient.TypeID);
                 var newIngredient = _db.Ingredients.CreateProxy();
-                EntityCopier.Copy(ingredient.ConvertFromDTO(), newIngredient);
+                EntityCopier.Copy(ingredient.ConvertToEntity(), newIngredient);
                 recipe.Ingredients.Add(newIngredient);
             }
             else
@@ -83,7 +83,7 @@ namespace BadMelon.Data.Services
         {
             var recipe = await GetRecipe(recipeId);
             var newStep = _db.Steps.CreateProxy();
-            EntityCopier.Copy(step.ConvertFromDTO(recipe), newStep);
+            EntityCopier.Copy(step.ConvertToEntity(recipe), newStep);
             recipe.Steps.Add(newStep);
             await _db.SaveChangesAsync();
             return recipe.ConvertToDTO();
@@ -94,7 +94,7 @@ namespace BadMelon.Data.Services
             var recipe = await GetRecipe(recipeId);
             var stepToUpdate = await GetStep(step.ID, recipe);
 
-            EntityCopier.Copy(step.ConvertFromDTO(recipe), stepToUpdate);
+            EntityCopier.Copy(step.ConvertToEntity(recipe), stepToUpdate);
             await _db.SaveChangesAsync();
 
             return recipe.ConvertToDTO();

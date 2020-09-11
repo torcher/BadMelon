@@ -61,7 +61,7 @@ namespace BadMelon.Tests.Controllers
             var response = await _http.PostAsync("api/ingredientType", newIngredientType.GetStringContent());
             response.EnsureSuccessStatusCode();
             var newIngredientReturned = await response.GetObject<IngredientType>();
-            dataSamples.AddIngredientTypeToStorage(newIngredientReturned.ConvertFromDTO());
+            dataSamples.AddIngredientTypeToStorage(newIngredientReturned.ConvertToEntity());
 
             var updatedIngredientTypesResponse = await _http.GetAsync("api/ingredientType");
             updatedIngredientTypesResponse.EnsureSuccessStatusCode();
