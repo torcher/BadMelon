@@ -40,6 +40,9 @@ namespace BadMelon.Data.Services
             return signInResult.Succeeded;
         }
 
-        public async Task Logout() => await _signInManager.SignOutAsync();
+        public async Task Logout()
+        {
+            await _signInManager.SignOutAsync();
+        }
     }
 }

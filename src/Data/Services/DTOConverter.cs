@@ -72,11 +72,13 @@ namespace BadMelon.Data.Services
 
         public static ICollection<Entities.Ingredient> ConvertFromDTOs(this IEnumerable<Ingredient> ingredients) => ingredients.Select(i => i.ConvertFromDTO()).ToArray();
 
-        public static Entities.Step ConvertFromDTO(this Step step)
+        public static Entities.Step ConvertFromDTO(this Step step, Entities.Recipe Recipe)
         {
             return new Entities.Step
             {
                 ID = step.ID,
+                Recipe = Recipe,
+                RecipeId = Recipe.ID,
                 Order = step.Order,
                 Text = step.Text,
                 CookTime = step.CookTime.FromRecipeFormat(),
@@ -84,7 +86,7 @@ namespace BadMelon.Data.Services
             };
         }
 
-        public static ICollection<Entities.Step> ConvertFromDTOs(this Step[] steps) => steps.Select(s => s.ConvertFromDTO()).ToArray();
+        public static ICollection<Entities.Step> ConvertFromDTOs(this Step[] steps, Entities.Recipe recipe) => steps.Select(s => s.ConvertFromDTO(recipe)).ToArray();
 
         public static Step ConvertToDTO(this Entities.Step step)
         {

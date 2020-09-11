@@ -6,17 +6,17 @@ using Xunit;
 
 namespace BadMelon.Tests.Controllers
 {
+    [Collection("SynchronousTests")]
     public class AuthControllerTests : ControllerTestsFixture
     {
         public AuthControllerTests() : base()
         {
-            Logout().Wait();
+            Logout();
         }
 
         [Fact]
         public async Task PostLogin_WhenGoodLogin_ExpectSuccessAndAccess()
         {
-            await Logout();
             var login = dataSamples.RootUserLogin;
             var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
             loginResponse.EnsureSuccessStatusCode();
@@ -45,7 +45,6 @@ namespace BadMelon.Tests.Controllers
         [Fact]
         public async Task GetDatabaseMigration_WhenLoggedOut_ExpectUnauthorized()
         {
-            await Logout();
             var migrationResponse = await _http.GetAsync("api/database/migrate");
             Assert.True(migrationResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized);
         }
