@@ -3,7 +3,6 @@ using BadMelon.Tests.Helpers;
 using Microsoft.AspNetCore.TestHost;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace BadMelon.Tests.Fixtures
 {
@@ -15,25 +14,36 @@ namespace BadMelon.Tests.Fixtures
 
         public ControllerTestsFixture()
         {
-            testServer = TestServerFactory.TestServer;
+            testServer = TestServerFactory.GetTestServer();
             using var testClient = testServer.CreateClient();
             _http = new HttpClient(new TestHttpClientHandler(testServer.CreateHandler()));
             _http.BaseAddress = testClient.BaseAddress;
             dataSamples = new DataSamples();
 
             _http.DeleteAsync("api/database").Wait();
-            Login().Wait();
+            Login();
         }
 
-        protected async Task Login()
+        protected void Login()
         {
-            var response = await _http.PostAsync("api/auth/login", dataSamples.RootUserLogin.GetStringContent());
+            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/login", dataSamples.RootUserLogin.GetStringContent()));
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception x)
+            {
+                throw x;
+            }
             Console.WriteLine(response.StatusCode.ToString());
         }
 
-        protected async Task Logout()
+        protected void Logout()
         {
-            await _http.PostAsync("api/auth/logout", new StringContent(""));
+            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/logout", new StringContent("")));
+            if (!response.IsSuccessStatusCode && response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
+                throw new Exception("Should not be status code " + response.StatusCode.ToString());
         }
     }
 }

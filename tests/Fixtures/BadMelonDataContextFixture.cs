@@ -1,4 +1,5 @@
 ﻿using BadMelon.Data;
+using BadMelon.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -22,7 +23,7 @@ namespace BadMelon.Tests.Fixtures
 
         public void WithSeedData()
         {
-            BadMelonDataContext.Seed().Wait();
+            AsyncHelper.RunSync(() => BadMelonDataContext.Seed());
         }
     }
 }

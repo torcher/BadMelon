@@ -2,11 +2,13 @@
 {
     public class EntityNotFoundException : RepoException
     {
-        public EntityNotFoundException(string message) : base(message)
+        private const string messagePrefix = "Could not find ";
+
+        public EntityNotFoundException(string message) : base(messagePrefix + message)
         {
         }
 
-        public EntityNotFoundException(string message, System.Exception innerException) : base(message, innerException)
+        public EntityNotFoundException(string message, System.Exception innerException) : base(messagePrefix + message, innerException)
         {
         }
     }

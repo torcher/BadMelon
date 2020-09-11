@@ -82,7 +82,11 @@ namespace BadMelon.API.Controllers
                 await _db.Database.EnsureDeletedAsync();
                 return await Seed();
             }
+            return ErrorResponse();
+        }
 
+        private string ErrorResponse()
+        {
             HttpContext.Response.StatusCode = 404;
             return string.Empty;
         }

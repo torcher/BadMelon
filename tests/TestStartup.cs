@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.IO;
 
 namespace BadMelon.Tests
 {
@@ -30,13 +29,13 @@ namespace BadMelon.Tests
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<BadMelonDataContext>();
 
+                //ToDo: make this work in actual production
                 if (dbContext.Database.GetDbConnection().ConnectionString.ToLower().Contains("database.windows.net"))
                 {
                     throw new Exception("LIVE SETTINGS IN TESTS!");
                 }
 
                 // Initialize database
-                File.Delete(_dbName);
                 dbContext.Seed().Wait();
             }
         }

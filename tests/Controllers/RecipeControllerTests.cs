@@ -71,7 +71,7 @@ namespace BadMelon.Tests.Controllers
             var response = await _http.PostAsync("api/recipe", newRecipe.GetStringContent());
             response.EnsureSuccessStatusCode();
             var updatedRecipe = await response.GetObject<Recipe>();
-            dataSamples.AddRecipeToStorage(updatedRecipe.ConvertFromDTO());
+            dataSamples.AddRecipeToStorage(updatedRecipe.ConvertToEntity());
 
             var updatedRecipesResponse = await _http.GetAsync("api/recipe");
             updatedRecipesResponse.EnsureSuccessStatusCode();
@@ -180,7 +180,7 @@ namespace BadMelon.Tests.Controllers
         public async Task Post_RecipeStep_WhenStepValid_ExpectSuccess()
         {
             var getAllRecipesResponse = await _http.GetAsync("api/recipe");
-            getAllRecipesResponse.EnsureSuccessStatusCode();
+            Assert.True((int)getAllRecipesResponse.StatusCode == 200, "Status code should be 200 but was " + getAllRecipesResponse.StatusCode.ToString());
             var allRecipes = await getAllRecipesResponse.GetObject<Recipe[]>();
             var oldRecipe = allRecipes.First();
 
@@ -231,7 +231,7 @@ namespace BadMelon.Tests.Controllers
             var recipe = await updatedRecipeResponse.GetObject<Recipe>();
 
             var updatedStep = recipe.Steps.SingleOrDefault(s => s.ID == updatingStep.ID);
-            Assert.NotNull(updatingStep);
+            Assert.NotNull(updatedStep);
             Assert.Equal(updatingStep.Text, updatedStep.Text);
             Assert.Equal(updatingStep.Order, updatedStep.Order);
             Assert.Equal(updatingStep.PrepTime, updatedStep.PrepTime);

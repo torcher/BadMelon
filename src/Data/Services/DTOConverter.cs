@@ -20,14 +20,14 @@ namespace BadMelon.Data.Services
             return new Recipe { ID = recipe.ID, Name = recipe.Name, Ingredients = ingredients, Steps = steps };
         }
 
-        public static Entities.Recipe ConvertFromDTO(this Recipe recipe)
+        public static Entities.Recipe ConvertToEntity(this Recipe recipe)
         {
             return new Entities.Recipe
             {
                 ID = recipe.ID,
                 Name = recipe.Name,
                 Ingredients = recipe.Ingredients.Select(i => new Data.Entities.Ingredient { Weight = i.Weight, IngredientTypeID = i.TypeID }).ToArray(),
-                Steps = recipe.Steps.Select(s => new Data.Entities.Step { Text = s.Text, Order = s.Order, PrepTime = s.PrepTime.ConvertFromString(), CookTime = s.CookTime.ConvertFromString() }).ToArray()
+                Steps = recipe.Steps.Select(s => new Data.Entities.Step { Text = s.Text, Order = s.Order, PrepTime = s.PrepTime.ConvertToEntities(), CookTime = s.CookTime.ConvertToEntities() }).ToArray()
             };
         }
 
@@ -42,7 +42,7 @@ namespace BadMelon.Data.Services
             };
         }
 
-        public static Entities.IngredientType ConvertFromDTO(this IngredientType ingredientType)
+        public static Entities.IngredientType ConvertToEntity(this IngredientType ingredientType)
         {
             return new Entities.IngredientType { ID = ingredientType.ID, Name = ingredientType.Name };
         }
@@ -60,7 +60,7 @@ namespace BadMelon.Data.Services
 
         public static List<Ingredient> ConvertToDTOs(this ICollection<Entities.Ingredient> ingredients) => ingredients.Select(i => i.ConvertToDTO()).ToList();
 
-        public static Entities.Ingredient ConvertFromDTO(this Ingredient ingredient)
+        public static Entities.Ingredient ConvertToEntity(this Ingredient ingredient)
         {
             return new Entities.Ingredient
             {
@@ -70,13 +70,15 @@ namespace BadMelon.Data.Services
             };
         }
 
-        public static ICollection<Entities.Ingredient> ConvertFromDTOs(this IEnumerable<Ingredient> ingredients) => ingredients.Select(i => i.ConvertFromDTO()).ToArray();
+        public static ICollection<Entities.Ingredient> ConvertToEntities(this IEnumerable<Ingredient> ingredients) => ingredients.Select(i => i.ConvertToEntity()).ToArray();
 
-        public static Entities.Step ConvertFromDTO(this Step step)
+        public static Entities.Step ConvertToEntity(this Step step, Entities.Recipe Recipe)
         {
             return new Entities.Step
             {
                 ID = step.ID,
+                Recipe = Recipe,
+                RecipeId = Recipe.ID,
                 Order = step.Order,
                 Text = step.Text,
                 CookTime = step.CookTime.FromRecipeFormat(),
@@ -84,7 +86,7 @@ namespace BadMelon.Data.Services
             };
         }
 
-        public static ICollection<Entities.Step> ConvertFromDTOs(this Step[] steps) => steps.Select(s => s.ConvertFromDTO()).ToArray();
+        public static ICollection<Entities.Step> ConvertToEntities(this Step[] steps, Entities.Recipe recipe) => steps.Select(s => s.ConvertToEntity(recipe)).ToArray();
 
         public static Step ConvertToDTO(this Entities.Step step)
         {
@@ -105,6 +107,6 @@ namespace BadMelon.Data.Services
             return new ModelState(state.Select(s => s.Value.ToString()).ToList());
         }
 
-        public static TimeSpan ConvertFromString(this string ts) => TimeSpan.TryParse(ts, out TimeSpan result) ? result : new TimeSpan(0, 0, 0);
+        public static TimeSpan ConvertToEntities(this string ts) => TimeSpan.TryParse(ts, out TimeSpan result) ? result : new TimeSpan(0, 0, 0);
     }
 }

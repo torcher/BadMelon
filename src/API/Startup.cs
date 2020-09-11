@@ -1,7 +1,6 @@
 using BadMelon.API.Helpers;
 using BadMelon.API.Security;
 using BadMelon.Data;
-using BadMelon.Data.Repos;
 using BadMelon.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,9 +47,6 @@ namespace BadMelon.API
             }
 
             services.AddHttpContextAccessor();
-
-            services.AddTransient<IRecipeRepo, RecipeRepo>();
-            services.AddTransient<IIngredientTypeRepo, IngredientTypeRepo>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRecipeService, RecipeService>();
