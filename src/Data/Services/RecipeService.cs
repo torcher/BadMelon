@@ -11,17 +11,17 @@ namespace BadMelon.Data.Services
     public class RecipeService : IRecipeService
     {
         private readonly BadMelonDataContext _db;
+        private readonly Entities.User _LoggedInUser;
 
-        public RecipeService(BadMelonDataContext db)
+        public RecipeService(BadMelonDataContext db, IUserService userService)
         {
             _db = db;
+            _LoggedInUser = userService.GetLoggedInUser().Result;
         }
 
         public async Task<Recipe[]> GetRecipes()
         {
-            return (await _db.Recipes.ToArrayAsync())
-                .ConvertToDTOs()
-                .ToArray();
+            return _LoggedInUser.Recipes.ToArray().ConvertToDTOs();
         }
 
         public async Task<Recipe> GetRecipeByID(Guid ID) => (await GetRecipe(ID)).ConvertToDTO();
@@ -29,6 +29,7 @@ namespace BadMelon.Data.Services
         public async Task<Recipe> AddRecipe(Recipe recipe)
         {
             var recipeEntity = recipe.ConvertToEntity();
+            recipeEntity.User = _LoggedInUser;
             var newRecipe = _db.Recipes.CreateProxy();
             EntityCopier.Copy(recipeEntity, newRecipe);
             await _db.Recipes.AddAsync(newRecipe);
@@ -114,6 +115,7 @@ namespace BadMelon.Data.Services
         private async Task<Entities.Recipe> GetRecipe(Guid recipeId)
         {
             var recipe = await _db.Recipes
+                .Where(r => r.UserId == _LoggedInUser.Id)
                 .Include(r => r.Ingredients)
                     .ThenInclude(i => i.IngredientType)
                 .Include(r => r.Steps)

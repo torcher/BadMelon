@@ -7,11 +7,8 @@ namespace BadMelon.Data
 {
     public class DataSamples
     {
-        public User RootUser { get => _RootUser; }
-        public User _RootUser;
-
-        public DTOs.Login RootUserLogin { get => _RootUserLogin; }
-        public DTOs.Login _RootUserLogin;
+        public (User, DTOs.Login)[] Users { get => _Users?.ToArray() ?? new (User, DTOs.Login)[] { }; }
+        private List<(User, DTOs.Login)> _Users;
 
         public Recipe[] Recipes { get => _Recipes.ToArray(); }
         private List<Recipe> _Recipes;
@@ -21,8 +18,15 @@ namespace BadMelon.Data
 
         public DataSamples()
         {
-            _RootUser = new User { UserName = "root", Email = "root@badmelon.fake", EmailConfirmed = true };
-            _RootUserLogin = new DTOs.Login { Username = _RootUser.UserName, Password = "rootpassword" };
+            var user0 = new User { UserName = "user0_xyz", Email = "user0_xyz@badmelon.fake", EmailConfirmed = true };
+            var user0Login = new DTOs.Login { Username = "user0_xyz", Password = "long enough password to not be complex" };
+
+            var user1 = new User { UserName = "user1_xyz", Email = "user1_xyz@badmelon.fake", EmailConfirmed = true };
+            var user1Login = new DTOs.Login { Username = "user1_xyz", Password = "long enough password to not be complex" };
+
+            _Users = new List<(User, DTOs.Login)>();
+            _Users.Add((user0, user0Login));
+            _Users.Add((user1, user1Login));
 
             _IngredientTypes = new List<IngredientType>();
             var water = new IngredientType { ID = Guid.NewGuid(), Name = "Water" };
@@ -32,6 +36,7 @@ namespace BadMelon.Data
             var cornSoup = new Recipe
             {
                 ID = Guid.NewGuid(),
+                User = user0,
                 Name = "Cold Corn Soup",
                 Ingredients = new List<Ingredient>(),
                 Steps = new List<Step>()
@@ -45,6 +50,7 @@ namespace BadMelon.Data
             var hotWater = new Recipe
             {
                 ID = Guid.NewGuid(),
+                User = user0,
                 Name = "Hot Water",
                 Ingredients = new List<Ingredient>(),
                 Steps = new List<Step>()
@@ -64,6 +70,7 @@ namespace BadMelon.Data
             var coldWater = new Recipe
             {
                 ID = Guid.NewGuid(),
+                User = user0,
                 Name = "Cold Water",
                 Ingredients = new List<Ingredient>(),
                 Steps = new List<Step>()

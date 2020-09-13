@@ -1,4 +1,4 @@
-﻿using BadMelon.Data.DTOs;
+using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
 using BadMelon.Tests.Data;
 using BadMelon.Tests.Fixtures;
@@ -18,7 +18,7 @@ namespace BadMelon.Tests.Controllers
     public class RecipeControllerTests : ControllerTestsFixture
     {
         [Fact]
-        public async Task Get_Recipe_ExpectAllRecipes()
+        public async Task GetRecipe_ExpectUsersAllRecipes()
         {
             var expectedRecipes = dataSamples.Recipes.ConvertToDTOs();
             var response = await _http.GetAsync("api/recipe");
@@ -31,6 +31,23 @@ namespace BadMelon.Tests.Controllers
                 Assert.True(recipes[i].Name == expectedRecipes[i].Name, "Recipe names should be the same");
                 ValidateRecipe(recipes[i]);
             }
+        }
+
+        [Fact]
+        public async Task GetRecipe_WhenUserHasNoRecipes_ExpectNoRecipes()
+        {
+            Logout();
+            var loginResponse = await _http.PostAsync("/api/auth/login", dataSamples.Users.Last().Item2.GetStringContent());
+            loginResponse.EnsureSuccessStatusCode();
+
+            var recipeResponse = await _http.GetAsync("/api/recipe");
+            recipeResponse.EnsureSuccessStatusCode();
+
+            var recipes = await recipeResponse.GetObject<Recipe[]>();
+            Assert.Equal(0, recipes.Length);
+
+            Logout();
+            Login();
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 ﻿using BadMelon.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BadMelon.Data
@@ -24,7 +25,7 @@ namespace BadMelon.Data
         {
             await Database.EnsureCreatedAsync();
             var data = new DataSamples();
-            await Users.AddAsync(data.RootUser);
+            await Users.AddRangeAsync(data.Users.Select(u => u.Item1).ToArray());
             await IngredientTypes.AddRangeAsync(data.IngredientTypes);
             await Recipes.AddRangeAsync(data.Recipes);
             await SaveChangesAsync();

@@ -1,6 +1,7 @@
 ﻿using BadMelon.Data.DTOs;
 using BadMelon.Tests.Fixtures;
 using BadMelon.Tests.Helpers;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,7 +18,7 @@ namespace BadMelon.Tests.Controllers
         [Fact]
         public async Task PostLogin_WhenGoodLogin_ExpectSuccessAndAccess()
         {
-            var login = dataSamples.RootUserLogin;
+            var login = dataSamples.Users.FirstOrDefault().Item2;
             var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
             loginResponse.EnsureSuccessStatusCode();
 
