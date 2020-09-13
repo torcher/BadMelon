@@ -68,9 +68,15 @@ namespace BadMelon.API.Controllers
             try
             {
                 await _db.Seed();
-                var rootpasswordResult = await _userManager.AddPasswordAsync(await _db.Users.FirstOrDefaultAsync(), "rootpassword");
+                var ds = new DataSamples();
+                foreach (var u in ds.Users)
+                {
+                    var us = await _db.Users.SingleOrDefaultAsync(x => x.UserName == u.Item1.UserName);
+                    var resultx = await _userManager.AddPasswordAsync(us, u.Item2.Password);
+                    Console.WriteLine("there");
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return "Cannot write to database. Contact an administrator.";
             }

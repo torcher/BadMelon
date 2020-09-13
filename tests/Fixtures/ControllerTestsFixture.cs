@@ -2,6 +2,7 @@
 using BadMelon.Tests.Helpers;
 using Microsoft.AspNetCore.TestHost;
 using System;
+using System.Linq;
 using System.Net.Http;
 
 namespace BadMelon.Tests.Fixtures
@@ -26,7 +27,7 @@ namespace BadMelon.Tests.Fixtures
 
         protected void Login()
         {
-            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/login", dataSamples.RootUserLogin.GetStringContent()));
+            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/login", dataSamples.Users.FirstOrDefault().Item2.GetStringContent()));
 
             try
             {

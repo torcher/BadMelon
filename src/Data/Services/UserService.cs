@@ -37,6 +37,14 @@ namespace BadMelon.Data.Services
             _logger = logger;
         }
 
+        public async Task<User> GetLoggedInUser()
+        {
+            var user = await _userManager.GetUserAsync(_httpContext.HttpContext.User);
+            if (user == null)
+                throw new UnauthorizedException();
+            return user;
+        }
+
         public async Task<bool> IsLoggedIn()
         {
             if (_httpContext.HttpContext.User == null) return false;

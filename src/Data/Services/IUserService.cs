@@ -1,4 +1,5 @@
 ﻿using BadMelon.Data.DTOs;
+using BadMelon.Data.Entities;
 using System;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ namespace BadMelon.Data.Services
         Task<bool> Login(Login login);
 
         Task<bool> Login(Guid code);
+
+        Task<User> GetLoggedInUser();
 
         Task<bool> IsLoggedIn();
 
