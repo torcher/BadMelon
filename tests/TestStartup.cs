@@ -15,14 +15,14 @@ namespace BadMelon.Tests
     {
         private readonly string _dbName;
 
-        public TestStartup(IConfiguration configuration, IHostingEnvironment environment) : base(configuration, environment)
+        public TestStartup(IConfiguration configuration, IWebHostEnvironment environment) : base(configuration, environment)
         {
             _dbName = "Test.db";
         }
 
-        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override void Configure(IApplicationBuilder app)
         {
-            base.Configure(app, env);
+            base.Configure(app);
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
@@ -47,13 +47,6 @@ namespace BadMelon.Tests
             var apiAssembly = typeof(Startup).Assembly;
             services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                                     .PartManager.ApplicationParts.Add(new AssemblyPart(apiAssembly));
-
-            services.AddDbContext<BadMelonDataContext>(options =>
-            {
-                options
-                .UseLazyLoadingProxies()
-                .UseSqlite($"Data Source={_dbName};");
-            });
         }
     }
 }

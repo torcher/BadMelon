@@ -1,6 +1,6 @@
-﻿using BadMelon.Data.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using BadMelon.Data.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
 
 namespace BadMelon.API.Helpers
 {
@@ -10,7 +10,10 @@ namespace BadMelon.API.Helpers
         {
             if (!context.ModelState.IsValid)
             {
-                context.Result = new BadRequestObjectResult(context.ModelState.ConvertToDTO());
+                throw new ValidationException(
+                    context.ModelState.ToDictionary(
+                        m => m.Key,
+                        m => string.Join(" ", m.Value.Errors.Select(e => e.ErrorMessage).ToArray())));
             }
 
             base.OnActionExecuting(context);

@@ -15,10 +15,11 @@ namespace BadMelon.API.Controllers
     public class DatabaseController : Controller
     {
         private readonly BadMelonDataContext _db;
+
         private readonly UserManager<User> _userManager;
         private readonly IHostingEnvironment _host;
 
-        public DatabaseController(BadMelonDataContext db, UserManager<User> userManager, IHostingEnvironment host)
+        public DatabaseController(BadMelonDataContext db, IHostingEnvironment host, UserManager<User> userManager)
         {
             _db = db;
             _userManager = userManager;
@@ -67,9 +68,12 @@ namespace BadMelon.API.Controllers
             try
             {
                 await _db.Seed();
-                await _userManager.AddPasswordAsync(await _db.Users.FirstOrDefaultAsync(), "rootpwd");
+                var rootpasswordResult = await _userManager.AddPasswordAsync(await _db.Users.FirstOrDefaultAsync(), "rootpassword");
             }
-            catch (Exception) { return "Cannot write to database. Contact an administrator."; }
+            catch (Exception)
+            {
+                return "Cannot write to database. Contact an administrator.";
+            }
 
             return "Data seeded successfuly.";
         }
@@ -80,6 +84,7 @@ namespace BadMelon.API.Controllers
             if (_host.IsDevelopment() || _host.IsEnvironment("Testing"))
             {
                 await _db.Database.EnsureDeletedAsync();
+                await _db.Database.MigrateAsync();
                 return await Seed();
             }
             return ErrorResponse();

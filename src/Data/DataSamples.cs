@@ -22,7 +22,7 @@ namespace BadMelon.Data
         public DataSamples()
         {
             _RootUser = new User { UserName = "root", Email = "root@badmelon.fake", EmailConfirmed = true };
-            _RootUserLogin = new DTOs.Login { Username = _RootUser.UserName, Password = "rootpwd" };
+            _RootUserLogin = new DTOs.Login { Username = _RootUser.UserName, Password = "rootpassword" };
 
             _IngredientTypes = new List<IngredientType>();
             var water = new IngredientType { ID = Guid.NewGuid(), Name = "Water" };

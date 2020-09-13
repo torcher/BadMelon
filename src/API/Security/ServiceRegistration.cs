@@ -45,7 +45,7 @@ namespace BadMelon.API.Security
                 options.Password.RequireLowercase = false;//true;
                 options.Password.RequireNonAlphanumeric = false;//true;
                 options.Password.RequireUppercase = false;//true;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 12;
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
@@ -55,8 +55,9 @@ namespace BadMelon.API.Security
 
                 // User settings.
                 options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_+={}[]\\|;:,.<>?/";
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
             });
 
             services.ConfigureApplicationCookie(options =>

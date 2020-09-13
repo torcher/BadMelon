@@ -23,6 +23,11 @@ namespace BadMelon.API.Middleware
             {
                 await _next.Invoke(context);
             }
+            catch (ValidationException ex)
+            {
+                context.Response.StatusCode = 400;
+                errorMessage = JsonConvert.SerializeObject(ex);
+            }
             catch (EntityNotFoundException ex)
             {
                 logger.LogInformation(ex.Message);

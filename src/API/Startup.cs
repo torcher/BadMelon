@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using Serilog;
 using System;
 
@@ -17,36 +19,41 @@ namespace BadMelon.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
-        private IHostingEnvironment Environment { get; }
+        private IWebHostEnvironment Environment { get; }
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
             services.AddAuthServices(Configuration);
 
             if (!Environment.IsEnvironment("Testing"))
             {
-                var dbConnectionString = Configuration.GetConnectionString("Default");
-                if (string.IsNullOrEmpty(dbConnectionString))
-                {
-                    throw new Exception("Database connection could not be found.");
-                }
-
-                services.AddDbContext<BadMelonDataContext>(options =>
-                        options
-                        .UseLazyLoadingProxies()
-                        .UseNpgsql(dbConnectionString));
-
-                services.AddControllers().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                services.AddControllers()
+                    .AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()))
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             }
 
+            var dbConnectionString = Configuration.GetConnectionString("Default");
+            if (string.IsNullOrEmpty(dbConnectionString))
+            {
+                throw new Exception("Database connection could not be found.");
+            }
+
+            services.AddDbContext<BadMelonDataContext>(options =>
+                    options
+                    .UseLazyLoadingProxies()
+                    .UseNpgsql(dbConnectionString));
+
             services.AddHttpContextAccessor();
+
+            services.AddSingleton<IEmailService, EmailService>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRecipeService, RecipeService>();
@@ -68,8 +75,23 @@ namespace BadMelon.API
             });
         }
 
-        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private static void UpdateDatabase(IApplicationBuilder app)
         {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<BadMelonDataContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
+        }
+
+        public virtual void Configure(IApplicationBuilder app)
+        {
+            UpdateDatabase(app);
+
             app.UseSerilogRequestLogging();
 
             app.UseBadMelonErrorHandler();
