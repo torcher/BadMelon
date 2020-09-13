@@ -1,6 +1,8 @@
-﻿namespace BadMelon.Data.Exceptions
+﻿using System;
+
+namespace BadMelon.Data.Exceptions
 {
-    public class EntityNotFoundException : RepoException
+    public class EntityNotFoundException : Exception
     {
         private const string messagePrefix = "Could not find ";
 

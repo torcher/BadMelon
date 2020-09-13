@@ -3,6 +3,7 @@ using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace BadMelon.API.Controllers
@@ -24,6 +25,14 @@ namespace BadMelon.API.Controllers
         public async Task<IActionResult> PostLogin(Login login)
         {
             if (await _userService.Login(login))
+                return Ok();
+            return NotFound();
+        }
+
+        [HttpGet("code/{code}")]
+        public async Task<IActionResult> PostLogin(Guid code)
+        {
+            if (await _userService.Login(code))
                 return Ok();
             return NotFound();
         }

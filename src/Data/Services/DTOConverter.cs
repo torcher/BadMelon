@@ -102,11 +102,6 @@ namespace BadMelon.Data.Services
 
         public static List<Step> ConvertToDTOs(this ICollection<Entities.Step> steps) => steps.Select(s => s.ConvertToDTO()).ToList();
 
-        public static ModelState ConvertToDTO(this Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary state)
-        {
-            return new ModelState(state.Select(s => s.Value.ToString()).ToList());
-        }
-
         public static TimeSpan ConvertToEntities(this string ts) => TimeSpan.TryParse(ts, out TimeSpan result) ? result : new TimeSpan(0, 0, 0);
     }
 }

@@ -37,9 +37,9 @@ namespace BadMelon.Tests.Controllers
         [Fact]
         public async Task PostLogin_WhenInvalidLogin_ExpectBadRequest()
         {
-            var login = new Login { Username = "root" };
+            var login = new Login { Password = "root" };
             var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
-            Assert.True(loginResponse.StatusCode == System.Net.HttpStatusCode.BadRequest);
+            Assert.Equal(400, (int)loginResponse.StatusCode);
         }
 
         [Fact]
