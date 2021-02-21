@@ -13,17 +13,12 @@ namespace BadMelon.Tests
 {
     public class TestStartup : Startup
     {
-        private readonly string _dbName;
-
         public TestStartup(IConfiguration configuration, IWebHostEnvironment environment) : base(configuration, environment)
         {
-            _dbName = "Test.db";
         }
 
         public override void Configure(IApplicationBuilder app)
         {
-            base.Configure(app);
-
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
@@ -34,6 +29,9 @@ namespace BadMelon.Tests
                 {
                     throw new Exception("LIVE SETTINGS IN TESTS!");
                 }
+
+                dbContext.Database.EnsureDeletedAsync().Wait();
+                base.Configure(app);
 
                 // Initialize database
                 dbContext.Seed().Wait();

@@ -17,5 +17,12 @@ namespace BadMelon.Tests.Helpers
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<T>(content);
         }
+
+        public static async Task<T> GetObject<T>(this HttpClient client, string url)
+        {
+            var response = await client.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(content);
+        }
     }
 }

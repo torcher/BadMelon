@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -66,12 +67,12 @@ namespace BadMelon.Data.Services
                 return signInResult.Succeeded;
             }
 
-            var user = await _db.Users.SingleOrDefaultAsync(u => u.EmailConfirmed && u.NormalizedUserName == login.Username.ToUpper() || u.NormalizedEmail == login.Username.ToUpper());
+            var user = await _db.Users.SingleOrDefaultAsync(u => u.EmailConfirmed && (u.NormalizedUserName == login.Username.ToUpper() || u.NormalizedEmail == login.Username.ToUpper()));
             if (user == null)
                 return false;
 
             user.EmailVerificationCode = Guid.NewGuid();
-            user.EmailVerificationCreate = DateTime.Now;
+            user.EmailVerificationCreated = DateTime.Now;
             await _db.SaveChangesAsync();
 
             await _emailService.SendEmail(user.Email, "BadMelon: Login link requested",
@@ -92,7 +93,7 @@ Bad Melon
         public async Task<bool> Login(Guid code)
         {
             var user = await _db.Users.SingleOrDefaultAsync(u => u.EmailVerificationCode == code);
-            if (user == null || DateTime.Now - user.EmailVerificationCreate > new TimeSpan(0, 10, 0))
+            if (user == null || DateTime.Now - user.EmailVerificationCreated > new TimeSpan(0, 10, 0))
                 return false;
             await _signInManager.SignInAsync(user, true);
             return true;
@@ -133,7 +134,7 @@ Bad Melon
             }
 
             user.EmailVerificationCode = Guid.NewGuid();
-            user.EmailVerificationCreate = DateTime.Now;
+            user.EmailVerificationCreated = DateTime.Now;
             await _db.SaveChangesAsync();
 
             await _emailService.SendEmail(user.Email, "Bad Melon:Verify Email Address",
@@ -145,10 +146,28 @@ Thanks,
 Bad Melon Admin");
         }
 
+        public async Task Reset(PasswordReset reset)
+        {
+            var user = await GetLoggedInUser();
+            if (!user.IsPasswordSet)
+            {
+                var passwordResult = await _userManager.AddPasswordAsync(user, reset.NewPassword);
+                if (!passwordResult.Succeeded)
+                    throw new ValidationException(new Dictionary<string, string> { { "NewPassword", "Password invalid: " + passwordResult.Errors.FirstOrDefault()?.Description } });
+                user.IsPasswordSet = true;
+                await _db.SaveChangesAsync();
+                return;
+            }
+
+            var updatePasswordResult = await _userManager.ChangePasswordAsync(user, reset.CurrentPassword, reset.NewPassword);
+            if (!updatePasswordResult.Succeeded)
+                throw new ValidationException(new Dictionary<string, string> { { "NewPassword", "Password invalid: " + updatePasswordResult.Errors.FirstOrDefault()?.Description } });
+        }
+
         public async Task Verify(Guid verificationId)
         {
             var user = await _db.Users.SingleOrDefaultAsync(u => !u.EmailConfirmed && u.EmailVerificationCode == verificationId);
-            if (user == null || user.EmailVerificationCreate - DateTime.Now > new TimeSpan(0, 30, 0))
+            if (user == null || user.EmailVerificationCreated - DateTime.Now > new TimeSpan(0, 30, 0))
                 throw new EntityNotFoundException("Could not find user account");
             user.EmailConfirmed = true;
             await _db.SaveChangesAsync();

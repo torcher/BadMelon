@@ -23,12 +23,15 @@ namespace BadMelon.Data
 
         public async Task Seed()
         {
-            await Database.EnsureCreatedAsync();
-            var data = new DataSamples();
-            await Users.AddRangeAsync(data.Users.Select(u => u.Item1).ToArray());
-            await IngredientTypes.AddRangeAsync(data.IngredientTypes);
-            await Recipes.AddRangeAsync(data.Recipes);
-            await SaveChangesAsync();
+            await Database.MigrateAsync();
+            if (!await Users.AnyAsync())
+            {
+                var data = new DataSamples();
+                await Users.AddRangeAsync(data.Users.Select(u => u.Item1).ToArray());
+                await IngredientTypes.AddRangeAsync(data.IngredientTypes);
+                await Recipes.AddRangeAsync(data.Recipes);
+                await SaveChangesAsync();
+            }
         }
     }
 }

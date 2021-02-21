@@ -3,15 +3,17 @@ using System;
 using BadMelon.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BadMelon.Data.Migrations
 {
     [DbContext(typeof(BadMelonDataContext))]
-    partial class BadMelonDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200925001029_AddPasswordSet")]
+    partial class AddPasswordSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -17,9 +17,9 @@ namespace BadMelon.API.Controllers
         private readonly BadMelonDataContext _db;
 
         private readonly UserManager<User> _userManager;
-        private readonly IHostingEnvironment _host;
+        private readonly IWebHostEnvironment _host;
 
-        public DatabaseController(BadMelonDataContext db, IHostingEnvironment host, UserManager<User> userManager)
+        public DatabaseController(BadMelonDataContext db, IWebHostEnvironment host, UserManager<User> userManager)
         {
             _db = db;
             _userManager = userManager;
@@ -69,7 +69,7 @@ namespace BadMelon.API.Controllers
             {
                 await _db.Seed();
                 var ds = new DataSamples();
-                foreach (var u in ds.Users)
+                foreach (var u in ds.Users.Where(up => up.Item1.IsPasswordSet))
                 {
                     var us = await _db.Users.SingleOrDefaultAsync(x => x.UserName == u.Item1.UserName);
                     var resultx = await _userManager.AddPasswordAsync(us, u.Item2.Password);
@@ -87,7 +87,7 @@ namespace BadMelon.API.Controllers
         [HttpDelete]
         public async Task<string> Delete()
         {
-            if (_host.IsDevelopment() || _host.IsEnvironment("Testing"))
+            if (_host.EnvironmentName == "Development" || _host.EnvironmentName == "Testing")
             {
                 await _db.Database.EnsureDeletedAsync();
                 await _db.Database.MigrateAsync();
