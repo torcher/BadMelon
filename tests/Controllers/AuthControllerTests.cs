@@ -11,6 +11,10 @@ namespace BadMelon.Tests.Controllers
     [Collection("SynchronousTests")]
     public class AuthControllerTests : ControllerTestsFixture
     {
+        private string GoodLongPassword = "long enough password to not be complex";
+        private string WrongLongPassword = "not the right password";
+        private string BadPassword = "password";
+
         public AuthControllerTests() : base()
         {
             Logout();
@@ -65,9 +69,9 @@ namespace BadMelon.Tests.Controllers
             var loginResponse = await _http.GetAsync($"api/auth/code/{loginCode}");
             Assert.Equal(200, (int)loginResponse.StatusCode);
 
-            var reset = new PasswordReset { NewPassword = "long enough password to not be complex" };
+            var reset = new PasswordReset { NewPassword = GoodLongPassword };
             var resetResponse = await _http.PostAsync("api/auth/reset-password", reset.GetStringContent());
-            Assert.Equal(200, (int)resetResponse.StatusCode);
+            resetResponse.StatusCode.AssertStatusCode(200);
 
             Logout();
             Login();
@@ -78,15 +82,39 @@ namespace BadMelon.Tests.Controllers
         public async Task PostReset_WhenPasswordConfirmed_ExpectSuccess()
         {
             Login();
-            var reset = new PasswordReset { CurrentPassword = "long enough password to not be complex", NewPassword = "long enough password to not be complex" };
+            var reset = new PasswordReset { CurrentPassword = GoodLongPassword, NewPassword = GoodLongPassword };
             var resetResponse = await _http.PostAsync("api/auth/reset-password", reset.GetStringContent());
-            Assert.Equal(200, (int)resetResponse.StatusCode);
+            resetResponse.StatusCode.AssertStatusCode(200);
         }
 
         //Password confirmed - no password
+        [Fact]
+        public async Task PostReset_WhenPasswordConfirmedButNoPassword_ExpectError()
+        {
+            Login();
+            var reset = new PasswordReset { CurrentPassword = GoodLongPassword, NewPassword = "" };
+            var resetResponse = await _http.PostAsync("api/auth/reset-password", reset.GetStringContent());
+            resetResponse.StatusCode.AssertStatusCode(400);
+        }
 
         //Password confirmed - bad current password
+        [Fact]
+        public async Task PostReset_WhenPasswordConfirmedButBadCurrentPassword_ExpectError()
+        {
+            Login();
+            var reset = new PasswordReset { CurrentPassword = WrongLongPassword, NewPassword = GoodLongPassword };
+            var resetResponse = await _http.PostAsync("api/auth/reset-password", reset.GetStringContent());
+            resetResponse.StatusCode.AssertStatusCode(400);
+        }
 
         //Password confirmed - bad new password
+        [Fact]
+        public async Task PostReset_WhenPasswordConfirmedButBadNewPassword_ExpectError()
+        {
+            Login();
+            var reset = new PasswordReset { CurrentPassword = GoodLongPassword, NewPassword = BadPassword };
+            var resetResponse = await _http.PostAsync("api/auth/reset-password", reset.GetStringContent());
+            resetResponse.StatusCode.AssertStatusCode(400);
+        }
     }
 }

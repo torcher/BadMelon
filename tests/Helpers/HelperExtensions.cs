@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace BadMelon.Tests.Helpers
 {
@@ -23,6 +25,11 @@ namespace BadMelon.Tests.Helpers
             var response = await client.GetAsync(url);
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<T>(content);
+        }
+
+        public static void AssertStatusCode(this HttpStatusCode httpStatusCode, int statusCode)
+        {
+            Assert.Equal((int)httpStatusCode, statusCode);
         }
     }
 }
