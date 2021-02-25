@@ -18,15 +18,19 @@ namespace BadMelon.Data
 
         public DataSamples()
         {
-            var user0 = new User { UserName = "user0_xyz", Email = "user0_xyz@badmelon.fake", EmailConfirmed = true };
+            var user0 = new User { UserName = "user0_xyz", Email = "user0_xyz@badmelon.fake", EmailConfirmed = true, IsPasswordSet = true };
             var user0Login = new DTOs.Login { Username = "user0_xyz", Password = "long enough password to not be complex" };
 
-            var user1 = new User { UserName = "user1_xyz", Email = "user1_xyz@badmelon.fake", EmailConfirmed = true };
+            var user1 = new User { UserName = "user1_xyz", Email = "user1_xyz@badmelon.fake", EmailConfirmed = true, IsPasswordSet = true };
             var user1Login = new DTOs.Login { Username = "user1_xyz", Password = "long enough password to not be complex" };
+
+            var user2_passwordNotConfirmed = new User { UserName = "user2_xyz", NormalizedUserName = "USER2_XYZ", Email = "user2_xyz@badmelon.fake", EmailConfirmed = true };
+            var user2Login = new DTOs.Login { Username = "user2_xyz" };
 
             _Users = new List<(User, DTOs.Login)>();
             _Users.Add((user0, user0Login));
             _Users.Add((user1, user1Login));
+            _Users.Add((user2_passwordNotConfirmed, user2Login));
 
             _IngredientTypes = new List<IngredientType>();
             var water = new IngredientType { ID = Guid.NewGuid(), Name = "Water" };

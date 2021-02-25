@@ -37,14 +37,14 @@ namespace BadMelon.Tests.Controllers
         public async Task GetRecipe_WhenUserHasNoRecipes_ExpectNoRecipes()
         {
             Logout();
-            var loginResponse = await _http.PostAsync("/api/auth/login", dataSamples.Users.Last().Item2.GetStringContent());
+            var loginResponse = await _http.PostAsync("/api/auth/login", dataSamples.Users[1].Item2.GetStringContent());
             loginResponse.EnsureSuccessStatusCode();
 
             var recipeResponse = await _http.GetAsync("/api/recipe");
             recipeResponse.EnsureSuccessStatusCode();
 
             var recipes = await recipeResponse.GetObject<Recipe[]>();
-            Assert.Equal(0, recipes.Length);
+            Assert.Empty(recipes);
 
             Logout();
             Login();

@@ -20,5 +20,7 @@ namespace BadMelon.Data.Services
         Task Register(Registration registration);
 
         Task Verify(Guid verificationId);
+
+        Task Reset(PasswordReset reset);
     }
 }

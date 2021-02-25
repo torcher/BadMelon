@@ -44,5 +44,13 @@ namespace BadMelon.API.Controllers
             await _userService.Logout();
             return Ok();
         }
+
+        [Authorize]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> Reset(PasswordReset reset)
+        {
+            await _userService.Reset(reset);
+            return Ok();
+        }
     }
 }
