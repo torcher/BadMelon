@@ -91,7 +91,7 @@ namespace BadMelon.Data
                 RecipeId = coldWater.ID
             });
 
-            _Recipes = new List<Recipe> { cornSoup, hotWater, coldWater };
+            _Recipes = new List<Recipe> { cornSoup, coldWater, hotWater };
         }
 
         public void AddRecipeToStorage(Recipe recipe)

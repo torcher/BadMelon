@@ -48,7 +48,6 @@ namespace BadMelon.API
 
             services.AddDbContext<BadMelonDataContext>(options =>
                     options
-                    .UseLazyLoadingProxies()
                     .UseNpgsql(dbConnectionString));
 
             services.AddHttpContextAccessor();

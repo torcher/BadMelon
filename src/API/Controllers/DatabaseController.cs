@@ -73,7 +73,6 @@ namespace BadMelon.API.Controllers
                 {
                     var us = await _db.Users.SingleOrDefaultAsync(x => x.UserName == u.Item1.UserName);
                     var resultx = await _userManager.AddPasswordAsync(us, u.Item2.Password);
-                    Console.WriteLine("there");
                 }
             }
             catch (Exception e)

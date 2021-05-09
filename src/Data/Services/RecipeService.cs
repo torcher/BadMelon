@@ -8,45 +8,47 @@ using System.Threading.Tasks;
 
 namespace BadMelon.Data.Services
 {
-    public class RecipeService : IRecipeService
+    public class RecipeService : CrudServiceAbstract<Entities.Recipe>, IRecipeService
     {
-        private readonly BadMelonDataContext _db;
         private readonly Entities.User _LoggedInUser;
 
-        public RecipeService(BadMelonDataContext db, IUserService userService)
+        public RecipeService(BadMelonDataContext db, IUserService userService) : base(db)
         {
-            _db = db;
-            _LoggedInUser = userService.GetLoggedInUser().Result;
+            _LoggedInUser = userService.GetLoggedInUser();
         }
 
         public async Task<Recipe[]> GetRecipes()
         {
-            return _LoggedInUser.Recipes.ToArray().ConvertToDTOs();
+            var recipes = await _db.Recipes
+                .Where(r => r.UserId == _LoggedInUser.Id)
+                .Include(r => r.Ingredients)
+                    .ThenInclude(i => i.IngredientType)
+                .Include(r => r.Steps)
+                .OrderBy(r => r.Name)
+                .ToArrayAsync();
+            return recipes.ConvertToDTOs();
         }
 
-        public async Task<Recipe> GetRecipeByID(Guid ID) => (await GetRecipe(ID)).ConvertToDTO();
+        public async Task<Recipe> GetRecipeByID(Guid ID) => (await GetOne(ID)).ConvertToDTO();
 
         public async Task<Recipe> AddRecipe(Recipe recipe)
         {
             var recipeEntity = recipe.ConvertToEntity();
             recipeEntity.User = _LoggedInUser;
-            var newRecipe = _db.Recipes.CreateProxy();
-            EntityCopier.Copy(recipeEntity, newRecipe);
-            await _db.Recipes.AddAsync(newRecipe);
-            await _db.SaveChangesAsync();
-            return (await GetRecipe(newRecipe.ID)).ConvertToDTO();
+            await AddOne(recipeEntity);
+            return await GetRecipeByID(recipeEntity.ID);
         }
 
         public async Task<Recipe> AddIngredientToRecipe(Guid recipeId, Ingredient ingredient)
         {
-            var recipe = await GetRecipe(recipeId);
+            var recipe = await GetOne(recipeId);
             var currentIngredient = recipe.Ingredients.SingleOrDefault(i => i.IngredientTypeID == ingredient.TypeID);
             if (currentIngredient == null)
             {
                 var ingredientType = await GetIngredientType(ingredient.TypeID);
-                var newIngredient = _db.Ingredients.CreateProxy();
-                EntityCopier.Copy(ingredient.ConvertToEntity(), newIngredient);
-                recipe.Ingredients.Add(newIngredient);
+                var ingredientEntity = ingredient.ConvertToEntity();
+                ingredientEntity.IngredientType = ingredientType;
+                recipe.Ingredients.Add(ingredientEntity);
             }
             else
             {
@@ -60,7 +62,7 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> UpdateIngredientInRecipe(Guid recipeId, Ingredient ingredient)
         {
-            var recipe = await GetRecipe(recipeId);
+            var recipe = await GetOne(recipeId);
             var ingredientToUpdate = GetIngredient(ingredient.ID, recipe);
             ingredientToUpdate.Weight = ingredient.Weight;
             await _db.SaveChangesAsync();
@@ -72,7 +74,7 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> DeleteIngredientInRecipe(Guid recipeId, Guid ingredientId)
         {
-            var recipe = await GetRecipe(recipeId);
+            var recipe = await GetOne(recipeId);
             var ingredient = GetIngredient(ingredientId, recipe);
             recipe.Ingredients.Remove(ingredient);
             await _db.SaveChangesAsync();
@@ -82,9 +84,8 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> AddStepToRecipe(Guid recipeId, Step step)
         {
-            var recipe = await GetRecipe(recipeId);
-            var newStep = _db.Steps.CreateProxy();
-            EntityCopier.Copy(step.ConvertToEntity(recipe), newStep);
+            var recipe = await GetOne(recipeId);
+            var newStep = step.ConvertToEntity(recipe);
             recipe.Steps.Add(newStep);
             await _db.SaveChangesAsync();
             return recipe.ConvertToDTO();
@@ -92,7 +93,7 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> UpdateStepInRecipe(Guid recipeId, Step step)
         {
-            var recipe = await GetRecipe(recipeId);
+            var recipe = await GetOne(recipeId);
             var stepToUpdate = await GetStep(step.ID, recipe);
 
             EntityCopier.Copy(step.ConvertToEntity(recipe), stepToUpdate);
@@ -105,21 +106,21 @@ namespace BadMelon.Data.Services
 
         public async Task<Recipe> DeleteStepInRecipe(Guid recipeId, Guid stepId)
         {
-            var recipe = await GetRecipe(recipeId);
+            var recipe = await GetOne(recipeId);
             var stepToDelete = await GetStep(stepId, recipe);
             recipe.Steps.Remove(stepToDelete);
             await _db.SaveChangesAsync();
             return recipe.ConvertToDTO();
         }
 
-        private async Task<Entities.Recipe> GetRecipe(Guid recipeId)
+        public override async Task<Entities.Recipe> GetOne(Guid id)
         {
             var recipe = await _db.Recipes
                 .Where(r => r.UserId == _LoggedInUser.Id)
                 .Include(r => r.Ingredients)
                     .ThenInclude(i => i.IngredientType)
                 .Include(r => r.Steps)
-                .SingleOrDefaultAsync(r => r.ID == recipeId);
+                .SingleOrDefaultAsync(r => r.ID == id);
             if (recipe == null)
                 throw new EntityNotFoundException("recipe");
             return recipe;
