@@ -7,6 +7,14 @@ namespace BadMelon.Tests
 {
     internal class TestServerFactory
     {
-        public static TestServer GetTestServer() => new TestServer(WebHost.CreateDefaultBuilder().UseStartup<TestStartup>().UseSerilog().UseEnvironment("Testing"));
+        private static TestServer testServer = null;
+
+        public static TestServer GetTestServer()
+        {
+            if (testServer == null)
+                testServer = new TestServer(WebHost.CreateDefaultBuilder().UseStartup<TestStartup>().UseSerilog().UseEnvironment("Testing"));
+
+            return testServer;
+        }
     }
 }

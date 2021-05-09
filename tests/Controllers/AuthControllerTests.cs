@@ -8,7 +8,7 @@ using Xunit;
 
 namespace BadMelon.Tests.Controllers
 {
-    [Collection("SynchronousTests")]
+    [Collection("Controller collection")]
     public class AuthControllerTests : ControllerTestsFixture
     {
         private string GoodLongPassword = "long enough password to not be complex";

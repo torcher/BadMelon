@@ -30,11 +30,7 @@ namespace BadMelon.Tests
                     throw new Exception("LIVE SETTINGS IN TESTS!");
                 }
 
-                dbContext.Database.EnsureDeletedAsync().Wait();
                 base.Configure(app);
-
-                // Initialize database
-                dbContext.Seed().Wait();
             }
         }
 
