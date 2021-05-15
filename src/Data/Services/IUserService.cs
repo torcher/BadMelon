@@ -11,7 +11,7 @@ namespace BadMelon.Data.Services
 
         Task<bool> Login(Guid code);
 
-        Task<User> GetLoggedInUser();
+        User GetLoggedInUser();
 
         Task<bool> IsLoggedIn();
 

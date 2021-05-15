@@ -38,9 +38,9 @@ namespace BadMelon.Data.Services
             _logger = logger;
         }
 
-        public async Task<User> GetLoggedInUser()
+        public User GetLoggedInUser()
         {
-            var user = await _userManager.GetUserAsync(_httpContext.HttpContext.User);
+            var user = _userManager.GetUserAsync(_httpContext.HttpContext.User).Result;
             if (user == null)
                 throw new UnauthorizedException();
             return user;
@@ -148,7 +148,7 @@ Bad Melon Admin");
 
         public async Task Reset(PasswordReset reset)
         {
-            var user = await GetLoggedInUser();
+            var user = GetLoggedInUser();
             if (!user.IsPasswordSet)
             {
                 var passwordResult = await _userManager.AddPasswordAsync(user, reset.NewPassword);

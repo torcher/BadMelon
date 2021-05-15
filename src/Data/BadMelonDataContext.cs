@@ -23,7 +23,6 @@ namespace BadMelon.Data
 
         public async Task Seed()
         {
-            await Database.MigrateAsync();
             if (!await Users.AnyAsync())
             {
                 var data = new DataSamples();

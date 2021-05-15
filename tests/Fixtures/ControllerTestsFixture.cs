@@ -21,7 +21,7 @@ namespace BadMelon.Tests.Fixtures
             _http.BaseAddress = testClient.BaseAddress;
             dataSamples = new DataSamples();
 
-            _http.DeleteAsync("api/database").Wait();
+            AsyncHelper.RunSync(() => _http.DeleteAsync("api/database"));
             Login();
         }
 

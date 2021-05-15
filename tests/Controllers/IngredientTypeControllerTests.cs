@@ -10,7 +10,7 @@ using Xunit;
 
 namespace BadMelon.Tests.Controllers
 {
-    [Collection("SynchronousTests")]
+    [Collection("Controller collection")]
     public class IngredientTypeControllerTests : ControllerTestsFixture
     {
         [Fact]
