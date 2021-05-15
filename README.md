@@ -8,8 +8,6 @@ Add recipes to your shopping list. Remove recipes from your inventory. Only buy 
 
 ## Documentation
 
-BadMelon consists of 4 main projects built with .Net Core, Vue and Postgres.
-
 ### Projects
 Project is broken up into the following projects.
 
@@ -18,7 +16,9 @@ Project is broken up into the following projects.
 - Data: Contains the BadMelon business logic, database models and access logic.
 
 ### Tests
-Unit test projects are built on xUnit. The intention is to have over 90% code coverage with these tests.
+Unit test projects are built on xUnit. The intention is to have over 80% code coverage with these tests. See the test-results.txt file in the root of the tests project for current coverage information.
 
-- Data Tests: Unit testing of the domain models and repositories. Repository tests are not meant to test Entity Framework, but are meant to test predictable issues like foreign key constraints as well as ensuring required related data is loaded
+- Data Tests: Unit testing of the domain models and value conversions. These tests ensure the recipe/food inventory logic is working properly.
 - API Tests: Integration tests that ensures endpoint functionality all the way to the database, including proper HTTP status codes. 
+
+To generate a coverage report, execute the RunTests powershell script located in the root of the tests project.
