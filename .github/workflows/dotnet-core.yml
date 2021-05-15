@@ -19,7 +19,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: BadMelonTests        
+          POSTGRES_PASSWORD: badmelon_tests
+          POSTGRES_USER: badmelon_tests
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
