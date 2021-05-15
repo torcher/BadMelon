@@ -37,13 +37,13 @@ namespace BadMelon.API
             {
                 services.AddControllers()
                     .AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()))
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                    .SetCompatibilityVersion(CompatibilityVersion.Latest);
             }
 
             var dbConnectionString = Configuration.GetConnectionString("Default");
             if (string.IsNullOrEmpty(dbConnectionString))
             {
-                throw new Exception("Database connection could not be found.");
+                throw new SystemException("Database connection could not be found.");
             }
 
             services.AddDbContext<BadMelonDataContext>(options =>
@@ -72,19 +72,18 @@ namespace BadMelon.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BadMelon API", Version = "v1" });
             });
+
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices
+            using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<BadMelonDataContext>())
-                {
-                    context.Database.Migrate();
-                }
-            }
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<BadMelonDataContext>();
+            context.Database.Migrate();
         }
 
         public virtual void Configure(IApplicationBuilder app)
@@ -93,9 +92,15 @@ namespace BadMelon.API
 
             app.UseSerilogRequestLogging();
 
+            app.UseWebAssemblyDebugging();
+
             app.UseBadMelonErrorHandler();
 
             app.UseHttpsRedirection();
+
+            app.UseBlazorFrameworkFiles();
+
+            app.UseStaticFiles();
 
             app.UseSwagger();
 
@@ -113,7 +118,9 @@ namespace BadMelon.API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }
