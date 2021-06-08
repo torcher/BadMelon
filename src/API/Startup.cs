@@ -86,7 +86,7 @@ namespace BadMelon.API
             context.Database.Migrate();
         }
 
-        public virtual void Configure(IApplicationBuilder app)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             UpdateDatabase(app);
 
@@ -96,7 +96,8 @@ namespace BadMelon.API
 
             app.UseBadMelonErrorHandler();
 
-            app.UseHttpsRedirection();
+            if (!env.IsDevelopment())
+                app.UseHttpsRedirection();
 
             app.UseBlazorFrameworkFiles();
 
@@ -111,6 +112,9 @@ namespace BadMelon.API
             });
 
             app.UseRouting();
+
+            if (env.IsDevelopment())
+                app.UseCors(ServiceRegistration.DevCorsPolicy);
 
             app.UseAuthentication();
 

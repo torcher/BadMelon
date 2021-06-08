@@ -2,11 +2,13 @@
 using BadMelon.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BadMelon.API.Controllers
@@ -54,7 +56,6 @@ namespace BadMelon.API.Controllers
         [Authorize]
         public async Task<string> Seed()
         {
-            await _db.Database.EnsureCreatedAsync();
             int recipeCount;
             try
             {
@@ -72,11 +73,14 @@ namespace BadMelon.API.Controllers
                 foreach (var u in ds.Users.Where(up => up.Item1.IsPasswordSet))
                 {
                     var us = await _db.Users.SingleOrDefaultAsync(x => x.UserName == u.Item1.UserName);
-                    var resultx = await _userManager.AddPasswordAsync(us, u.Item2.Password);
+                    var passwordResult = await _userManager.AddPasswordAsync(us, u.Item2.Password);
+                    if (!passwordResult.Succeeded)
+                        throw new Exception("Password set failed");
                 }
             }
             catch (Exception e)
             {
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return "Cannot write to database. Contact an administrator.";
             }
 
