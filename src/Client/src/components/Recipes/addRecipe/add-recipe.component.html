@@ -1,0 +1,12 @@
+<h2>Add a Recipe</h2>
+
+<form name="recipe">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input id="name" [(ngModel)]="recipe.name" name="name" placeholder="Recipe Name"/>
+  </div>
+
+  <div class="form-field">
+    <button (click)="submit()">Add</button>
+  </div>
+</form>

@@ -8,8 +8,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BadMelon.Data", "src\Data\B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BadMelon.Tests", "tests\BadMelon.Tests.csproj", "{BD36CE5A-F153-4F93-B04C-A89003EB5CA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BadMelon.Client", "src\Client\BadMelon.Client.csproj", "{873BE35F-1D6C-4FD7-B6B3-6670DB2F0739}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,10 +26,6 @@ Global
 		{BD36CE5A-F153-4F93-B04C-A89003EB5CA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD36CE5A-F153-4F93-B04C-A89003EB5CA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD36CE5A-F153-4F93-B04C-A89003EB5CA4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{873BE35F-1D6C-4FD7-B6B3-6670DB2F0739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{873BE35F-1D6C-4FD7-B6B3-6670DB2F0739}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{873BE35F-1D6C-4FD7-B6B3-6670DB2F0739}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{873BE35F-1D6C-4FD7-B6B3-6670DB2F0739}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

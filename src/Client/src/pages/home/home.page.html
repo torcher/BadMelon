@@ -1,0 +1,5 @@
+<h1>{{ title }}</h1>
+<button (click)="addRecipeButton()">Add Recipe</button>
+<recipe-list></recipe-list>
+
+<add-recipe *ngIf="showAddRecipe"></add-recipe>
