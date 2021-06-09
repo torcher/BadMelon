@@ -27,10 +27,14 @@ namespace BadMelon.Data
             var user2_passwordNotConfirmed = new User { UserName = "user2_xyz", NormalizedUserName = "USER2_XYZ", Email = "user2_xyz@badmelon.fake", EmailConfirmed = true };
             var user2Login = new DTOs.Login { Username = "user2_xyz" };
 
+            var joshUser = new User { UserName = "jge", Email = "joshua.geurts@gmail.com", EmailConfirmed = true, IsPasswordSet = true };
+            var joshUserLogin = new DTOs.Login { Username = "jge", Password = "Qwerty123!Qwerty123!Qwerty123!" };
+
             _Users = new List<(User, DTOs.Login)>();
             _Users.Add((user0, user0Login));
             _Users.Add((user1, user1Login));
             _Users.Add((user2_passwordNotConfirmed, user2Login));
+            _Users.Add((joshUser, joshUserLogin));
 
             _IngredientTypes = new List<IngredientType>();
             var water = new IngredientType { ID = Guid.NewGuid(), Name = "Water" };

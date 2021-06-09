@@ -1,6 +1,7 @@
 ﻿using BadMelon.API.Helpers;
 using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -31,6 +32,13 @@ namespace BadMelon.API.Controllers
         public async Task<IActionResult> Verify(Guid id)
         {
             await _userService.Verify(id);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> Profile()
+        {
             return Ok();
         }
     }
