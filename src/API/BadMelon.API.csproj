@@ -25,7 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Client\BadMelon.Client.csproj" />
 		<ProjectReference Include="..\Data\BadMelon.Data.csproj" />
 	</ItemGroup>
 

@@ -17,7 +17,7 @@ namespace BadMelon.Tests
         {
         }
 
-        public override void Configure(IApplicationBuilder app)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
@@ -30,7 +30,7 @@ namespace BadMelon.Tests
                     throw new Exception("LIVE SETTINGS IN TESTS!");
                 }
 
-                base.Configure(app);
+                base.Configure(app, env);
             }
         }
 
