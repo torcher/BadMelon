@@ -17,20 +17,20 @@ namespace BadMelon.Tests
         {
         }
 
-        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override void Configure(IApplicationBuilder app)
         {
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<BadMelonDataContext>();
 
-                //ToDo: make this work in actual production
+                //ToDo: make this work for actual production
                 if (dbContext.Database.GetDbConnection().ConnectionString.ToLower().Contains("database.windows.net"))
                 {
                     throw new Exception("LIVE SETTINGS IN TESTS!");
                 }
 
-                base.Configure(app, env);
+                base.Configure(app);
             }
         }
 

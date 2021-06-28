@@ -11,9 +11,8 @@ import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 })
 export class HttpService {
   
-  private baseUrl: string;
+  private baseUrl: string = "api/";
   constructor(private http: HttpClient){
-    this.baseUrl = environment.apiBaseUrl;
   }
 
   get<Type>(path: string): Observable<Type>{

@@ -13,8 +13,6 @@ namespace BadMelon.API.Security
 {
     public static class ServiceRegistration
     {
-        public static readonly string DevCorsPolicy = "devCorsPolicy";
-
         public static void AddAuthServices(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -70,19 +68,6 @@ namespace BadMelon.API.Security
                     context.Response.StatusCode = 401;
                     return Task.CompletedTask;
                 };
-            });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: DevCorsPolicy,
-                                  builder =>
-                                  {
-                                      builder
-                                      .WithOrigins("http://localhost:4200")
-                                      .AllowAnyMethod()
-                                      .AllowAnyHeader()
-                                      .AllowCredentials();
-                                  });
             });
         }
     }
