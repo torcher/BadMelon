@@ -1,10 +1,45 @@
 <h2>Add a Recipe</h2>
 
-<form name="recipe">
-  <div class="form-group">
+<form name="recipe" [formGroup]="recipeForm" (onSubmit)="submit()">
+  <div class="form-field">
     <label for="name">Name</label>
-    <input id="name" [(ngModel)]="recipe.name" name="name" placeholder="Recipe Name"/>
+    <input id="name" formControlName="name" name="name" placeholder="Recipe Name"/>
   </div>
+
+  <div class="form-group">
+    <div><button (click)="addIngredient()">Add Ingredient</button></div>
+    <ng-container formArrayName="ingredients">
+      <div *ngFor="let _ of ingredients.controls; index as i">
+        <ng-container [formGroupName]="i">
+          <div class="form-field">
+            <label for="typeId_{{i}}">Type: </label>
+            <select formControlName="typeId">
+              <option *ngFor="let ingredientType of ingredientTypes" value="{{ingredientType.id}}">{{ ingredientType.name }}</option>
+            </select>
+          </div>  
+          <div class="form-field">
+            <label for="weight_{{i}}">Weight: </label>
+            <input id="weight_{{i}}" formControlName="weight" type="number">
+          </div>  
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="form-group">
+    <div><button (click)="addStep()">Add Step</button></div>
+    <ng-container formArrayName="steps">
+      <div *ngFor="let _ of steps.controls; index as i">
+        <ng-container [formGroupName]="i">
+          <div class="form-field">
+            <label for="stepText_{{i}}">Text: </label>
+            <textarea id="stepText_{{i}}" formControlName="text"></textarea>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+
 
   <div class="form-field">
     <button (click)="submit()">Add</button>
