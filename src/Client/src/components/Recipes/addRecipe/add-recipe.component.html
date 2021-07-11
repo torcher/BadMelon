@@ -4,10 +4,17 @@
   <div class="form-field">
     <label for="name">Name</label>
     <input id="name" formControlName="name" name="name" placeholder="Recipe Name"/>
+    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="validation-error">
+      <span *ngIf="name.errors?.required">You must include a recipe name</span>
+      <span *ngIf="name.errors?.maxLength">A recipe name must be less than 250 characters</span>
+    </div>
   </div>
 
   <div class="form-group">
     <div><button (click)="addIngredient()">Add Ingredient</button></div>
+    <div *ngIf="ingredients.invalid" class="validation-error">
+      <span *ngIf="ingredients.errors?.required">You must have at least one ingredient</span>
+    </div>
     <ng-container formArrayName="ingredients">
       <div *ngFor="let _ of ingredients.controls; index as i">
         <ng-container [formGroupName]="i">
@@ -35,6 +42,14 @@
             <label for="stepText_{{i}}">Text: </label>
             <textarea id="stepText_{{i}}" formControlName="text"></textarea>
           </div>
+          <div class="form-field">
+            <label for="cookTime_{{i}}">Cooking Time (hh:mm:ss): </label>
+            <input id="cookTime_{{i}}" type="text" formControlName="cookTime" />
+          </div>
+          <div class="form-field">
+            <label for="prepTime_{{i}}">Preparation Time (hh:mm:ss): </label>
+            <input id="prepTime_{{i}}" type="text" formControlName="prepTime" />
+          </div>
         </ng-container>
       </div>
     </ng-container>
@@ -42,6 +57,6 @@
 
 
   <div class="form-field">
-    <button (click)="submit()">Add</button>
+    <button [disabled]="recipeForm.invalid" (click)="submit()">Add</button>
   </div>
 </form>
