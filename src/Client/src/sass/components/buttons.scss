@@ -1,0 +1,9 @@
+.close-button-x{
+  position: absolute;
+  top: 3px;
+  right: 3px;
+
+  &:hover{
+    font-weight: bold;
+  }
+}
