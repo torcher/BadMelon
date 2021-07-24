@@ -16,11 +16,9 @@ export class LoginPage {
 
   submit(): void{
     console.log("login")
-    this.auth.login(this.username,this.password)
+    this.auth.login(this.username,this.password, "/")
       .subscribe(
       res =>{
-        this.password = "";
-        this.router.navigate(['/'])
       },
       err =>{
          if(err.status === 400)
