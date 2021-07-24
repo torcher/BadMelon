@@ -98,8 +98,6 @@ namespace BadMelon.API
 
             app.UseHttpsRedirection();
 
-            app.UseBlazorFrameworkFiles();
-
             app.UseStaticFiles();
 
             app.UseSwagger();
@@ -112,9 +110,9 @@ namespace BadMelon.API
 
             app.UseRouting();
 
-            app.UseAuthentication();
-
             app.UseAuthorization();
+
+            app.UserBadMelonJwtHandler();
 
             app.UseEndpoints(endpoints =>
             {

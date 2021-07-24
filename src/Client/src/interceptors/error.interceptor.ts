@@ -17,9 +17,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                         return;
                     }
                     
-                    if(!request.url.endsWith('/api/auth/login') 
-                    && !request.url.endsWith('/api/auth/logout'))
-                        this.auth.logout();
+                    this.auth.logout();
                 }
         }));
     }

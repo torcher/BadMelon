@@ -1,7 +1,6 @@
 ﻿using BadMelon.API.Helpers;
 using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ namespace BadMelon.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
-    [Authorize]
+    [JwtAuthorizedFilter]
     [DTOValidationFilter]
     public class IngredientTypeController : ControllerBase
     {

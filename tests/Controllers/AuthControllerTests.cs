@@ -3,6 +3,7 @@ using BadMelon.Tests.Fixtures;
 using BadMelon.Tests.Helpers;
 using System;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -23,11 +24,8 @@ namespace BadMelon.Tests.Controllers
         [Fact]
         public async Task PostLogin_WhenGoodLogin_ExpectSuccessAndAccess()
         {
-            var login = dataSamples.Users.FirstOrDefault().Item2;
-            var loginResponse = await _http.PostAsync("api/auth/login", login.GetStringContent());
-            loginResponse.EnsureSuccessStatusCode();
+            Login(dataSamples.Users.FirstOrDefault().Item2);
 
-            _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "");
             var ingredientTypesResponse = await _http.GetAsync("api/ingredienttype");
             ingredientTypesResponse.EnsureSuccessStatusCode();
         }
@@ -64,10 +62,13 @@ namespace BadMelon.Tests.Controllers
             user.Item2.Password = string.Empty;
             user.Item2.LoginMethod = LoginMethod.EMAIL;
             var emailLoginResponse = await _http.PostAsync("api/auth/login", user.Item2.GetStringContent());
-            Assert.Equal(200, (int)emailLoginResponse.StatusCode);
+            Assert.Equal(204, (int)emailLoginResponse.StatusCode);
             var loginCode = await _http.GetObject<Guid>($"api/testdata/verification-codes/{user.Item1.UserName}");
             var loginResponse = await _http.GetAsync($"api/auth/code/{loginCode}");
             Assert.Equal(200, (int)loginResponse.StatusCode);
+
+            var jwt = await loginResponse.GetObject<Jwt>();
+            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt.token);
 
             var reset = new PasswordReset { NewPassword = GoodLongPassword };
             var resetResponse = await _http.PostAsync("api/auth/reset-password", reset.GetStringContent());

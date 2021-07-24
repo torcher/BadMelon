@@ -1,7 +1,6 @@
 ﻿using BadMelon.API.Helpers;
 using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -24,28 +23,22 @@ namespace BadMelon.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> PostLogin(Login login)
         {
-            if (await _userService.Login(login))
-                return Ok();
+            var result = await _userService.Login(login);
+            if (result.IsSuccess)
+                return Ok(result.jwt);
             return NotFound();
         }
 
         [HttpGet("code/{code}")]
         public async Task<IActionResult> PostLogin(Guid code)
         {
-            if (await _userService.Login(code))
-                return Ok();
+            var result = await _userService.Login(code);
+            if (result.IsSuccess)
+                return Ok(result.jwt);
             return NotFound();
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> PostLogout()
-        {
-            if (await _userService.IsLoggedIn())
-                await _userService.Logout();
-            return Ok();
-        }
-
-        [Authorize]
+        [JwtAuthorizedFilter]
         [HttpPost("reset-password")]
         public async Task<IActionResult> Reset(PasswordReset reset)
         {

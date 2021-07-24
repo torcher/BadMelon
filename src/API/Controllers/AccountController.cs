@@ -1,7 +1,6 @@
 ﻿using BadMelon.API.Helpers;
 using BadMelon.Data.DTOs;
 using BadMelon.Data.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -35,7 +34,7 @@ namespace BadMelon.API.Controllers
             return Ok();
         }
 
-        [Authorize]
+        [JwtAuthorizedFilter]
         [HttpGet("profile")]
         public async Task<IActionResult> Profile()
         {

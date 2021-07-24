@@ -1,6 +1,6 @@
-﻿using BadMelon.Data;
+﻿using BadMelon.API.Helpers;
+using BadMelon.Data;
 using BadMelon.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -29,7 +29,7 @@ namespace BadMelon.API.Controllers
         }
 
         [HttpGet("migrate")]
-        [Authorize]
+        [JwtAuthorizedFilter]
         public async Task<string> Get()
         {
             try
@@ -53,7 +53,7 @@ namespace BadMelon.API.Controllers
         }
 
         [HttpGet("seed")]
-        [Authorize]
+        [JwtAuthorizedFilter]
         public async Task<string> Seed()
         {
             int recipeCount;
