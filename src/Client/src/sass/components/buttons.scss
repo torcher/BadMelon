@@ -7,3 +7,14 @@
     font-weight: bold;
   }
 }
+
+.delete-button{
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  
+  &:hover{
+    cursor: pointer;
+    font-weight: bold;
+  }
+}

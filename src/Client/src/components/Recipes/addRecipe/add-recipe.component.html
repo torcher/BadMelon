@@ -17,7 +17,7 @@
       <span *ngIf="ingredients.errors?.required">You must have at least one ingredient</span>
     </div>
     <ng-container formArrayName="ingredients">
-      <div *ngFor="let _ of ingredients.controls; index as i">
+      <div *ngFor="let _ of ingredients.controls; index as i" class="form-field-group">
         <ng-container [formGroupName]="i">
           <div class="form-field">
             <label for="typeId_{{i}}">Type: </label>
@@ -29,6 +29,7 @@
             <label for="weight_{{i}}">Weight: </label>
             <input id="weight_{{i}}" formControlName="weight" type="number">
           </div>  
+          <span class="delete-button" (click)="removeIngredient(i)">X</span>
         </ng-container>
       </div>
     </ng-container>
@@ -51,6 +52,8 @@
             <label for="prepTime_{{i}}">Preparation Time (hh:mm:ss): </label>
             <input id="prepTime_{{i}}" type="text" formControlName="prepTime" />
           </div>
+          
+          <span class="delete-button" (click)="removeStep(i)">X</span>
         </ng-container>
       </div>
     </ng-container>

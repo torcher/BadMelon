@@ -52,6 +52,14 @@ export class AddRecipe {
     }))
   }
 
+  removeIngredient(index: number): void{
+    this.ingredients.removeAt(index);
+  }
+
+  removeStep(index: number): void{
+    this.steps.removeAt(index);
+  }
+
   addStep(): void{
     this.steps.push(this.fb.group({
       text: ['', Validators.required, Validators.maxLength(1000)],
