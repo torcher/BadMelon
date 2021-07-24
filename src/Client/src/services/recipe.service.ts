@@ -17,4 +17,8 @@ export class RecipeService{
   createRecipe(recipe: Recipe): Observable<HttpResponse<Recipe>>{
     return this.http.post<Recipe>("recipe", recipe);
   }
+
+  getRecipe(recipeId: string): Observable<Recipe>{
+    return this.http.get<Recipe>("recipe/" + recipeId);
+  }
 }

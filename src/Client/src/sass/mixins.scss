@@ -1,0 +1,5 @@
+@mixin centered-fixed {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+}

@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+//Mixins
+@import 'sass/mixins.scss';
+
+//Basic Variables
+@import 'sass/config/colors.scss';
+
+//Compound Varibles
+@import 'sass/config/borders.scss';
+
+//Components
+@import 'sass/components/buttons.scss';
+@import 'sass/components/modal.scss';

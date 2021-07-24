@@ -1,0 +1,26 @@
+<div class="recipe-details">
+  <span class="Name">{{ recipe.name }}</span>
+  <div class="recipe-info">
+    <ul>
+      <li>Prep Time: </li>
+      <li>Cook Time: </li>
+      <li>Total Time: </li>
+    </ul>
+  </div>
+
+  <div class="ingredients">
+    <span>Ingredients</span>
+    <ul>
+      <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient.type }}: {{ ingredient.weight }} KG</li>
+    </ul>
+  </div>
+
+  <div class="steps">
+    <span>Steps</span>
+    <ol>
+      <li *ngFor="let step of recipe.steps"><span>{{ step.text }}</span>
+      <div><span>Prep: {{step.prepTime}}</span><span> Cook: {{ step.cookTime }}</span></div>
+      </li>
+    </ol>
+  </div>
+</div>

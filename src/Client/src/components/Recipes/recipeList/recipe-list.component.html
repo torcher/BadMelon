@@ -1,3 +1,6 @@
-<ul>
-  <li *ngFor="let recipe of recipes">{{ recipe.name }}</li>
+<ul *ngIf="!showSpinner; else spinner">
+  <li *ngFor="let recipe of recipes"><a [routerLink]="['recipe', recipe.id]">{{ recipe.name }}</a></li>
 </ul>
+<ng-template #spinner>
+  <div class="spinner"></div>
+</ng-template>

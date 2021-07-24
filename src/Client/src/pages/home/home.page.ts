@@ -8,10 +8,16 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
   title: string = 'Home';
+  recipeListLoaded: boolean = false;
   showAddRecipe: boolean = false;
 
-  addRecipeButton(): void{
-    this.showAddRecipe = true;
+  toggleRecipeButton(): void{
+    this.showAddRecipe = !this.showAddRecipe;
+  }
+
+  recipeSaved(): void{
+    this.recipeListLoaded = !this.recipeListLoaded;
+    this.toggleRecipeButton();
   }
 
 }

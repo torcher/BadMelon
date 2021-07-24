@@ -1,5 +1,9 @@
 <h1>{{ title }}</h1>
-<button (click)="addRecipeButton()">Add Recipe</button>
-<recipe-list></recipe-list>
+<button (click)="toggleRecipeButton()">Add Recipe</button>
+<recipe-list [loadRecipes]="recipeListLoaded"></recipe-list>
 
-<add-recipe *ngIf="showAddRecipe"></add-recipe>
+<div class="modal" *ngIf="showAddRecipe">
+  <add-recipe (recipeSaved)="recipeSaved()" (closeMe)="toggleRecipeButton()" ></add-recipe>
+</div>
+
+<a [routerLink]="['logout']">Logout</a>

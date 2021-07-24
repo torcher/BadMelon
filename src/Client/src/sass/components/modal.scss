@@ -1,0 +1,7 @@
+.modal{
+  position: fixed;
+  border: $border-outline;
+  margin: 0 auto;
+  top: 110px;
+  @include centered-fixed;
+}
