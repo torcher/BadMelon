@@ -1,6 +1,7 @@
 <h2>Add a Recipe</h2>
 
 <form name="recipe" [formGroup]="recipeForm" (onSubmit)="submit()">
+  <button class="close-button-x">X</button>
   <div class="form-field">
     <label for="name">Name</label>
     <input id="name" formControlName="name" name="name" placeholder="Recipe Name"/>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { RecipeService } from 'src/services/recipe.service';
 import { Recipe } from 'src/types/Recipe';
 import { IngredientType } from 'src/types/IngredientType';
@@ -14,6 +14,9 @@ import { Step } from 'src/types/Step';
   styleUrls: ['./add-recipe.component.scss']
 })
 export class AddRecipe {
+  @Output() closeMe = new EventEmitter();
+  @Output() recipeSaved = new EventEmitter();
+
   isError: boolean = false;
   errorMessage: string = "";
   ingredientTypes: IngredientType[] = [];
@@ -94,13 +97,17 @@ export class AddRecipe {
 
     this.recipeService.createRecipe(this.getRecipeFromForm()).subscribe(
       res =>{
-
+        this.recipeSaved.emit();
       },
       err =>{
         this.errorMessage = "Cannot make this recipe";
         this.isError = true;
       }
     )
+  }
+
+  close(): void{
+    this.closeMe.emit();
   }
 
 }
