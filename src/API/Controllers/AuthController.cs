@@ -37,11 +37,11 @@ namespace BadMelon.API.Controllers
             return NotFound();
         }
 
-        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> PostLogout()
         {
-            await _userService.Logout();
+            if (await _userService.IsLoggedIn())
+                await _userService.Logout();
             return Ok();
         }
 
