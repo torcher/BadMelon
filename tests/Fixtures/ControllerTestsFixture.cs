@@ -1,4 +1,6 @@
 ﻿using BadMelon.Data;
+using BadMelon.Data.DTOs;
+using BadMelon.Data.Extensions;
 using BadMelon.Tests.Helpers;
 using Microsoft.AspNetCore.TestHost;
 using System;
@@ -27,24 +29,28 @@ namespace BadMelon.Tests.Fixtures
 
         protected void Login()
         {
-            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/login", dataSamples.Users.FirstOrDefault().Item2.GetStringContent()));
+            Login(dataSamples.Users.FirstOrDefault().Item2);
+        }
+
+        protected void Login(Login login)
+        {
+            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/login", login.GetStringContent()));
 
             try
             {
                 response.EnsureSuccessStatusCode();
+                var jwt = response.GetObject<Jwt>().Result;
+                _http.SetBearerToken(jwt?.token ?? "");
             }
-            catch (Exception x)
+            catch (Exception)
             {
-                throw x;
+                throw;
             }
-            Console.WriteLine(response.StatusCode.ToString());
         }
 
         protected void Logout()
         {
-            var response = AsyncHelper.RunSync(() => _http.PostAsync("api/auth/logout", new StringContent("")));
-            if (!response.IsSuccessStatusCode && response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
-                throw new Exception("Should not be status code " + response.StatusCode.ToString());
+            _http.SetBearerToken("");
         }
     }
 }

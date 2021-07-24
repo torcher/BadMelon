@@ -126,8 +126,7 @@ namespace BadMelon.Tests.Controllers
             verificationResponse.EnsureSuccessStatusCode();
 
             var login = new Login { Username = registration.Username, LoginMethod = LoginMethod.EMAIL };
-            var loginResponse = await _http.PostAsync("/api/auth/login", login.GetStringContent());
-            Assert.Equal(200, (int)loginResponse.StatusCode);
+            Login(login);
 
             var newVerificationCodeResponse = await _http.GetAsync("/api/testdata/verification-codes/" + registration.Username);
             string newVerification = await newVerificationCodeResponse.Content.ReadAsStringAsync();

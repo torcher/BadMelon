@@ -3,12 +3,18 @@ using Microsoft.AspNetCore.Builder;
 
 namespace BadMelon.API.Helpers
 {
-    public static class ErrorHandlerMiddlewareExtensions
+    public static class MiddlewareExtensions
     {
         public static IApplicationBuilder UseBadMelonErrorHandler(
                this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ErrorHandlerMiddleware>();
+        }
+
+        public static IApplicationBuilder UserBadMelonJwtHandler(
+            this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<JwtHandlerMiddleware>();
         }
     }
 }

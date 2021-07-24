@@ -1,13 +1,10 @@
 ﻿using BadMelon.Data;
 using BadMelon.Data.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BadMelon.Data.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BadMelon.API.Security
 {
@@ -15,24 +12,7 @@ namespace BadMelon.API.Security
     {
         public static void AddAuthServices(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                       .AddJwtBearer(options =>
-                       {
-                           options.RequireHttpsMetadata = false;
-                           options.SaveToken = true;
-
-                           options.TokenValidationParameters = new TokenValidationParameters
-                           {
-                               ValidateIssuer = true,
-                               ValidateAudience = true,
-                               ValidateLifetime = true,
-                               ValidateIssuerSigningKey = true,
-                               ValidIssuer = Configuration["Jwt:Issuer"],
-                               ValidAudience = Configuration["Jwt:Audience"],
-                               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecretKey"])),
-                               ClockSkew = TimeSpan.Zero
-                           };
-                       });
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<BadMelonDataContext>()
@@ -58,16 +38,6 @@ namespace BadMelon.API.Security
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_+={}[]\\|;:,.<>?/";
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
-            });
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
-                };
             });
         }
     }

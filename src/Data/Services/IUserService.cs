@@ -7,15 +7,15 @@ namespace BadMelon.Data.Services
 {
     public interface IUserService
     {
-        Task<bool> Login(Login login);
+        Task<LoginResponse> Login(Login login);
 
-        Task<bool> Login(Guid code);
+        Task<LoginResponse> Login(Guid code);
+
+        Task<User> GetUserById(string id);
 
         User GetLoggedInUser();
 
         Task<bool> IsLoggedIn();
-
-        Task Logout();
 
         Task Register(Registration registration);
 

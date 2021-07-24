@@ -38,7 +38,7 @@ namespace BadMelon.API.Middleware
             {
                 logger.LogInformation(ex.Message);
                 context.Response.StatusCode = 401;
-                errorMessage = JsonConvert.SerializeObject(new { ex.Message });
+                errorMessage = "401 Unauthorized";
             }
             catch (Exception ex)
             {
