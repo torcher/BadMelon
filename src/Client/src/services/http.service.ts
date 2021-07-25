@@ -35,4 +35,11 @@ export class HttpService {
     });
   }
 
+  delete(path: string): Observable<HttpResponse<any>>{
+    return this.http.delete(this.baseUrl + path, {
+      observe: 'response', 
+      headers: new HttpHeaders().set('Authorization', this.bearerToken)
+    });
+  }
+
 }

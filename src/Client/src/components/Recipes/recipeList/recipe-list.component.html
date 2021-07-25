@@ -1,6 +1,13 @@
 <ul *ngIf="!showSpinner; else spinner">
-  <li *ngFor="let recipe of recipes"><a [routerLink]="['recipe', recipe.id]">{{ recipe.name }}</a></li>
+  <li *ngFor="let recipe of recipes"><a [routerLink]="['recipe', recipe.id]">{{ recipe.name }}</a> 
+    <button (click)="deleteRecipe(recipe)">Delete</button>
+  </li>
 </ul>
 <ng-template #spinner>
   <div class="spinner"></div>
 </ng-template>
+
+<div *ngIf="deleteMe !== null">
+  <p>Are you sure you wish to delete {{deleteMe.name}}?</p>
+  <button (click)="deleteRecipeConfirm(deleteMe.id ?? '')">Yes</button>
+</div>

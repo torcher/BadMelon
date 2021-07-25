@@ -13,6 +13,8 @@ export class RecipeList {
   showSpinner: boolean = true;
   private _loadRecipes: boolean = false;
 
+  deleteMe: Recipe | null = null;
+
   @Input() 
   get loadRecipes(): boolean{ return this._loadRecipes; }
   set loadRecipes(value: boolean)
@@ -32,6 +34,22 @@ export class RecipeList {
         this.recipes = <Recipe[]>data;
         this.showSpinner = false;
       });
+  }
+
+  deleteRecipe(recipe: Recipe): void{
+    this.deleteMe = recipe;
+  }
+
+  deleteRecipeConfirm(id: string): void{
+    this.recipeService.deleteRecipe(id).subscribe(
+      res =>{
+        this.loadList();
+      }
+    )
+  }
+
+  clearDeleteRecipe(){
+    this.deleteMe = null;
   }
 
 }
