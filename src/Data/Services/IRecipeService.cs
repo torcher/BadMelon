@@ -12,6 +12,12 @@ namespace BadMelon.Data.Services
 
         Task<Recipe> AddRecipe(Recipe recipe);
 
+        Task<Recipe> UpdateRecipe(Recipe recipe);
+
+        Task DeleteRecipe(Recipe recipe);
+
+        Task DeleteRecipe(Guid recipeId);
+
         Task<Recipe> AddIngredientToRecipe(Guid recipeId, Ingredient ingredient);
 
         Task<Recipe> UpdateIngredientInRecipe(Guid recipeId, Ingredient ingredient);

@@ -22,12 +22,14 @@ namespace BadMelon.API.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(Recipe))]
         public async Task<Recipe[]> Get()
         {
             return await _recipes.GetRecipes();
         }
 
         [HttpGet("{id}")]
+        [Produces(typeof(Recipe))]
         public async Task<Recipe> Get(Guid id)
         {
             var recipe = await _recipes.GetRecipeByID(id);
@@ -40,6 +42,21 @@ namespace BadMelon.API.Controllers
         {
             var newRecipe = await _recipes.AddRecipe(recipe);
             return Ok(newRecipe);
+        }
+
+        [HttpPut]
+        [Produces(typeof(Recipe))]
+        public async Task<IActionResult> Put(Recipe recipe)
+        {
+            var updatedRecipe = await _recipes.UpdateRecipe(recipe);
+            return Ok(updatedRecipe);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _recipes.DeleteRecipe(id);
+            return Ok();
         }
 
         [HttpPost("{id}/ingredients")]

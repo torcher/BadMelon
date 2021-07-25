@@ -35,4 +35,18 @@ export class HttpService {
     });
   }
 
+  put<Type>(path: string, content: any): Observable<HttpResponse<Type>>{
+    return this.http.put<Type>(this.baseUrl + path, content, {
+      observe: 'response', 
+      headers: new HttpHeaders().set('Authorization', this.bearerToken)
+    });
+  }
+
+  delete(path: string): Observable<HttpResponse<any>>{
+    return this.http.delete(this.baseUrl + path, {
+      observe: 'response', 
+      headers: new HttpHeaders().set('Authorization', this.bearerToken)
+    });
+  }
+
 }

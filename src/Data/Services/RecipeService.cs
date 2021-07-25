@@ -3,6 +3,7 @@ using BadMelon.Data.Exceptions;
 using BadMelon.Data.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,6 +38,74 @@ namespace BadMelon.Data.Services
             recipeEntity.User = _LoggedInUser;
             await AddOne(recipeEntity);
             return await GetRecipeByID(recipeEntity.ID);
+        }
+
+        public async Task<Recipe> UpdateRecipe(Recipe recipe)
+        {
+            var currentRecipe = await GetOne(recipe.ID);
+            if (currentRecipe.Name != recipe.Name)
+                currentRecipe.Name = recipe.Name;
+            await _db.SaveChangesAsync();
+            await UpdateIngredientList(currentRecipe, recipe.Ingredients);
+            await UpdateStepList(currentRecipe, recipe.Steps);
+            return await GetRecipeByID(currentRecipe.ID);
+        }
+
+        private async Task UpdateIngredientList(Entities.Recipe currentRecipe, List<Ingredient> updatedIngedients)
+        {
+            var deleteIngredients = currentRecipe.Ingredients
+                    .Where(x => !updatedIngedients.Any(y => y.TypeID == x.IngredientTypeID))
+                    .ToArray();
+            foreach (var i in deleteIngredients)
+                currentRecipe.Ingredients.Remove(i);
+
+            foreach (var i in updatedIngedients)
+            {
+                var existing = currentRecipe.Ingredients.SingleOrDefault(x => x.IngredientTypeID == i.TypeID);
+                if (existing == null)
+                {
+                    i.ID = Guid.Empty;
+                    currentRecipe.Ingredients.Add(i.ConvertToEntity());
+                }
+                else
+                {
+                    existing.Weight = i.Weight;
+                }
+            }
+            await _db.SaveChangesAsync();
+        }
+
+        private async Task UpdateStepList(Entities.Recipe currentRecipe, List<Step> steps)
+        {
+            var removeStepCount = currentRecipe.Ingredients.Count - steps.Count;
+            for (int i = 0; i < removeStepCount; i++)
+                currentRecipe.Steps.Remove(currentRecipe.Steps.Last());
+            for (int i = 0; i < steps.Count; i++)
+            {
+                if (i >= currentRecipe.Steps.Count)
+                {
+                    steps[i].Order = i + 1;
+                    currentRecipe.Steps.Add(steps[i].ConvertToEntity(currentRecipe));
+                }
+                else
+                {
+                    var updatingStep = currentRecipe.Steps.ElementAt(i);
+                    updatingStep.Order = steps[i].Order;
+                    updatingStep.Text = steps[i].Text;
+                    updatingStep.CookTime = steps[i].CookTime.ConvertToEntities();
+                    updatingStep.PrepTime = steps[i].PrepTime.ConvertToEntities();
+                }
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeleteRecipe(Recipe recipe) => await DeleteRecipe(recipe.ID);
+
+        public async Task DeleteRecipe(Guid recipeId)
+        {
+            var recipe = await GetOne(recipeId);
+            await Delete(recipe);
         }
 
         public async Task<Recipe> AddIngredientToRecipe(Guid recipeId, Ingredient ingredient)
@@ -121,8 +190,11 @@ namespace BadMelon.Data.Services
                     .ThenInclude(i => i.IngredientType)
                 .Include(r => r.Steps)
                 .SingleOrDefaultAsync(r => r.ID == id);
+
             if (recipe == null)
                 throw new EntityNotFoundException("recipe");
+
+            recipe.Steps = recipe.Steps.OrderBy(s => s.Order).ToList();
             return recipe;
         }
 

@@ -21,4 +21,12 @@ export class RecipeService{
   getRecipe(recipeId: string): Observable<Recipe>{
     return this.http.get<Recipe>("recipe/" + recipeId);
   }
+
+  updateRecipe(recipe: Recipe): Observable<HttpResponse<Recipe>>{
+    return this.http.put<Recipe>("recipe/", recipe);
+  }
+
+  deleteRecipe(recipeId: string): Observable<HttpResponse<any>>{
+    return this.http.delete("recipe/" + recipeId);
+  }
 }

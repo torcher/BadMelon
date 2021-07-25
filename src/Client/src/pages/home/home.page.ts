@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Recipe } from 'src/types/Recipe';
 
 
 @Component({
@@ -10,6 +11,7 @@ export class HomePage {
   title: string = 'Home';
   recipeListLoaded: boolean = false;
   showAddRecipe: boolean = false;
+  editRecipe: Recipe | undefined;
 
   toggleRecipeButton(): void{
     this.showAddRecipe = !this.showAddRecipe;
@@ -18,6 +20,11 @@ export class HomePage {
   recipeSaved(): void{
     this.recipeListLoaded = !this.recipeListLoaded;
     this.toggleRecipeButton();
+  }
+
+  setEditRecipe(recipe: Recipe) : void{
+    this.editRecipe = recipe;
+    this.showAddRecipe = true;
   }
 
 }

@@ -6,6 +6,7 @@ using BadMelon.Tests.Fixtures.DTOs;
 using BadMelon.Tests.Helpers;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -103,7 +104,101 @@ namespace BadMelon.Tests.Controllers
         public async Task Post_BadRecipe_ExpectError(Recipe newRecipe, int statusCodeExpected)
         {
             var response = await _http.PostAsync("api/recipe", newRecipe.GetStringContent());
-            Assert.True((int)response.StatusCode == statusCodeExpected, "Status code should be " + statusCodeExpected + " but was " + (int)response.StatusCode);
+            response.StatusCode.AssertStatusCode(statusCodeExpected);
+        }
+
+        [Fact]
+        public async Task Delete_UnkownRecipeId_ExpectNotFound()
+        {
+            var randomGuid = Guid.NewGuid();
+            var response = await _http.DeleteAsync("api/recipe/" + randomGuid);
+            response.StatusCode.AssertStatusCode(404);
+        }
+
+        [Fact]
+        public async Task Delete_NotYourRecipe_ExpectNotFound()
+        {
+            var user1 = dataSamples.Users[1];
+            var notUser1sRecipe = dataSamples.Recipes[0];
+            Logout();
+            Login(user1.login);
+
+            var response = await _http.DeleteAsync("api/recipe/" + notUser1sRecipe.ID);
+            response.StatusCode.AssertStatusCode(404);
+
+            Logout();
+            Login();
+        }
+
+        [Fact]
+        public async Task Delete_ValidRecipeId_ExpectOk()
+        {
+            var randomGuid = Guid.NewGuid();
+            var response = await _http.DeleteAsync("api/recipe/" + randomGuid);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound, "Status code should be 404 unknown but was " + response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_NewRecipe_ExpectNotFound()
+        {
+            var recipe = new Recipe
+            {
+                Name = "New Recipe",
+                Ingredients = new List<Ingredient>
+                {
+                    new Ingredient
+                    {
+                        TypeID = dataSamples.IngredientTypes[0].ID,
+                        Weight = 1d
+                    }
+                },
+                Steps = new List<Step>
+                {
+                    new Step
+                    {
+                        Text = "Cut a hole in a box",
+                        PrepTime = "00:00:00",
+                        CookTime = "00:00:00"
+                    }
+                }
+            };
+
+            var response = await _http.PutAsync("api/recipe", recipe.GetStringContent());
+            response.StatusCode.AssertStatusCode(404);
+        }
+
+        [Fact]
+        public async Task Put_NotYourRecipe_ExpectNotFound()
+        {
+            var user1 = dataSamples.Users[1];
+            var notUser1Recipe = dataSamples.Recipes[0].ConvertToDTO();
+            notUser1Recipe.Name += "a";
+            Logout();
+            Login(user1.login);
+
+            var response = await _http.PutAsync("api/recipe", notUser1Recipe.GetStringContent());
+            response.StatusCode.AssertStatusCode(404);
+
+            Logout();
+            Login();
+        }
+
+        [Theory]
+        [ClassData(typeof(BadRecipesTestData))]
+        public async Task Put_InvalidRecipe_ExpectBadRequest(Recipe newRecipe, int statusCodeExpected)
+        {
+            var response = await _http.PutAsync("api/recipe", newRecipe.GetStringContent());
+            response.StatusCode.AssertStatusCode(statusCodeExpected);
+        }
+
+        [Theory]
+        [ClassData(typeof(UpdateRecipeTestData))]
+        public async Task Put_UpdatedRecipe_ExpectOk(Recipe updateRecipe)
+        {
+            var response = await _http.PutAsync("api/recipe/", updateRecipe.GetStringContent());
+            response.EnsureSuccessStatusCode();
+            var updatedRecipe = await response.GetObject<Recipe>();
+            updateRecipe.AssertSameRecipe(updatedRecipe);
         }
 
         [Fact]
@@ -235,8 +330,8 @@ namespace BadMelon.Tests.Controllers
             var updatingRecipe = allRecipes[0];
             var updatingStep = updatingRecipe.Steps.First();
             updatingStep.Text = "Put_RecipeStep test";
-            updatingStep.PrepTime = "96:0:0";
-            updatingStep.CookTime = "97:0:0";
+            updatingStep.PrepTime = "96:00:00";
+            updatingStep.CookTime = "97:00:00";
             updatingStep.Order = 98;
 
             var updateResponse = await _http.PutAsync($"api/recipe/{updatingRecipe.ID}/steps", updatingStep.GetStringContent());

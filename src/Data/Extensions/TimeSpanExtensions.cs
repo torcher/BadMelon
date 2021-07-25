@@ -6,7 +6,16 @@ namespace BadMelon.Data.Extensions
     {
         public static string ToRecipeFormat(this TimeSpan ts)
         {
-            return $"{(ts.Days * 24) + ts.Hours}:{ts.Minutes}:{ts.Seconds}";
+            var times = new string[]
+            {
+                $"{(ts.Days * 24) + ts.Hours}",
+                $"{ts.Minutes}",
+                $"{ts.Seconds}"
+            };
+            for (int t = 0; t < times.Length; t++)
+                if (times[t].Length < 2)
+                    times[t] = "0" + times[t];
+            return string.Join(':', times);
         }
 
         public static TimeSpan FromRecipeFormat(this string s)

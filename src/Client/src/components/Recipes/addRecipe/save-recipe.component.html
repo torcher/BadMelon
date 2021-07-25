@@ -1,7 +1,7 @@
 <h2>Add a Recipe</h2>
 
 <form name="recipe" [formGroup]="recipeForm" (onSubmit)="submit()">
-  <button class="close-button-x">X</button>
+  <button class="close-button-x" (click)="close()">X</button>
   <div class="form-field">
     <label for="name">Name</label>
     <input id="name" formControlName="name" name="name" placeholder="Recipe Name"/>
@@ -17,7 +17,7 @@
       <span *ngIf="ingredients.errors?.required">You must have at least one ingredient</span>
     </div>
     <ng-container formArrayName="ingredients">
-      <div *ngFor="let _ of ingredients.controls; index as i">
+      <div *ngFor="let _ of ingredients.controls; index as i" class="form-field-group">
         <ng-container [formGroupName]="i">
           <div class="form-field">
             <label for="typeId_{{i}}">Type: </label>
@@ -29,6 +29,7 @@
             <label for="weight_{{i}}">Weight: </label>
             <input id="weight_{{i}}" formControlName="weight" type="number">
           </div>  
+          <span class="delete-button" (click)="removeIngredient(i)">X</span>
         </ng-container>
       </div>
     </ng-container>
@@ -37,7 +38,7 @@
   <div class="form-group">
     <div><button (click)="addStep()">Add Step</button></div>
     <ng-container formArrayName="steps">
-      <div *ngFor="let _ of steps.controls; index as i">
+      <div *ngFor="let _ of steps.controls; index as i" class="form-field-group">
         <ng-container [formGroupName]="i">
           <div class="form-field">
             <label for="stepText_{{i}}">Text: </label>
@@ -51,6 +52,8 @@
             <label for="prepTime_{{i}}">Preparation Time (hh:mm:ss): </label>
             <input id="prepTime_{{i}}" type="text" formControlName="prepTime" />
           </div>
+          
+          <span class="delete-button" (click)="removeStep(i)">X</span>
         </ng-container>
       </div>
     </ng-container>
@@ -58,6 +61,6 @@
 
 
   <div class="form-field">
-    <button [disabled]="recipeForm.invalid" (click)="submit()">Add</button>
+    <button [disabled]="recipeForm.invalid" (click)="submit()">Save</button>
   </div>
 </form>
