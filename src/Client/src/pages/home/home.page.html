@@ -1,9 +1,9 @@
 <h1>{{ title }}</h1>
 <button (click)="toggleRecipeButton()">Add Recipe</button>
-<recipe-list [loadRecipes]="recipeListLoaded"></recipe-list>
+<recipe-list [loadRecipes]="recipeListLoaded" (editThisRecipe)="setEditRecipe($event)"></recipe-list>
 
 <div class="modal" *ngIf="showAddRecipe">
-  <add-recipe (recipeSaved)="recipeSaved()" (closeMe)="toggleRecipeButton()" ></add-recipe>
+  <save-recipe (recipeSaved)="recipeSaved()" (closeMe)="toggleRecipeButton()" [editRecipe]="editRecipe"></save-recipe>
 </div>
 
 <a [routerLink]="['logout']">Logout</a>

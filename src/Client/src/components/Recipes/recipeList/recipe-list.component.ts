@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecipeService } from 'src/services/recipe.service';
 import { Recipe } from 'src/types/Recipe';
 
@@ -13,7 +13,9 @@ export class RecipeList {
   showSpinner: boolean = true;
   private _loadRecipes: boolean = false;
 
-  deleteMe: Recipe | null = null;
+  deleteMe: Recipe | undefined;
+
+  @Output() editThisRecipe = new EventEmitter<Recipe>();
 
   @Input() 
   get loadRecipes(): boolean{ return this._loadRecipes; }
@@ -43,13 +45,18 @@ export class RecipeList {
   deleteRecipeConfirm(id: string): void{
     this.recipeService.deleteRecipe(id).subscribe(
       res =>{
+        this.clearDeleteRecipe();
         this.loadList();
       }
     )
   }
 
   clearDeleteRecipe(){
-    this.deleteMe = null;
+    this.deleteMe = undefined;
+  }
+
+  editRecipe(recipe: Recipe): void{
+    this.editThisRecipe.emit(recipe);
   }
 
 }

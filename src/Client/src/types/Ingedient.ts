@@ -1,7 +1,7 @@
 export interface Ingredient
 {
   id?: string;
-  typeId: string;
+  typeID: string;
   type: string;
   weight: number;
 }
