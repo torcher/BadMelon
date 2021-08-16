@@ -1,0 +1,32 @@
+/*------------------------------------*\
+    $PATTERN LAB-SPECIFIC STYLES
+\*------------------------------------*/
+/**
+ * This stylesheet is for styles you want to include only when the interface is being viewed within Pattern Lab.
+ * This is helpful for displaying demo styles for grids, animations, color swatches, etc
+ * It's also helpful for overriding context-specific styles like fixed or absolutely positioned elements
+ * These styles will not be your production CSS.
+ */
+
+ @import url('https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+  
+ @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+ 
+
+.demo-animate {
+	background: #ddd;
+	padding: 1em;
+	margin-bottom: 1em;
+	text-align: center;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.sg-label {
+	font-size: 90%;
+	line-height: 1;
+}
+
+.sg-fonts p {
+	margin-bottom: 0.3em;
+}

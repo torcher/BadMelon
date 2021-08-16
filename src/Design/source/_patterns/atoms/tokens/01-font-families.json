@@ -1,0 +1,17 @@
+{
+  "items": [
+    {
+      "name": "$font-family-primary",
+      "value": "\"Arvo\", \"Garamond\", serif",
+      "comment": ""
+    },
+    {
+      "name": "$font-family-secondary",
+      "value": "\"Montserrat\", \"Helvetica\", \"Arial\", sans-serif",
+      "comment": ""
+    }
+  ],
+  "meta": {
+    "description": "To add to these items, use Sass variables that start with <code>$font-family-</code> in <code>./source/css/scss/tokens/fonts.scss</code>"
+  }
+}

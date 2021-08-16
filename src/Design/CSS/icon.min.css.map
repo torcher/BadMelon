@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAOA,AAAA,OAAO,AAAC,CACP,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,IAAI,CACX",
+    "sources": [
+        "../source/_patterns/atoms/images/icon.scss"
+    ],
+    "names": [],
+    "file": "icon.min.css"
+}

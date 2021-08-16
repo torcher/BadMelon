@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "name": "$font-size-sm",
+      "value": "0.75rem",
+      "comment": ""
+    },
+    {
+      "name": "$font-size-sm-2",
+      "value": "0.85rem",
+      "comment": ""
+    },
+    {
+      "name": "$font-size-md",
+      "value": "1rem",
+      "comment": ""
+    },
+    {
+      "name": "$font-size-md-2",
+      "value": "1.2rem",
+      "comment": ""
+    },
+    {
+      "name": "$font-size-lg",
+      "value": "2rem",
+      "comment": ""
+    },
+    {
+      "name": "$font-size-xl",
+      "value": "3rem",
+      "comment": ""
+    }
+  ],
+  "meta": {
+    "description": "To add to these items, use Sass variables that start with <code>$font-size-</code> in <code>./source/css/scss/tokens/_sizes.scss</code>"
+  }
+}

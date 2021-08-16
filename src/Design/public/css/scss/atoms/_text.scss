@@ -1,0 +1,21 @@
+* {
+  font-family: $font-family-secondary;
+}
+
+blockquote p{
+  font-family: $font-family-secondary;
+  font-size: $font-size-md;
+  border-left: $border-generic;
+  padding-left: 10px;
+}
+
+p{
+  font-family: $font-family-secondary;
+  font-size: $font-size-md-2;
+  margin: $space-text-block;
+}
+
+i {
+  font-size: $font-size-icon;
+}
+
