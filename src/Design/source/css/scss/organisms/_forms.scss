@@ -1,0 +1,31 @@
+.form-group{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+
+  .form-input{
+    flex-basis: 48%;
+
+    &.full-width{
+      flex-basis: 98%;
+    }
+  }
+
+  &.stacked{
+    flex-flow: column;
+    align-items: center;
+
+    .form-input{
+      width: 95%;
+    }
+  }
+
+  @media screen and (max-width: $break-mobile) {
+    flex-flow: column;
+    align-items: center;
+
+    .form-input{
+      width: 95%;
+    }
+  }  
+}

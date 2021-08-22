@@ -19,3 +19,10 @@ i {
   font-size: $font-size-icon;
 }
 
+label {
+  display: block;
+  font-family: $font-family-primary;
+  font-size: $font-size-sm-2;
+  margin-bottom: 0.2rem;
+}
+

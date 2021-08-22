@@ -17,6 +17,7 @@
 */
 @import './scss/atoms/headings';
 @import './scss/atoms/text';
+@import './scss/atoms/inputs';
 
 /*
   *****************
@@ -25,8 +26,10 @@
   Includes logically grouped small/simple
   components made up of atoms
 */
+@import './scss/molecules/formInputs';
 
 //Organisms
+@import './scss/organisms/forms';
 
 //Layouts
 

@@ -9837,3 +9837,88 @@ template {
 .bad-melon i {
   font-size: 2rem;
 }
+.bad-melon label {
+  display: block;
+  font-family: "Arvo", "Garamond", serif;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+.bad-melon input, .bad-melon textarea {
+  border-style: solid;
+  border-color: #DDD;
+  border-radius: 5px;
+}
+.bad-melon input::-webkit-input-placeholder, .bad-melon textarea::-webkit-input-placeholder {
+  font-family: "Montserrat", "Arial", sans-serif;
+  padding-left: 0.3rem;
+}
+.bad-melon input::-moz-placeholder, .bad-melon textarea::-moz-placeholder {
+  font-family: "Montserrat", "Arial", sans-serif;
+  padding-left: 0.3rem;
+}
+.bad-melon input:-ms-input-placeholder, .bad-melon textarea:-ms-input-placeholder {
+  font-family: "Montserrat", "Arial", sans-serif;
+  padding-left: 0.3rem;
+}
+.bad-melon input::-ms-input-placeholder, .bad-melon textarea::-ms-input-placeholder {
+  font-family: "Montserrat", "Arial", sans-serif;
+  padding-left: 0.3rem;
+}
+.bad-melon input::placeholder, .bad-melon textarea::placeholder {
+  font-family: "Montserrat", "Arial", sans-serif;
+  padding-left: 0.3rem;
+}
+.bad-melon select, .bad-melon textarea {
+  font-family: "Montserrat", "Arial", sans-serif;
+}
+.bad-melon .form-input {
+  margin-bottom: 0.75rem;
+}
+.bad-melon .form-input input, .bad-melon .form-input textarea, .bad-melon .form-input select {
+  width: 100%;
+}
+.bad-melon .form-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+.bad-melon .form-group .form-input {
+  -ms-flex-preferred-size: 48%;
+      flex-basis: 48%;
+}
+.bad-melon .form-group .form-input.full-width {
+  -ms-flex-preferred-size: 98%;
+      flex-basis: 98%;
+}
+.bad-melon .form-group.stacked {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: column;
+          flex-flow: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.bad-melon .form-group.stacked .form-input {
+  width: 95%;
+}
+@media screen and (max-width: 480px) {
+  .bad-melon .form-group {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-flow: column;
+            flex-flow: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+  .bad-melon .form-group .form-input {
+    width: 95%;
+  }
+}
