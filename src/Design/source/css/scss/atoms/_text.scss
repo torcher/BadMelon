@@ -26,3 +26,14 @@ label {
   margin-bottom: 0.2rem;
 }
 
+a {
+  color: $color-neutral-black;
+
+  &:visited{
+    color: $color-neutral-grey-05;
+  }
+
+  &:hover{
+    color: $color-neutral-grey-04;
+  }
+}

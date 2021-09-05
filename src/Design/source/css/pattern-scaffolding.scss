@@ -244,6 +244,7 @@
      max-width: 20rem;
    }
  }
+
 /*
  Need to re-import fonts here because SASS writes these imports
  within the .bad-melon block below which doesn't work.
@@ -251,4 +252,16 @@
  @import '../css/external-imports';
 .bad-melon{
   @import '../css/style.scss';
+}
+
+
+.single-form{
+  max-width: 500px;
+  height: 800px;
+
+  margin: 30px auto 0 auto;
+
+  .submit{
+    width: 94%;
+  }
 }
