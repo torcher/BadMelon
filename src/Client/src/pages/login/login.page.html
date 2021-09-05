@@ -1,16 +1,28 @@
-<h1>Login</h1>
+<main>
+  <h2>Login</h2>
 
-<form name="login">
-  <div *ngIf="errorMessage !== ''">
-    <p>{{ errorMessage }}</p>
-  </div>
-  <div class="form-field">
-    <input type="text" id="username" name="username" placeholder="Username" [(ngModel)]="username" />
-  </div>
-  <div class="form-field">
-    <input type="password" id="password" name="password" placeholder="Password" [(ngModel)]="password" />
-  </div>
-  <div class="form-field">
-    <button (click)="submit()">Login</button>
-  </div>
-</form>
+  <form name="login">
+    <div class="form-group stacked">  
+      <div *ngIf="errorMessage !== ''">
+        <p>{{ errorMessage }}</p>
+      </div>
+      <div class="form-input">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" [(ngModel)]="username" />
+      </div>
+      <div class="form-input">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" [(ngModel)]="password" />
+      </div>
+      <div class="submit">
+        <button name="submit" (click)="submit()">Login</button>
+      </div>
+    </div>
+  </form>
+</main>
+
+<footer>
+  <ul class="regulatory">
+    <li><a href="#">Privacy Policy</a></li>
+  </ul>
+</footer>

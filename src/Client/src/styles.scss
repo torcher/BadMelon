@@ -1,13 +1,3 @@
-//Mixins
-@import 'sass/mixins.scss';
 
-//Basic Variables
-@import 'sass/config/colors.scss';
-
-//Compound Varibles
-@import 'sass/config/borders.scss';
-
-//Components
-@import 'sass/components/buttons.scss';
-@import 'sass/components/modal.scss';
-@import 'sass/components/forms.scss';
+@import '../../Design/source/css/external-imports';
+@import '../../Design/source/css/style';
