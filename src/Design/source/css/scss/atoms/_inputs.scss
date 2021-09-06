@@ -1,0 +1,16 @@
+input, textarea{
+  border-style: solid;
+  border-color: $color-neutral-grey-03;
+  border-radius: 5px;
+}
+
+input, textarea {
+  &::placeholder{
+    font-family: $font-family-secondary;
+    padding-left: 0.3rem;
+  }
+}
+
+select, textarea {
+  font-family: $font-family-secondary;
+}

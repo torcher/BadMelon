@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "name": "$color-brand-dark-green",
+      "value": "#164A41",
+      "comment": ""
+    },
+    {
+      "name": "$color-brand-light-green",
+      "value": "#00B295",
+      "comment": ""
+    },
+    {
+      "name": "$color-brand-red",
+      "value": "#EF2D56",
+      "comment": ""
+    },
+    {
+      "name": "$color-brand-orange",
+      "value": "#D68C45",
+      "comment": ""
+    },
+    {
+      "name": "$color-brand-white",
+      "value": "#EFF2F1",
+      "comment": ""
+    }
+  ],
+  "meta": {
+    "description": "To add to these items, use Sass variables that start with <code>$color-brand-</code> in <code>./source/css/scss/abstracts/_variables.scss</code>"
+  }
+}

@@ -1,0 +1,39 @@
+* {
+  font-family: $font-family-secondary;
+}
+
+blockquote p{
+  font-family: $font-family-secondary;
+  font-size: $font-size-md;
+  border-left: $border-generic;
+  padding-left: 10px;
+}
+
+p{
+  font-family: $font-family-secondary;
+  font-size: $font-size-md-2;
+  margin: $space-text-block;
+}
+
+i {
+  font-size: $font-size-icon;
+}
+
+label {
+  display: block;
+  font-family: $font-family-primary;
+  font-size: $font-size-sm-2;
+  margin-bottom: 0.2rem;
+}
+
+a {
+  color: $color-neutral-black;
+
+  &:visited{
+    color: $color-neutral-grey-05;
+  }
+
+  &:hover{
+    color: $color-neutral-grey-04;
+  }
+}

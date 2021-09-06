@@ -1,0 +1,30 @@
+footer {
+  position: fixed;
+  bottom: 0;
+
+  width: 100%;
+  min-height: 3rem;
+  color: $color-brand-dark-green;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  a, a:visited {
+    color: $color-brand-dark-green;
+    text-decoration: none;
+
+    &:hover{
+      color: $color-brand-light-green;
+    }
+  }
+
+  ul.regulatory{
+    list-style: none;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    justify-content: space-around;
+  }
+}
