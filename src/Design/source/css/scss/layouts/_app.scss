@@ -1,0 +1,38 @@
+.page-grid.app-layout{
+  display: grid;
+  grid-template-columns: $layout-navbar-width 1fr;
+  grid-template-rows: 1fr $layout-footer-height;
+  grid-template-areas: "nav main"
+                       "nav footer";
+
+  nav{
+    grid-area: nav;
+  }
+
+  main{
+    grid-area: main;
+  }
+
+  footer{
+    grid-area: footer;
+  }
+
+  &.nav-open{
+    grid-template-columns: $layout-navbar-width-opened 1fr;
+
+    nav{
+      width: $layout-navbar-width-opened;
+      div,li{
+        width: $layout-navbar-width-opened - 6px;
+      }
+
+      a{
+        text-align: left; 
+        width: $layout-navbar-width-opened - 6px;
+        span{
+          display: inline;
+        }
+      }
+    }
+  }
+}

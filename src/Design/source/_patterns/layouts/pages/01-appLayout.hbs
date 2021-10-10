@@ -1,0 +1,48 @@
+<div class="bad-melon">
+  <div class="page-grid app-layout">  
+    <nav>
+      <div class="active"><a href="#"><i class="ri-home-fill"></i><span>Home</span></a></div>
+
+      <ul>
+        <li>
+          <a href="#"><i class="ri-pages-fill"></i><span>Recipes</span></a>
+        </li>
+        <li>
+          <a href="#"><i class="ri-archive-fill"></i><span>Pantry</span></a>
+        </li>
+        <li>
+          <a href="#"><i class="ri-shopping-cart-2-fill"></i><span>Shopping Cart</span></a>
+        </li>
+        <li>
+          <a href="#"><i class="ri-information-fill"></i><span>Types</span></a>
+        </li>
+      </ul>
+
+      <p class="open-close" onclick="toggleNavbar()">>></p>
+    </nav>
+    <main>
+      <h1>Main content goes here</h1>
+    </main>
+    <footer>
+      <ul class="regulatory">
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </footer>
+  </div>
+</div>
+
+<script>
+  function toggleNavbar(){
+    var page = document.querySelector('.page-grid.app-layout')
+    var toggler = document.querySelector('nav p.open-close')
+    if(page.classList.contains("nav-open"))
+    {
+      page.classList.remove("nav-open")
+      toggler.innerHTML = '>>'
+    }
+    else{
+      page.classList.add("nav-open")
+      toggler.innerHTML = '<<'
+    }
+  }
+</script>

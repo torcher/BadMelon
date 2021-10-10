@@ -1,9 +1,6 @@
 footer {
-  position: fixed;
-  bottom: 0;
-
   width: 100%;
-  min-height: 3rem;
+  min-height: $layout-footer-height;
   color: $color-brand-dark-green;
   display: flex;
   justify-content: space-around;
