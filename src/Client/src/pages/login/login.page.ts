@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/auth.service';
+import { AppPage } from 'src/types/AppPage';
 
 @Component({
   selector: 'login-page',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss']
+  styleUrls: ['./login.page.scss'],
+  host: { 'class': 'single-form'}
 })
-export class LoginPage {
+export class LoginPage extends AppPage {
   username: string = "";
   password: string = "";
   errorMessage: string = "";
 
-  constructor(private router: Router, private auth: AuthService){  }
+  constructor(private router: Router, private auth: AuthService){ super() }
 
   submit(): void{
     console.log("login")
