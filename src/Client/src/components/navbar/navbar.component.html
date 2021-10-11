@@ -1,0 +1,21 @@
+
+<div [ngClass]="isActive('/') ? 'active' : ''">
+  <a  [routerLink]="['/']"><i class="ri-home-fill"></i><span>Home</span></a>
+</div>
+
+<ul>
+  <li>
+    <a  routerLink="/recipes"><i class="ri-pages-fill"></i><span>Recipes</span></a>
+  </li>
+  <li>
+    <a href="#"><i class="ri-archive-fill"></i><span>Pantry</span></a>
+  </li>
+  <li>
+    <a href="#"><i class="ri-shopping-cart-2-fill"></i><span>Shopping Cart</span></a>
+  </li>
+  <li>
+    <a href="#"><i class="ri-information-fill"></i><span>Types</span></a>
+  </li>
+</ul>
+
+<p class="open-close" (click)="toggleOpenNav()">{{ togglerText }}</p>
