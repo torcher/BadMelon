@@ -14,6 +14,7 @@ import { HomePage } from 'src/pages/home/home.page';
 import { LoginPage } from 'src/pages/login/login.page';
 
 import { Navbar } from 'src/components/navbar/navbar.component';
+import { Footer } from 'src/components/footer/footer.component';
 import { RecipeList } from 'src/components/Recipes/recipeList/recipe-list.component';
 import { SaveRecipe } from 'src/components/Recipes/addRecipe/save-recipe.component';
 import { RecipeDetails } from 'src/components/Recipes/recipeDetails/recipe-details.component';
@@ -22,6 +23,7 @@ import { RecipePage } from 'src/pages/recipe/recipe.page';
 @NgModule({
   declarations: [
     Navbar,
+    Footer,
     AppComponent,
     HomePage,
     LoginPage,
