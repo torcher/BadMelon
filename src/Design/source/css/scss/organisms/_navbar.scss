@@ -75,4 +75,21 @@ nav{
       }
     }
   }
+
+  @media screen and (max-width: $break-mobile){
+    display: flex;
+    width: 100%;
+    justify-content: center;
+
+    p{
+      display: none;
+    }
+
+    ul{
+      margin: 0; 
+      li{
+        display: inline-block;
+      }
+    }
+  }
 }

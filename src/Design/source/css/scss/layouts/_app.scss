@@ -35,4 +35,15 @@
       }
     }
   }
+
+  @media screen and (max-width: $break-mobile){  
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr $layout-navbar-width+5px;
+    grid-template-areas: "main"
+                        "nav";
+
+    footer{
+      display: none;
+    }
+  }
 }
