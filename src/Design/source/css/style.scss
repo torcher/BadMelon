@@ -18,6 +18,7 @@
 @import './scss/atoms/headings';
 @import './scss/atoms/text';
 @import './scss/atoms/inputs';
+@import './scss/atoms/clickables';
 
 /*
   *****************
@@ -29,9 +30,13 @@
 @import './scss/molecules/formInputs';
 
 //Organisms
+@import './scss/organisms/navbar';
 @import './scss/organisms/forms';
 @import './scss/organisms/footer';
 
 //Layouts
+@import './scss/layouts/layouts';
+@import './scss/layouts/singleForm';
+@import './scss/layouts/app';
 
 //Pages

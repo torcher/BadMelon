@@ -1,0 +1,17 @@
+button{
+  background-color: $color-brand-dark-green;
+  color: $color-brand-white;
+  border-radius: $border-rounded;
+  padding: $space-button-padding;
+  border-style: solid;
+  border-color: $color-brand-dark-green;
+
+  &:hover{
+    cursor: pointer;
+  }
+
+  &:active{
+    background-color: $color-brand-light-green;
+    border-color: $color-brand-light-green;
+  }
+}

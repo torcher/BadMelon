@@ -1,0 +1,14 @@
+.page-grid.single-form{
+  display: grid;
+  grid-template-rows: 1fr $layout-footer-height;
+  grid-template-areas: "main"
+                       "footer";
+
+  main{
+    grid-area: main;
+  }
+
+  footer{
+    grid-area: footer;
+  }
+}

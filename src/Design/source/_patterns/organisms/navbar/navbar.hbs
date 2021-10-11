@@ -1,0 +1,37 @@
+<script>
+  function toggleNavbar(){
+    var navbar = document.querySelector('.bad-melon>nav')
+    var toggler = document.querySelector('.bad-melon p.open-close')
+    if(navbar.classList.contains('opened')){
+      navbar.classList.remove('opened')
+      toggler.innerHTML = '>>'
+    }
+    else{
+      navbar.classList.add('opened')
+      toggler.innerHTML = '<<'
+    }
+  }
+</script>
+
+<div class="bad-melon">
+  <nav>
+    <div class="active"><a href="#"><i class="ri-home-fill"></i><span>Home</span></a></div>
+
+    <ul>
+      <li>
+        <a href="#"><i class="ri-pages-fill"></i><span>Recipes</span></a>
+      </li>
+      <li>
+        <a href="#"><i class="ri-archive-fill"></i><span>Pantry</span></a>
+      </li>
+      <li>
+        <a href="#"><i class="ri-shopping-cart-2-fill"></i><span>Shopping Cart</span></a>
+      </li>
+      <li>
+        <a href="#"><i class="ri-information-fill"></i><span>Types</span></a>
+      </li>
+    </ul>
+
+    <p class="open-close" onclick="toggleNavbar()">>></p>
+  </nav>
+</div>

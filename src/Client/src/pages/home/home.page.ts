@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
+import { AppPage } from 'src/types/AppPage';
 import { Recipe } from 'src/types/Recipe';
 
 
 @Component({
   selector: 'home-page',
   templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss']
+  styleUrls: ['./home.page.scss'],
+  host: { 'class': 'app-layout'}
 })
-export class HomePage {
+export class HomePage extends AppPage {
+
   title: string = 'Home';
   recipeListLoaded: boolean = false;
   showAddRecipe: boolean = false;
