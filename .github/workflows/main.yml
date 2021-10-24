@@ -68,3 +68,11 @@ jobs:
         port: 22
         source: "./api-build.tar.gz,./client-build.tar.gz"
         target: "~/"
+    - name: Deploy files and restart services
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOSTNAME }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: ~/deployment.sh
