@@ -47,6 +47,8 @@ jobs:
       with:
         node-version: 14.17
     - run: npm ci
+      working-directory: ./src/Design/
+    - run: npm ci
       working-directory: ./src/Client/
     - run: npm run build 
       working-directory: ./src/Client/
