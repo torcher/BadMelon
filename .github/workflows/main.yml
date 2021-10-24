@@ -1,8 +1,6 @@
-name: Build and Deploy
+name: Build and Test API
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -42,45 +40,3 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=**/Data/Migrations/*%2c**/API/Program.cs
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14.17
-    - name: Download Design dependencies
-      run: npm ci
-      working-directory: ./src/Design/
-    - name: Download Angular app dependencies
-      run: npm ci
-      working-directory: ./src/Client/
-    - name: Buil Angular app
-      run: npm run build 
-      working-directory: ./src/Client/
-    - name: Zip Files
-      run: |
-        tar -C ./src/API/bin/Release/net5.0/ -czvf ./api-build.tar.gz .
-        tar -C ./src/Client/dist/Client/ -czvf ./client-build.tar.gz .
-    - name: Copy Files
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.HOSTNAME }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        source: "./api-build.tar.gz,./client-build.tar.gz"
-        target: "~/"
-    - name: Deploy files and restart services
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOSTNAME }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        script: |
-          sudo systemctl stop badmelon
-          sudo rm -r /var/www/badmelon/api && mkdir /var/www/badmelon/api
-          sudo rm -r /var/www/badmelon/client && mkdir /var/www/badmelon/client
-
-          tar -xzvf api-build.tar.gz -C /var/www/badmelon/api
-          tar -xzvf client-build.tar.gz -C /var/www/badmelon/client
-
-          sudo systemctl start badmelon
