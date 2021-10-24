@@ -75,7 +75,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
-        script: !
+        script: |
           sudo systemctl stop badmelon
           sudo rm -r /var/www/badmelon/api && mkdir /var/www/badmelon/api
           sudo rm -r /var/www/badmelon/client && mkdir /var/www/badmelon/client
