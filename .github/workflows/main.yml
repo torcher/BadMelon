@@ -46,9 +46,25 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 14.17
-    - run: npm ci
+    - name: Download Design dependencies
+      run: npm ci
       working-directory: ./src/Design/
-    - run: npm ci
+    - name: Download Angular app dependencies
+      run: npm ci
       working-directory: ./src/Client/
-    - run: npm run build 
+    - name: Buil Angular app
+      run: npm run build 
       working-directory: ./src/Client/
+    - name: Zip Files
+      run: |
+        tar -C ./src/API/bin/Release/net5.0/ -cvf ./api-build.tar.gz
+        tar -C ./src/Client/dist/Client/ -cvf ./client-build.tar.gz
+    - name: Copy Files
+      uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "./api-build.tar.gz,./client-build.tar.gz"
+          target: "~/"
