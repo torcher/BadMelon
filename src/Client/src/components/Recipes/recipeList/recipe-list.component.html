@@ -1,7 +1,7 @@
 <ul *ngIf="!showSpinner; else spinner">
   <li *ngFor="let recipe of recipes"><a [routerLink]="['recipe', recipe.id]">{{ recipe.name }}</a> 
-    <button (click)="deleteRecipe(recipe)">Delete</button>
-    <button (click)="editRecipe(recipe)">Edit</button>
+    <i class="ri-delete-bin-fill" (click)="deleteRecipe(recipe)"></i>
+    <i class="ri-pencil-fill" (click)="editRecipe(recipe)"></i>
   </li>
 </ul>
 <ng-template #spinner>

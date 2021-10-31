@@ -10,7 +10,9 @@ nav{
     margin: 0 3px;
     &:hover{
       a{
-        color: $color-neutral-grey-03;
+        i{
+          color: $color-neutral-grey-03;
+        }
       }
     }
     &.active, &:hover{
@@ -30,6 +32,7 @@ nav{
     align-items: center;
 
     i{
+      color: $color-brand-white;
       margin: 0 $space-padding-sm 0 1px;
     }
 

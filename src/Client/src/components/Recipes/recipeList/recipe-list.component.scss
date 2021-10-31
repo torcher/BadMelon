@@ -1,0 +1,17 @@
+ul{
+
+  list-style: none;
+  li{
+    display: flex;
+    margin: 5px 0;
+
+    a{
+      width: 300px;
+      line-height: 2.5rem;
+    }
+
+    i,button{
+      margin-right: 5px;
+    }
+  }
+}

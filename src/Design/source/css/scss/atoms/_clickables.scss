@@ -15,3 +15,12 @@ button{
     border-color: $color-brand-light-green;
   }
 }
+
+i{
+  color: $color-brand-dark-green;
+
+  &:hover{
+    cursor: pointer;
+    color: $color-brand-light-green;
+  }
+}
