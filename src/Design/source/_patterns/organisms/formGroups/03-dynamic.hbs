@@ -1,0 +1,13 @@
+<div class="bad-melon">
+  <form>
+    <div class="form-group bordered" style="max-width: 500px;">
+      <span class="form-group-title">Dynamic Form Group</span>
+      {{#each inputs }}
+        <div class="form-input {{ classes }}">
+          <label for="{{ id }}">{{ name }}</label>
+          <{{ atom }} type="{{ type }}" id="{{ id }}" name="{{ id }}" placeholder="{{ example }}"></{{ atom }}>
+        </div>
+      {{/each}}
+    </div>
+  </form>
+</div>

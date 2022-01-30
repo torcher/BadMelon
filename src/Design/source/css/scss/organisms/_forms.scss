@@ -1,7 +1,18 @@
 .form-group{
+  position: relative;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around;
+  padding: 15px 5px 5px 5px;
+  margin-bottom: 10px;
+
+  .form-group-title{
+    position: absolute;
+    top: -9px;
+    left: 5px;
+    background-color: $color-neutral-white;
+    padding: 0 3px;
+  }
 
   .form-input{
     flex-basis: 48%;
@@ -20,6 +31,11 @@
     }
   }
 
+  &.bordered{
+    border: 1px solid $color-neutral-grey-03;
+    border-radius: 5px;
+  }
+
   @media screen and (max-width: $break-mobile) {
     flex-flow: column;
     align-items: center;
@@ -28,4 +44,10 @@
       width: 95%;
     }
   }  
+}
+
+.controls{
+  position: absolute;
+  top: 0;
+  right: 0;
 }
