@@ -1,0 +1,28 @@
+{
+  "inputs": [
+      {
+          "id": "first-name",
+          "name": "First Name",
+          "example": "John",
+          "atom": "input",
+          "type": "text",
+          "classes": ""
+      },
+      {
+          "id": "last-name",
+          "name": "Last Name",
+          "example": "Smith",
+          "atom": "input",
+          "type": "text",
+          "classes": ""
+      },
+      {
+          "id": "dob",
+          "name": "Date of Birth",
+          "example": "Add your date of birth here.",
+          "atom": "input",
+          "type": "date",
+          "classes": ""
+      }
+  ]
+}

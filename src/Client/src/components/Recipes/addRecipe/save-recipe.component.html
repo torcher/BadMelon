@@ -1,66 +1,88 @@
-<h2>Add a Recipe</h2>
-
-<form name="recipe" [formGroup]="recipeForm" (onSubmit)="submit()">
-  <button class="close-button-x" (click)="close()">X</button>
-  <div class="form-field">
-    <label for="name">Name</label>
-    <input id="name" formControlName="name" name="name" placeholder="Recipe Name"/>
-    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="validation-error">
-      <span *ngIf="name.errors?.required">You must include a recipe name</span>
-      <span *ngIf="name.errors?.maxLength">A recipe name must be less than 250 characters</span>
+<div class="save-recipe">
+  <h2>Add a Recipe</h2>
+  <form name="recipe" class="recipe-form" [formGroup]="recipeForm" (onSubmit)="submit()">
+    <div class="controls">
+      <button class="close-button-x" (click)="close()">X</button>
     </div>
-  </div>
-
-  <div class="form-group">
-    <div><button (click)="addIngredient()">Add Ingredient</button></div>
-    <div *ngIf="ingredients.invalid" class="validation-error">
-      <span *ngIf="ingredients.errors?.required">You must have at least one ingredient</span>
+    <div class="form-group bordered recipe-details">  
+      <span class="form-group-title">Recipe Details</span>
+      <div class="form-input">
+        <label for="name">Name</label>
+        <input id="name" formControlName="name" name="name" placeholder="Recipe Name"/>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="validation-error">
+          <span *ngIf="name.errors?.required">You must include a recipe name</span>
+          <span *ngIf="name.errors?.maxLength">A recipe name must be less than 250 characters</span>
+        </div>
+      </div>
     </div>
-    <ng-container formArrayName="ingredients">
-      <div *ngFor="let _ of ingredients.controls; index as i" class="form-field-group">
-        <ng-container [formGroupName]="i">
-          <div class="form-field">
-            <label for="typeId_{{i}}">Type: </label>
-            <select formControlName="typeId">
-              <option *ngFor="let ingredientType of ingredientTypes" value="{{ingredientType.id}}">{{ ingredientType.name }}</option>
-            </select>
-          </div>  
-          <div class="form-field">
-            <label for="weight_{{i}}">Weight: </label>
-            <input id="weight_{{i}}" formControlName="weight" type="number">
-          </div>  
-          <span class="delete-button" (click)="removeIngredient(i)">X</span>
+
+    <div class="form-group bordered dynamic-list ingredients">
+      <span class="form-group-title">Ingredients</span>
+      <div *ngIf="ingredients.invalid" class="validation-error">
+        <span *ngIf="ingredients.errors?.required">You must have at least one ingredient</span>
+      </div>
+      <div class="list">
+        <ng-container *ngIf="!ingredients.errors?.required" formArrayName="ingredients" class="list"><!--list-->
+          <div class="form-field-group">
+            <div class="form-field">
+              <legend>Type: </legend>
+            </div>
+            <div class="form-field">
+              <legend>Weight: </legend>
+            </div>
+            <div class="form-field"></div>
+          </div>
+          <div *ngFor="let _ of ingredients.controls; index as i" class="form-field-group">
+            <ng-container [formGroupName]="i">
+              <div class="form-field">
+                <label *ngIf="i == 0" for="typeId_{{i}}">Type</label>
+                <select formControlName="typeId" id="typeId_{{i}}" name="typeId_{{i}}">
+                  <option *ngFor="let ingredientType of ingredientTypes" value="{{ingredientType.id}}">{{ ingredientType.name }}</option>
+                </select>
+              </div>  
+              <div class="form-field">
+                <label *ngIf="i == 0" for="weight_{{i}}">Weight</label>
+                <input id="weight_{{i}}" name="weight_{{i}}" formControlName="weight" type="number">
+              </div>
+              <div class="form-field">
+                <button id="delete_ingredient_{{i}}" name="delete_ingredient_{{i}}" class="icon delete" (click)="removeIngredient(i)"></button>
+              </div>
+            </ng-container>
+          </div>
         </ng-container>
       </div>
-    </ng-container>
-  </div>
-
-  <div class="form-group">
-    <div><button (click)="addStep()">Add Step</button></div>
-    <ng-container formArrayName="steps">
-      <div *ngFor="let _ of steps.controls; index as i" class="form-field-group">
-        <ng-container [formGroupName]="i">
-          <div class="form-field">
-            <label for="stepText_{{i}}">Text: </label>
-            <textarea id="stepText_{{i}}" formControlName="text"></textarea>
-          </div>
-          <div class="form-field">
-            <label for="cookTime_{{i}}">Cooking Time (hh:mm:ss): </label>
-            <input id="cookTime_{{i}}" type="text" formControlName="cookTime" />
-          </div>
-          <div class="form-field">
-            <label for="prepTime_{{i}}">Preparation Time (hh:mm:ss): </label>
-            <input id="prepTime_{{i}}" type="text" formControlName="prepTime" />
-          </div>
-          
-          <span class="delete-button" (click)="removeStep(i)">X</span>
-        </ng-container>
+      <div class="add-item">
+        <button name="add-item" type="button" (click)="addIngredient()">Add Ingredient</button>
       </div>
-    </ng-container>
-  </div>
+    </div>
+
+    <div class="form-group">
+      <div><button (click)="addStep()">Add Step</button></div>
+      <ng-container formArrayName="steps">
+        <div *ngFor="let _ of steps.controls; index as i" class="form-field-group">
+          <ng-container [formGroupName]="i">
+            <div class="form-field">
+              <label for="stepText_{{i}}">Text: </label>
+              <textarea id="stepText_{{i}}" formControlName="text"></textarea>
+            </div>
+            <div class="form-field">
+              <label for="cookTime_{{i}}">Cooking Time (hh:mm:ss): </label>
+              <input id="cookTime_{{i}}" type="text" formControlName="cookTime" />
+            </div>
+            <div class="form-field">
+              <label for="prepTime_{{i}}">Preparation Time (hh:mm:ss): </label>
+              <input id="prepTime_{{i}}" type="text" formControlName="prepTime" />
+            </div>
+            
+            <span class="delete-button" (click)="removeStep(i)">X</span>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
 
 
-  <div class="form-field">
-    <button [disabled]="recipeForm.invalid" (click)="submit()">Save</button>
-  </div>
-</form>
+    <div class="form-field">
+      <button [disabled]="recipeForm.invalid" (click)="submit()">Save</button>
+    </div>
+  </form>
+</div>

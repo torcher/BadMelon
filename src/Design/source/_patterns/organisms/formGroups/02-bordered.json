@@ -1,0 +1,28 @@
+{
+  "inputs": [
+      {
+          "id": "first-name",
+          "name": "First Name",
+          "example": "John",
+          "atom": "input",
+          "type": "text",
+          "classes": ""
+      },
+      {
+          "id": "last-name",
+          "name": "Last Name",
+          "example": "Smith",
+          "atom": "input",
+          "type": "text",
+          "classes": ""
+      },
+      {
+          "id": "comments",
+          "name": "Comments",
+          "example": "Add your comments here.",
+          "atom": "textarea",
+          "type": "text",
+          "classes": "full-width"
+      }
+  ]
+}
