@@ -17,12 +17,12 @@
           "classes": ""
       },
       {
-          "id": "comments",
-          "name": "Comments",
-          "example": "Add your comments here.",
-          "atom": "textarea",
-          "type": "text",
-          "classes": "full-width"
+          "id": "dob",
+          "name": "Date of Birth",
+          "example": "Add your date of birth here.",
+          "atom": "input",
+          "type": "date",
+          "classes": ""
       }
   ]
 }

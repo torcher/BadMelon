@@ -13,6 +13,22 @@ button, .button{
     background-color: $color-brand-light-green;
     border-color: $color-brand-light-green;
   }
+
+
+  &.icon{
+    font-family: "remixicon" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    &.delete {
+      @extend .ri-eraser-fill;
+    }
+  
+    &.add {
+      @extend .ri-add-line;
+    }
+  }
 }
 
 button{

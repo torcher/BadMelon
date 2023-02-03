@@ -14,7 +14,7 @@
     padding: 0 3px;
   }
 
-  .form-input{
+  .form-field{
     flex-basis: 48%;
 
     &.full-width{
@@ -26,7 +26,7 @@
     flex-flow: column;
     align-items: center;
 
-    .form-input{
+    .form-field{
       width: 95%;
     }
   }
@@ -36,18 +36,42 @@
     border-radius: 5px;
   }
 
+  &.dynamic-list{
+    flex-flow: column;
+    .form-field-group {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+      gap: $space-padding-sm;
+
+      label{
+        display: none;
+      }
+
+      .form-field{
+        flex: 3 1 0px;
+        margin-bottom: $space-padding-sm;
+
+        &:last-child{
+          flex: 1 1 0px;
+          & > * {
+            float: right;
+          }
+        }
+      }
+    }
+
+    .add-item{
+      text-align: center;
+    }
+  }
+
   @media screen and (max-width: $break-mobile) {
     flex-flow: column;
     align-items: center;
 
-    .form-input{
+    .form-field{
       width: 95%;
     }
   }  
-}
-
-.controls{
-  position: absolute;
-  top: 0;
-  right: 0;
 }

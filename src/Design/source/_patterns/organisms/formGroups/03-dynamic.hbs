@@ -1,13 +1,42 @@
-<div class="bad-melon">
-  <form>
-    <div class="form-group bordered" style="max-width: 500px;">
+<div class="bad-melon" style="margin-top: 20px;">
+  <form id="dynamic-list">
+    <div class="form-group bordered dynamic-list" style="max-width: 900px;">
       <span class="form-group-title">Dynamic Form Group</span>
-      {{#each inputs }}
-        <div class="form-input {{ classes }}">
-          <label for="{{ id }}">{{ name }}</label>
-          <{{ atom }} type="{{ type }}" id="{{ id }}" name="{{ id }}" placeholder="{{ example }}"></{{ atom }}>
+      <div class="list">
+        <div class="form-field-group labels">
+          {{#each inputs }}
+            <div class="form-field {{ classes }}">
+              <legend>{{ name }}</legend>
+            </div>
+          {{/each}}
+          <div class="form-field"></div>
         </div>
-      {{/each}}
+        <div class="form-field-group">
+          {{#each inputs }}
+            <div class="form-field {{ classes }}">
+              <label for="">{{ name }}</label>
+              <{{ atom }} type="{{ type }}" id="{{ id }}" name="{{ id }}" placeholder="{{ example }}"></{{ atom }}>
+            </div>
+          {{/each}}
+          <div class="form-field">
+            <button class="icon delete"></button>
+          </div>
+        </div>
+        <div class="form-field-group">
+          {{#each inputs }}
+          <div class="form-field {{ classes }}">
+            <{{ atom }} type="{{ type }}" id="{{ id }}" name="{{ id }}" placeholder="{{ example }}"></{{ atom }}>
+          </div>
+          {{/each}}
+          <div class="form-field actions">
+            <button class="icon delete"></button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-item">
+        <button name="add-item">Add Item</button>
+      </div>
     </div>
   </form>
 </div>
