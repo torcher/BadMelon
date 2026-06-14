@@ -1,1 +1,0 @@
-Stacked styling will be applied to two-column form layouts on mobile devices. This example has the group set to a max-width of 500px.
